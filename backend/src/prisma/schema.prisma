@@ -13,6 +13,28 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model User {
+  user_id Int @id @default(autoincrement())
+
+  name String
+
+  email String @unique
+  password String
+
+  role Role
+
+  is_first_login Boolean @default(true)
+
+  created_at DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  RECEPTIONIST
+  DISPENSER
+}
+
 model Patient {
   patient_id            Int      @id @default(autoincrement())
   patient_code          String   @unique
