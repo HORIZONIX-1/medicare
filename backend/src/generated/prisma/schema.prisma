@@ -1,0 +1,100 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/prisma"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  user_id Int @id @default(autoincrement())
+
+  name String
+
+  email    String @unique
+  password String
+
+  role Role
+
+  is_first_login Boolean @default(true)
+
+  created_at DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  DOCTOR
+  RECEPTIONIST
+  DISPENSER
+}
+
+model Patient {
+  patient_id           Int      @id @default(autoincrement())
+  patient_code         String   @unique
+  name                 String
+  gender               String
+  date_of_birth        DateTime
+  address              String?
+  nic                  String?
+  phone                String?
+  is_profile_completed Boolean  @default(false)
+
+  created_by Int
+  created_at DateTime @default(now())
+
+  consultations Consultation[]
+  guardians     PatientGuardian[]
+  allergies     PatientAllergy[]
+}
+
+model Consultation {
+  consultation_id Int @id @default(autoincrement())
+
+  patient_id Int
+  patient    Patient @relation(fields: [patient_id], references: [patient_id])
+
+  doctor_id Int
+
+  visit_date DateTime
+  notes      String?
+
+  prescriptions Prescription[]
+}
+
+model PatientGuardian {
+  guardian_id Int @id @default(autoincrement())
+
+  patient_id Int
+  patient    Patient @relation(fields: [patient_id], references: [patient_id])
+
+  guardian_name    String
+  guardian_nic     String?
+  guardian_phone   String?
+  guardian_address String?
+  relationship     String
+}
+
+model PatientAllergy {
+  allergy_id Int @id @default(autoincrement())
+
+  patient_id Int
+  patient    Patient @relation(fields: [patient_id], references: [patient_id])
+
+  allergy_name String
+}
+
+model Prescription {
+  prescription_id Int @id @default(autoincrement())
+
+  consultation_id Int
+  consultation    Consultation @relation(fields: [consultation_id], references: [consultation_id])
+
+  created_at DateTime @default(now())
+}
