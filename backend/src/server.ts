@@ -1,6 +1,7 @@
 import "./config/env-loader";
 import express from "express";
 import authRoutes from "./modules/auth/auth.routes";
+import patientRoutes from "./modules/patients/patient.routes";
 import { authMiddleware } from "./middleware/auth.middleware";
 import { roleMiddleware } from "./middleware/role.middleware";
 
@@ -11,6 +12,7 @@ app.use(express.json());
 app.get("/", (_req, res) => res.json({ message: "API is running" }));
 
 app.use("/auth", authRoutes);
+app.use("/patients", patientRoutes);
 
 // Example protected routes for each role
 app.get(
