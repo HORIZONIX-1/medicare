@@ -2,6 +2,12 @@ import { PrismaClient } from "../../generated/prisma";
 
 const prisma = new PrismaClient();
 
+export const getAllSymptoms =
+  async () => {
+
+  return prisma.symptom.findMany();
+};
+
 export const createSymptom =
   async (name: string) => {
 

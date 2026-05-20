@@ -3,6 +3,15 @@ import express from "express";
 import { Request, Response, NextFunction } from "express";
 import * as symptomService from "./symptom.service";
 
+const getAllSymptoms = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const symptoms = await symptomService.getAllSymptoms();
+    res.json(symptoms);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch symptoms" });
+  }
+};
+
 const createSymptom = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const { name } = req.body;
@@ -51,6 +60,8 @@ const addConsultationSymptom = async (req: Request, res: Response, next: NextFun
 };
 
 const router = express.Router();
+
+router.get("/", getAllSymptoms);
 
 router.post("/", createSymptom);
 

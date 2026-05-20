@@ -1,22 +1,59 @@
+"use client";
+
+import { useState } from "react";
+import api from "@/lib/axios";
+
 interface Props {
   consultation: any;
+  onUpdate?: () => void;
 }
 
 export default function DoctorNotesCard({
   consultation,
+  onUpdate,
 }: Props) {
+  const [notes, setNotes] = useState(
+    consultation.notes || ""
+  );
+  const [isSaving, setIsSaving] = useState(false);
+
+  const handleSave = async () => {
+    setIsSaving(true);
+    try {
+      await api.put(
+        `/consultations/${consultation.consultation_id}`,
+        { notes }
+      );
+      onUpdate?.();
+    } catch (error) {
+      console.error("Failed to update notes:", error);
+      alert("Failed to save notes");
+    } finally {
+      setIsSaving(false);
+    }
+  };
 
   return (
-    <div className="bg-white border rounded-lg p-4 h-full">
+    <div className="card-modern h-full flex flex-col">
 
-      <h2 className="font-semibold mb-4">
-        6. Doctor Notes
+      <h2 className="card-title">
+        <span className="card-number">⑥</span> Doctor Notes
       </h2>
 
       <textarea
-        defaultValue={consultation.notes}
-        className="w-full h-72 border rounded p-3"
+        value={notes}
+        onChange={(e) => setNotes(e.target.value)}
+        className="complaint-textarea"
+        placeholder="Add clinical observations, assessments, and important notes..."
       />
+
+      <button
+        onClick={handleSave}
+        disabled={isSaving}
+        className="btn-indigo-gradient mt-4 w-full"
+      >
+        {isSaving ? "Saving..." : "Save"}
+      </button>
 
     </div>
   );

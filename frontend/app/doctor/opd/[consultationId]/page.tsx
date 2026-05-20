@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, use } from "react";
 
 import api from "@/lib/axios";
 
@@ -32,14 +32,15 @@ import DoctorNotesCard
   from "@/components/opd/DoctorNotesCard";
 
 interface Props {
-  params: {
+  params: Promise<{
     consultationId: string;
-  };
+  }>;
 }
 
 export default function OPDPage({
   params,
 }: Props) {
+  const resolvedParams = use(params);
 
   const [consultation, setConsultation] =
     useState<Consultation | null>(null);
@@ -51,7 +52,7 @@ export default function OPDPage({
 
       const response =
         await api.get(
-          `/consultations/${params.consultationId}`
+          `/consultations/${resolvedParams.consultationId}`
         );
 
       setConsultation(response.data);
@@ -61,88 +62,112 @@ export default function OPDPage({
     }
   };
 
+  const handleDataAdded = () => {
+    fetchConsultation();
+  };
+
   useEffect(() => {
     fetchConsultation();
-  }, []);
+  }, [resolvedParams.consultationId]);
 
   if (!consultation) {
-    return <div>Loading...</div>;
+    return (
+      <div className="opd-loading-container">
+        <div className="spinner"></div>
+        <p className="opd-loading-text">Loading consultation...</p>
+      </div>
+    );
   }
 
   return (
-    <div className="p-6 bg-gray-100 min-h-screen">
-
-      <h1 className="text-2xl font-bold mb-6">
-        OPD / Consultation
-      </h1>
-
-      <PatientHeader patient={consultation.patient} />
-
-      <div className="grid grid-cols-12 gap-4 mt-4">
-
-        <div className="col-span-3">
-          <ChiefComplaintCard
-            consultation={consultation}
-          />
+    <div className="opd-page">
+      <header className="opd-header">
+        <div className="opd-header-content">
+          <div className="opd-header-left">
+            <span className="opd-header-icon">🏥</span>
+            <div>
+              <h1 className="opd-header-title">OPD Consultation</h1>
+              <p className="opd-header-subtitle">Patient Clinical Assessment</p>
+            </div>
+          </div>
         </div>
+      </header>
 
-        <div className="col-span-5">
-          <SymptomsCard
-            consultationId={
-              consultation.consultation_id
-            }
-            symptoms={consultation.symptoms}
-          />
+      <main className="opd-main">
+        <PatientHeader patient={consultation.patient} />
+
+        <div className="opd-grid">
+
+          <div className="opd-grid-item col-span-3">
+            <ChiefComplaintCard
+              consultation={consultation}
+              onUpdate={handleDataAdded}
+            />
+          </div>
+
+          <div className="opd-grid-item col-span-5">
+            <SymptomsCard
+              consultationId={
+                consultation.consultation_id
+              }
+              symptoms={consultation.symptoms}
+              onDataAdded={handleDataAdded}
+            />
+          </div>
+
+          <div className="opd-grid-item col-span-4">
+            <ExaminationCard
+              consultationId={
+                consultation.consultation_id
+              }
+              examinations={
+                consultation.examinations
+              }
+              onDataAdded={handleDataAdded}
+            />
+          </div>
+
+          <div className="opd-grid-item col-span-5">
+            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+            {/* @ts-ignore */}
+            <InvestigationCard
+              consultationId={consultation.consultation_id}
+              investigations={consultation.investigations}
+              onDataAdded={handleDataAdded}
+            />
+
+            <InstructionCard
+              consultationId={
+                consultation.consultation_id
+              }
+              instructions={
+                consultation.instructions
+              }
+              onDataAdded={handleDataAdded}
+            />
+          </div>
+
+          <div className="opd-grid-item col-span-3">
+            <DiagnosisCard
+              consultationId={
+                consultation.consultation_id
+              }
+              diagnoses={
+                consultation.diagnoses
+              }
+              onDataAdded={handleDataAdded}
+            />
+          </div>
+
+          <div className="opd-grid-item col-span-4">
+            <DoctorNotesCard
+              consultation={consultation}
+              onUpdate={handleDataAdded}
+            />
+          </div>
+
         </div>
-
-        <div className="col-span-4">
-          <ExaminationCard
-            consultationId={
-              consultation.consultation_id
-            }
-            examinations={
-              consultation.examinations
-            }
-          />
-        </div>
-
-        <div className="col-span-5">
-          {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-          {/* @ts-ignore */}
-          <InvestigationCard
-            consultationId={consultation.consultation_id}
-            investigations={consultation.investigations}
-          />
-
-          <InstructionCard
-            consultationId={
-              consultation.consultation_id
-            }
-            instructions={
-              consultation.instructions
-            }
-          />
-        </div>
-
-        <div className="col-span-3">
-          <DiagnosisCard
-            consultationId={
-              consultation.consultation_id
-            }
-            diagnoses={
-              consultation.diagnoses
-            }
-          />
-        </div>
-
-        <div className="col-span-4">
-          <DoctorNotesCard
-            consultation={consultation}
-          />
-        </div>
-
-      </div>
-
+      </main>
     </div>
   );
 }

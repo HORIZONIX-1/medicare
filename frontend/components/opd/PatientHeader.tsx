@@ -7,26 +7,38 @@ export default function PatientHeader({
 }: Props) {
 
   return (
-    <div className="bg-white rounded-lg p-4 border">
+    <div className="patient-header">
 
-      <div className="flex justify-between">
+      <div className="patient-header-content">
 
         <div>
 
-          <h2 className="text-xl font-semibold">
+          <h2 className="patient-header-title">
             {patient.name}
           </h2>
 
-          <p>
-            Patient ID:
-            {patient.patient_code}
-          </p>
+          <div className="patient-info-list">
+            <div className="patient-info-item">
+              <span className="patient-info-label">Patient ID:</span>
+              <span className="patient-info-value">
+                {patient.patient_code}
+              </span>
+            </div>
 
-          <p>
-            Phone:
-            {patient.phone}
-          </p>
+            <div className="patient-info-item">
+              <span className="patient-info-label">Phone:</span>
+              <span className="patient-info-value-secondary">
+                {patient.phone}
+              </span>
+            </div>
+          </div>
 
+        </div>
+
+        <div className="patient-status-container">
+          <div className="patient-status-badge">
+            Active Consultation
+          </div>
         </div>
 
       </div>

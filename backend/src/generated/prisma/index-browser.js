@@ -171,6 +171,7 @@ exports.Prisma.ConsultationScalarFieldEnum = {
   patient_id: 'patient_id',
   doctor_id: 'doctor_id',
   visit_date: 'visit_date',
+  chief_complaint: 'chief_complaint',
   notes: 'notes',
   created_at: 'created_at'
 };
@@ -256,6 +257,7 @@ exports.Prisma.ConsultationSymptomOrderByRelevanceFieldEnum = {
 };
 
 exports.Prisma.ConsultationOrderByRelevanceFieldEnum = {
+  chief_complaint: 'chief_complaint',
   notes: 'notes'
 };
 

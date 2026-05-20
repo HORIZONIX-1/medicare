@@ -13,16 +13,24 @@ export const startConsultation =
 };
 
 export const updateConsultation =
-  async (consultationId: number, data: { notes: any; }) => {
+  async (consultationId: number, data: { chief_complaint?: any; notes?: any }) => {
+
+  const updateData: any = {};
+  
+  if (data.chief_complaint !== undefined) {
+    updateData.chief_complaint = data.chief_complaint;
+  }
+  
+  if (data.notes !== undefined) {
+    updateData.notes = data.notes;
+  }
 
   return prisma.consultation.update({
     where: {
       consultation_id: consultationId,
     },
 
-    data: {
-      notes: data.notes,
-    },
+    data: updateData,
   });
 };
 

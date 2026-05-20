@@ -25,9 +25,33 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={`${geistSans.variable} ${geistMono.variable} h-full antialiased`}
+      className={`${geistSans.variable} ${geistMono.variable}`}
+      style={{ height: '100%' }}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="root-body">
+        <header className="header-main">
+          <div className="header-container">
+            <div className="header-logo">
+              <div className="logo-box">H</div>
+              <div>
+                <div className="logo-title">Project Hope</div>
+                <div className="logo-subtitle">Medical records · modern UI</div>
+              </div>
+            </div>
+            <nav className="header-nav">
+              <a href="/" className="nav-link">Home</a>
+              <a href="/admin" className="nav-link">Admin</a>
+              <a href="/auth/login" className="btn btn-ghost">Sign in</a>
+            </nav>
+          </div>
+        </header>
+
+        <main className="main-content">{children}</main>
+
+        <footer className="footer">
+          <div className="footer-content">© {new Date().getFullYear()} Project Hope</div>
+        </footer>
+      </body>
     </html>
   );
 }
