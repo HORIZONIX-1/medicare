@@ -2,6 +2,8 @@
 
 import { Patient } from "@/types/patient";
 import { useRouter } from "next/navigation";
+import { useState } from "react";
+import api from "@/lib/axios";
 
 interface Props {
   patients: Patient[];
@@ -9,6 +11,22 @@ interface Props {
 
 export default function PatientTable({ patients }: Props) {
   const router = useRouter();
+  const [startingVisit, setStartingVisit] = useState<string | null>(null);
+
+  const handleStartVisit = async (patientId: number) => {
+    try {
+      setStartingVisit(String(patientId));
+      const response = await api.post("/consultations/start", {
+        patient_id: patientId,
+      });
+      const consultationId = response.data.consultation_id;
+      router.push(`/doctor/opd/${consultationId}`);
+    } catch (error) {
+      console.error("Failed to start consultation:", error);
+      alert("Failed to start visit. Please try again.");
+      setStartingVisit(null);
+    }
+  };
 
   return (
     <div className="p-6">
@@ -62,8 +80,15 @@ export default function PatientTable({ patients }: Props) {
                         Open Profile
                       </button>
 
-                      <button className="bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold px-3 py-1.5 rounded-xl transition-all duration-150 shadow-md shadow-indigo-600/10">
-                        Start Visit
+                      <button
+                        onClick={() => handleStartVisit(patient.patient_id)}
+                        disabled={startingVisit !== null}
+                        className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all duration-150 shadow-md ${
+                          startingVisit === String(patient.patient_id)
+                            ? "bg-indigo-700 text-white opacity-75 cursor-wait"
+                            : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/10"
+                        }`}>
+                        {startingVisit === String(patient.patient_id) ? "Starting..." : "Start Visit"}
                       </button>
                     </div>
                   </td>
