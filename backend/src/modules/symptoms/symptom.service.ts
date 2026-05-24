@@ -37,5 +37,26 @@ export const addConsultationSymptom =
       duration_unit:
         data.duration_unit,
     },
+    include: {
+      symptom: true,
+    },
+  });
+};
+
+export const updateConsultationSymptom =
+  async (consultationSymptomId: number, data: { severity: any; duration_value: any; duration_unit: any; }) => {
+
+  return prisma.consultationSymptom.update({
+    where: {
+      consultation_symptom_id: consultationSymptomId,
+    },
+    data: {
+      severity: data.severity,
+      duration_value: data.duration_value,
+      duration_unit: data.duration_unit,
+    },
+    include: {
+      symptom: true,
+    },
   });
 };

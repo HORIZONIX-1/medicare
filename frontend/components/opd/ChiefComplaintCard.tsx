@@ -1,37 +1,19 @@
 "use client";
 
-import { useState } from "react";
-import api from "@/lib/axios";
+// client-only controlled component
 
 interface Props {
-  consultation: any;
-  onUpdate?: () => void;
+  consultation?: any;
+  value?: string;
+  onChange?: (value: string) => void;
 }
 
 export default function ChiefComplaintCard({
   consultation,
-  onUpdate,
+  value,
+  onChange,
 }: Props) {
-  const [complaint, setComplaint] = useState(
-    consultation.chief_complaint || ""
-  );
-  const [isSaving, setIsSaving] = useState(false);
-
-  const handleSave = async () => {
-    setIsSaving(true);
-    try {
-      await api.put(
-        `/consultations/${consultation.consultation_id}`,
-        { chief_complaint: complaint }
-      );
-      onUpdate?.();
-    } catch (error) {
-      console.error("Failed to update chief complaint:", error);
-      alert("Failed to save chief complaint");
-    } finally {
-      setIsSaving(false);
-    }
-  };
+  const complaint = value ?? consultation?.chief_complaint ?? "";
 
   return (
     <div className="card-modern h-full flex flex-col">
@@ -42,18 +24,10 @@ export default function ChiefComplaintCard({
 
       <textarea
         value={complaint}
-        onChange={(e) => setComplaint(e.target.value)}
+        onChange={(e) => onChange?.(e.target.value)}
         className="complaint-textarea"
         placeholder="Document the primary reason for the patient's visit..."
       />
-
-      <button
-        onClick={handleSave}
-        disabled={isSaving}
-        className="btn-indigo-gradient mt-4 w-full"
-      >
-        {isSaving ? "Saving..." : "Save"}
-      </button>
 
     </div>
   );

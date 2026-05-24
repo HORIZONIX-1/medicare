@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
+import Header from "@/components/Header";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -30,20 +31,7 @@ export default function RootLayout({
     >
       <body className="root-body">
         <header className="header-main">
-          <div className="header-container">
-            <div className="header-logo">
-              <div className="logo-box">H</div>
-              <div>
-                <div className="logo-title">Project Hope</div>
-                <div className="logo-subtitle">Medical records · modern UI</div>
-              </div>
-            </div>
-            <nav className="header-nav">
-              <a href="/" className="nav-link">Home</a>
-              <a href="/admin" className="nav-link">Admin</a>
-              <a href="/auth/login" className="btn btn-ghost">Sign in</a>
-            </nav>
-          </div>
+          <Header />
         </header>
 
         <main className="main-content">{children}</main>

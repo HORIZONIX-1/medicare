@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState, use } from "react";
+import { useRouter } from "next/navigation";
 
 import api from "@/lib/axios";
 
@@ -40,15 +41,27 @@ interface Props {
 export default function OPDPage({
   params,
 }: Props) {
+  const router = useRouter();
   const resolvedParams = use(params);
 
   const [consultation, setConsultation] =
     useState<Consultation | null>(null);
+  const [chiefComplaint, setChiefComplaint] = useState<string>("");
+  const [doctorNotes, setDoctorNotes] = useState<string>("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [loadError, setLoadError] = useState<string | null>(null);
 
   const fetchConsultation =
     async () => {
 
     try {
+      const token = localStorage.getItem("token");
+
+      if (!token) {
+        setLoadError("Please sign in to view this consultation.");
+        router.replace("/auth/login");
+        return;
+      }
 
       const response =
         await api.get(
@@ -56,14 +69,23 @@ export default function OPDPage({
         );
 
       setConsultation(response.data);
+      setChiefComplaint(response.data.chief_complaint || "");
+      setDoctorNotes(response.data.notes || "");
 
     } catch (error) {
       console.error(error);
+      setLoadError("Unable to load consultation.");
+
+      const status = (error as any)?.response?.status;
+
+      if (status === 401) {
+        router.replace("/auth/login");
+      }
     }
   };
 
   const handleDataAdded = () => {
-    fetchConsultation();
+    // Section cards manage their own local lists so saves stay scoped to that section.
   };
 
   useEffect(() => {
@@ -71,6 +93,14 @@ export default function OPDPage({
   }, [resolvedParams.consultationId]);
 
   if (!consultation) {
+    if (loadError) {
+      return (
+        <div className="opd-loading-container">
+          <p className="opd-loading-text">{loadError}</p>
+        </div>
+      );
+    }
+
     return (
       <div className="opd-loading-container">
         <div className="spinner"></div>
@@ -100,8 +130,9 @@ export default function OPDPage({
 
           <div className="opd-grid-item col-span-3">
             <ChiefComplaintCard
-              consultation={consultation}
-              onUpdate={handleDataAdded}
+                consultation={consultation}
+                value={chiefComplaint}
+                onChange={setChiefComplaint}
             />
           </div>
 
@@ -162,10 +193,39 @@ export default function OPDPage({
           <div className="opd-grid-item col-span-4">
             <DoctorNotesCard
               consultation={consultation}
-              onUpdate={handleDataAdded}
+              value={doctorNotes}
+              onChange={setDoctorNotes}
             />
           </div>
 
+        </div>
+        <div className="opd-submit-container">
+          <button
+            className="btn-indigo-gradient w-40 ml-auto"
+            disabled={isSubmitting}
+            onClick={async () => {
+              if (!consultation) return;
+              setIsSubmitting(true);
+              try {
+                await api.put(
+                  `/consultations/${consultation.consultation_id}`,
+                  {
+                    chief_complaint: chiefComplaint,
+                    notes: doctorNotes,
+                  }
+                );
+                await fetchConsultation();
+                alert("Consultation submitted");
+              } catch (error) {
+                console.error(error);
+                alert("Failed to submit consultation");
+              } finally {
+                setIsSubmitting(false);
+              }
+            }}
+          >
+            {isSubmitting ? "Submitting..." : "Submit"}
+          </button>
         </div>
       </main>
     </div>

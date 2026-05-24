@@ -59,6 +59,32 @@ const addConsultationSymptom = async (req: Request, res: Response, next: NextFun
   }
 };
 
+const updateConsultationSymptom = async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const consultationSymptomId = Number(req.params.consultationSymptomId);
+    const { severity, duration_value, duration_unit } = req.body;
+
+    if (!consultationSymptomId || Number.isNaN(consultationSymptomId)) {
+      res.status(400).json({ message: "consultationSymptomId is required" });
+      return;
+    }
+
+    const consultationSymptom = await symptomService.updateConsultationSymptom(consultationSymptomId, {
+      severity: severity ?? null,
+      duration_value: duration_value ?? null,
+      duration_unit: duration_unit ?? null,
+    });
+
+    res.json(consultationSymptom);
+  } catch (error: any) {
+    if (error.code === "P2025") {
+      res.status(404).json({ message: "Consultation symptom not found" });
+    } else {
+      res.status(500).json({ message: "Failed to update symptom" });
+    }
+  }
+};
+
 const router = express.Router();
 
 router.get("/", getAllSymptoms);
@@ -68,6 +94,11 @@ router.post("/", createSymptom);
 router.post(
   "/consultation",
   addConsultationSymptom
+);
+
+router.put(
+  "/consultation/:consultationSymptomId",
+  updateConsultationSymptom
 );
 
 export default router;

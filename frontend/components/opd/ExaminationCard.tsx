@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 
 interface Props {
@@ -15,9 +15,25 @@ export default function ExaminationCard({
   onDataAdded,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
+  const [localExaminations, setLocalExaminations] = useState<any[]>(examinations || []);
   const [title, setTitle] = useState("");
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setLocalExaminations(examinations || []);
+  }, [examinations]);
+  const mainMetricNames = [
+    "Blood Pressure",
+    "Temperature",
+    "Pulse",
+    "Respiratory Rate",
+    "Oxygen Saturation",
+  ];
+  const [metrics, setMetrics] = useState<Record<string, string>>(
+    Object.fromEntries(mainMetricNames.map((n) => [n, ""]))
+  );
+  const [isSavingMetrics, setIsSavingMetrics] = useState(false);
 
   const handleAddExamination = async () => {
     if (!title || !result) {
@@ -33,6 +49,15 @@ export default function ExaminationCard({
         result,
       });
 
+      setLocalExaminations((current) => [
+        ...current,
+        {
+          examination_id: Date.now(),
+          title,
+          result,
+        },
+      ]);
+
       setTitle("");
       setResult("");
       setShowForm(false);
@@ -42,6 +67,34 @@ export default function ExaminationCard({
       alert("Failed to add examination");
     } finally {
       setIsLoading(false);
+    }
+  };
+
+  const handleSaveMetrics = async () => {
+    setIsSavingMetrics(true);
+    try {
+      const entries = Object.entries(metrics).filter(([, v]) => v && v.toString().trim() !== "");
+      if (entries.length === 0) {
+        alert("No metrics to save");
+        return;
+      }
+
+      await Promise.all(entries.map(([name, value]) =>
+        api.post("/examinations", {
+          consultation_id: consultationId,
+          title: name,
+          result: value,
+        })
+      ));
+
+      setMetrics(Object.fromEntries(mainMetricNames.map((n) => [n, ""])));
+      onDataAdded?.();
+      alert("Metrics saved");
+    } catch (error) {
+      console.error("Failed to save metrics:", error);
+      alert("Failed to save metrics");
+    } finally {
+      setIsSavingMetrics(false);
     }
   };
 
@@ -59,6 +112,30 @@ export default function ExaminationCard({
           {showForm ? "Cancel" : "+ Add"}
         </button>
       </div>
+
+      <div className="metrics-container space-y-4">
+        <div>
+          <h3 className="text-sm text-slate-300 font-semibold mb-2">Main metrics</h3>
+          <div className="grid grid-cols-1 gap-2">
+            {mainMetricNames.map((name) => (
+              <div key={name} className="flex items-center gap-3">
+                <label className="w-40 text-sm">{name}</label>
+                <input
+                  type="text"
+                  value={metrics[name]}
+                  onChange={(e) => setMetrics((m) => ({ ...m, [name]: e.target.value }))}
+                  className="input-dark flex-1"
+                  placeholder="Value"
+                />
+              </div>
+            ))}
+          </div>
+          <div className="mt-3">
+            <button onClick={handleSaveMetrics} disabled={isSavingMetrics} className="btn-indigo-gradient">
+              {isSavingMetrics ? "Saving..." : "Save Metrics"}
+            </button>
+          </div>
+        </div>
 
       {showForm && (
         <div className="symptoms-form-container">
@@ -101,8 +178,8 @@ export default function ExaminationCard({
       )}
 
       <div className="space-y-2">
-        {examinations?.length > 0 ? (
-          examinations.map((exam) => (
+        {localExaminations?.length > 0 ? (
+          localExaminations.map((exam) => (
             <div
               key={exam.examination_id}
               className="symptom-item"
@@ -121,7 +198,7 @@ export default function ExaminationCard({
           </p>
         )}
       </div>
-
     </div>
+  </div>
   );
 }

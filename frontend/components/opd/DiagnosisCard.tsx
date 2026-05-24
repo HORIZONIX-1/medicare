@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 
 interface Props {
@@ -15,9 +15,14 @@ export default function DiagnosisCard({
   onDataAdded,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
+  const [localDiagnoses, setLocalDiagnoses] = useState<any[]>(diagnoses || []);
   const [diagnosisName, setDiagnosisName] = useState("");
   const [notes, setNotes] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setLocalDiagnoses(diagnoses || []);
+  }, [diagnoses]);
 
   const handleAddDiagnosis = async () => {
     if (!diagnosisName.trim()) {
@@ -32,6 +37,15 @@ export default function DiagnosisCard({
         diagnosis_name: diagnosisName.trim(),
         notes: notes || null,
       });
+
+      setLocalDiagnoses((current) => [
+        ...current,
+        {
+          diagnosis_id: Date.now(),
+          diagnosis_name: diagnosisName.trim(),
+          notes: notes || null,
+        },
+      ]);
 
       setDiagnosisName("");
       setNotes("");
@@ -101,8 +115,8 @@ export default function DiagnosisCard({
       )}
 
       <div className="space-y-3">
-        {diagnoses?.length > 0 ? (
-          diagnoses.map((diagnosis) => (
+        {localDiagnoses?.length > 0 ? (
+          localDiagnoses.map((diagnosis) => (
             <div
               key={diagnosis.diagnosis_id}
               className="investigation-item"

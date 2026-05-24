@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 
 interface Props {
@@ -15,9 +15,14 @@ export default function InvestigationCard({
   onDataAdded,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
+  const [localInvestigations, setLocalInvestigations] = useState<any[]>(investigations || []);
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setLocalInvestigations(investigations || []);
+  }, [investigations]);
 
   const handleAddInvestigation = async () => {
     if (!title) {
@@ -32,6 +37,15 @@ export default function InvestigationCard({
         title,
         description: description || null,
       });
+
+      setLocalInvestigations((current) => [
+        ...current,
+        {
+          investigation_id: Date.now(),
+          title,
+          description: description || null,
+        },
+      ]);
 
       setTitle("");
       setDescription("");
@@ -101,8 +115,8 @@ export default function InvestigationCard({
       )}
 
       <div className="space-y-3">
-        {investigations?.length > 0 ? (
-          investigations.map((item) => (
+        {localInvestigations?.length > 0 ? (
+          localInvestigations.map((item) => (
             <div
               key={item.investigation_id}
               className="investigation-item"

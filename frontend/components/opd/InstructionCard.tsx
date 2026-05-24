@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import api from "@/lib/axios";
 
 interface Props {
@@ -15,8 +15,13 @@ export default function InstructionCard({
   onDataAdded,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
+  const [localInstructions, setLocalInstructions] = useState<any[]>(instructions || []);
   const [instruction, setInstruction] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    setLocalInstructions(instructions || []);
+  }, [instructions]);
 
   const handleAddInstruction = async () => {
     if (!instruction.trim()) {
@@ -30,6 +35,14 @@ export default function InstructionCard({
         consultation_id: consultationId,
         instruction: instruction.trim(),
       });
+
+      setLocalInstructions((current) => [
+        ...current,
+        {
+          instruction_id: Date.now(),
+          instruction: instruction.trim(),
+        },
+      ]);
 
       setInstruction("");
       setShowForm(false);
@@ -85,8 +98,8 @@ export default function InstructionCard({
       )}
 
       <div className="space-y-2">
-        {instructions?.length > 0 ? (
-          instructions.map((item) => (
+        {localInstructions?.length > 0 ? (
+          localInstructions.map((item) => (
             <div
               key={item.instruction_id}
               className="instruction-item"
