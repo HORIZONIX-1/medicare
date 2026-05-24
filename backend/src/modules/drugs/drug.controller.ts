@@ -71,3 +71,27 @@ export const getDrugById =
     });
   }
 };
+
+export const getDrugAvailability =
+  async (req: { params: { id: any; }; }, res: { json: (arg0: { available_quantity: number; reorder_level: number; status: string; }) => void; status: (arg0: number) => { (): any; new(): any; json: { (arg0: { message: string; }): void; new(): any; }; }; }) => {
+
+  try {
+
+    const result =
+      await drugService
+        .getDrugAvailability(
+          Number(req.params.id)
+        );
+
+    res.json(result);
+
+  } catch (error) {
+
+    console.error(error);
+
+    res.status(500).json({
+      message:
+        "Failed to get availability",
+    });
+  }
+};

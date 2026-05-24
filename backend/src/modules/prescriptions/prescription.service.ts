@@ -3,126 +3,147 @@ import prisma from "../../config/prisma";
 export const createPrescription =
   async (data: any) => {
 
-  return prisma.$transaction(
-    async (tx) => {
+    return prisma.$transaction(
+      async (tx) => {
 
-      // Create prescription
-      const prescription =
-        await tx.prescription.create({
-          data: {
+        // Create prescription
+        const prescription =
+          await tx.prescription.create({
+            data: {
 
-            consultation_id:
-              data.consultation_id,
+              consultation_id:
+                data.consultation_id,
 
-            total_amount:
-              data.total_amount,
-          },
-        });
+              total_amount:
+                data.total_amount,
+            },
+          });
 
-      // Loop through items
-      for (const item of data.items) {
+        // Loop through items
+        for (const item of data.items) {
 
-        // Create prescription item
-        await tx.prescriptionItem.create({
-          data: {
+          // Create prescription item
+          await tx.prescriptionItem.create({
+            data: {
 
-            prescription_id:
-              prescription.prescription_id,
+              prescription_id:
+                prescription.prescription_id,
 
-            drug_id:
-              item.drug_id,
+              drug_id:
+                item.drug_id,
 
-            drug_name:
-              item.drug_name,
+              drug_name:
+                item.drug_name,
 
-            dosage:
-              item.dosage,
+              dosage:
+                item.dosage,
 
-            instruction_1:
-              item.instruction_1,
+              instruction_1:
+                item.instruction_1,
 
-            instruction_2:
-              item.instruction_2,
+              instruction_2:
+                item.instruction_2,
 
-            instruction_3:
-              item.instruction_3,
+              instruction_3:
+                item.instruction_3,
 
-            frequency:
-              item.frequency,
+              frequency:
+                item.frequency,
 
-            duration:
-              item.duration,
+              duration:
+                item.duration,
 
-            quantity:
-              item.quantity,
+              quantity:
+                item.quantity,
 
-            price:
-              item.price,
+              price:
+                item.price,
 
-            is_outside_drug:
-              item.is_outside_drug,
-          },
-        });
+              is_outside_drug:
+                item.is_outside_drug,
+            },
+          });
 
-        // Reduce stock
-        if (
-          !item.is_outside_drug &&
-          item.drug_id
-        ) {
-
-          const batch =
-            await tx.stockBatch.findFirst({
+          const totalAvailable =
+            await tx.stockBatch.aggregate({
               where: {
                 drug_id: item.drug_id,
               },
 
-              orderBy: {
-                expiry_date: "asc",
+              _sum: {
+                quantity: true,
               },
             });
 
-          if (batch) {
+          const available =
+            totalAvailable._sum.quantity || 0;
 
-            await tx.stockBatch.update({
-              where: {
-                stock_batch_id:
-                  batch.stock_batch_id,
-              },
+          if (available < item.quantity) {
 
-              data: {
-                quantity: {
-                  decrement:
-                    item.quantity,
+            throw new Error(
+              `${item.drug_name} stock not enough`
+            );
+          }
+          
+          // Reduce stock
+          if (
+            !item.is_outside_drug &&
+            item.drug_id
+          ) {
+
+            const batch =
+              await tx.stockBatch.findFirst({
+                where: {
+                  drug_id: item.drug_id,
                 },
-              },
-            });
+
+                orderBy: {
+                  expiry_date: "asc",
+                },
+              });
+
+            if (batch) {
+
+              await tx.stockBatch.update({
+                where: {
+                  stock_batch_id:
+                    batch.stock_batch_id,
+                },
+
+                data: {
+                  quantity: {
+                    decrement:
+                      item.quantity,
+                  },
+                },
+              });
+            }
           }
         }
-      }
 
-      return prescription;
-    }
-  );
-};
+        return prescription;
+      }
+    );
+  };
 
 export const getPrescription =
   async (prescriptionId: number) => {
 
-  return prisma.prescription.findUnique({
-    where: {
-      prescription_id:
-        prescriptionId,
-    },
+    return prisma.prescription.findUnique({
+      where: {
+        prescription_id:
+          prescriptionId,
+      },
 
-    include: {
+      include: {
 
-      items: true,
+        items: true,
 
-      consultation: {
-        include: {
-          patient: true,
+        consultation: {
+          include: {
+            patient: true,
+          },
         },
       },
-    },
-  });
-};
+    });
+  };
