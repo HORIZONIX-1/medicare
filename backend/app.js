@@ -73,6 +73,26 @@ const patientRoutes = loadRoute(
   "./src/modules/patients/patient.routes.ts",
   "./dist/src/modules/patients/patient.routes"
 );
+const adminAuthRoutes = loadRoute(
+  "./src/modules/admin/auth/auth.routes.js",
+  "./src/modules/admin/auth/auth.routes.js"
+);
+const adminUserRoutes = loadRoute(
+  "./src/modules/admin/users/user.routes.js",
+  "./src/modules/admin/users/user.routes.js"
+);
+const adminDashboardRoutes = loadRoute(
+  "./src/modules/admin/dashboard/dashboard.routes.js",
+  "./src/modules/admin/dashboard/dashboard.routes.js"
+);
+const adminOrganizationRoutes = loadRoute(
+  "./src/modules/admin/organization/organization.routes.js",
+  "./src/modules/admin/organization/organization.routes.js"
+);
+const adminAuditRoutes = loadRoute(
+  "./src/modules/admin/audit/audit.routes.js",
+  "./src/modules/admin/audit/audit.routes.js"
+);
 const { authMiddleware } = loadRoute(
   "./src/middleware/auth.middleware.ts",
   "./dist/src/middleware/auth.middleware"
@@ -115,6 +135,7 @@ app.use(cookieParser(process.env.COOKIE_SECRET));
 app.use(express.json({ limit: process.env.JSON_BODY_LIMIT || "1mb" }));
 app.use(express.urlencoded({ extended: true, limit: process.env.URLENCODED_BODY_LIMIT || "1mb" }));
 app.use(morgan(isProduction ? "combined" : "dev"));
+app.use("/uploads", express.static(path.join(__dirname, "uploads")));
 
 app.get("/", (_req, res) => {
   res.status(200).json({
@@ -129,6 +150,11 @@ app.get("/health", (_req, res) => {
 
 app.use(`${apiPrefix}/auth`, authRoutes);
 app.use(`${apiPrefix}/patients`, patientRoutes);
+app.use("/api/v1/admin/auth", adminAuthRoutes);
+app.use("/api/v1/admin/users", adminUserRoutes);
+app.use("/api/v1/admin/dashboard", adminDashboardRoutes);
+app.use("/api/v1/admin/organization", adminOrganizationRoutes);
+app.use("/api/v1/admin/audit-logs", adminAuditRoutes);
 
 app.get(`${apiPrefix}/protected/admin`, authMiddleware, roleMiddleware("ADMIN"), (_req, res) => {
   res.json({ message: "Admin access granted" });
@@ -164,6 +190,7 @@ app.use((error, _req, res, _next) => {
   res.status(statusCode).json({
     success: false,
     message: isServerError && isProduction ? "Internal server error" : error.message,
+    ...(error.details ? { details: error.details } : {}),
     ...(isProduction ? {} : { stack: error.stack }),
   });
 });
