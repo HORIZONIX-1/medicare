@@ -18,7 +18,7 @@ model User {
 
   name String
 
-  email String @unique
+  email    String @unique
   password String
 
   role Role
@@ -38,22 +38,22 @@ enum Role {
 }
 
 model Patient {
-  patient_id            Int      @id @default(autoincrement())
-  patient_code          String   @unique
-  name                  String
-  gender                String
-  date_of_birth         DateTime
-  address               String?
-  nic                   String?
-  phone                 String?
-  is_profile_completed  Boolean  @default(false)
+  patient_id           Int      @id @default(autoincrement())
+  patient_code         String   @unique
+  name                 String
+  gender               String
+  date_of_birth        DateTime
+  address              String?
+  nic                  String?
+  phone                String?
+  is_profile_completed Boolean  @default(false)
 
-  created_by            Int
-  created_at            DateTime @default(now())
+  created_by Int
+  created_at DateTime @default(now())
 
-  consultations         Consultation[]
-  guardians             PatientGuardian[]
-  allergies             PatientAllergy[]
+  consultations Consultation[]
+  guardians     PatientGuardian[]
+  allergies     PatientAllergy[]
 }
 
 model Symptom {
@@ -69,7 +69,7 @@ model Examination {
 
   consultation_id Int
 
-  title String
+  title  String
   result String
 
   consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
@@ -79,12 +79,12 @@ model ConsultationSymptom {
   consultation_symptom_id Int @id @default(autoincrement())
 
   consultation_id Int
-  symptom_id Int
+  symptom_id      Int
 
   severity Float?
 
   duration_value Float?
-  duration_unit String?
+  duration_unit  String?
 
   consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
 
@@ -95,22 +95,22 @@ model Consultation {
   consultation_id Int @id @default(autoincrement())
 
   patient_id Int
-  patient Patient @relation(fields: [patient_id], references: [patient_id])
+  patient    Patient @relation(fields: [patient_id], references: [patient_id])
 
   doctor_id Int
-  doctor User @relation(fields: [doctor_id], references: [user_id])
+  doctor    User @relation(fields: [doctor_id], references: [user_id])
 
-  visit_date DateTime
+  visit_date      DateTime
   chief_complaint String?
-  notes String?
-  created_at DateTime @default(now())
+  notes           String?
+  created_at      DateTime @default(now())
 
-  prescriptions Prescription[]
-  examinations Examination[]
+  prescriptions        Prescription[]
+  examinations         Examination[]
   consultationSymptoms ConsultationSymptom[]
-  investigations Investigation[]
-  instructions PatientInstruction[]
-  diagnoses Diagnosis[]
+  investigations       Investigation[]
+  instructions         PatientInstruction[]
+  diagnoses            Diagnosis[]
 }
 
 model Investigation {
@@ -118,7 +118,7 @@ model Investigation {
 
   consultation_id Int
 
-  title String
+  title       String
   description String?
 
   consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
@@ -150,20 +150,20 @@ model PatientGuardian {
   guardian_id Int @id @default(autoincrement())
 
   patient_id Int
-  patient Patient @relation(fields: [patient_id], references: [patient_id])
+  patient    Patient @relation(fields: [patient_id], references: [patient_id])
 
-  guardian_name String
-  guardian_nic String?
-  guardian_phone String?
+  guardian_name    String
+  guardian_nic     String?
+  guardian_phone   String?
   guardian_address String?
-  relationship String
+  relationship     String
 }
 
 model PatientAllergy {
   allergy_id Int @id @default(autoincrement())
 
   patient_id Int
-  patient Patient @relation(fields: [patient_id], references: [patient_id])
+  patient    Patient @relation(fields: [patient_id], references: [patient_id])
 
   allergy_name String
 }
@@ -172,7 +172,88 @@ model Prescription {
   prescription_id Int @id @default(autoincrement())
 
   consultation_id Int
-  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
+
+  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id])
+
+  total_amount Float @default(0)
+
+  created_at DateTime @default(now())
+
+  items PrescriptionItem[]
+}
+
+model PrescriptionItem {
+  prescription_item_id Int @id @default(autoincrement())
+
+  prescription_id Int
+
+  prescription Prescription @relation(fields: [prescription_id], references: [prescription_id])
+
+  drug_id Int?
+
+  drug Drug? @relation(fields: [drug_id], references: [drug_id])
+
+  drug_name String
+
+  dosage String?
+
+  instruction_1 String?
+  instruction_2 String?
+  instruction_3 String?
+
+  frequency String?
+
+  duration String?
+
+  quantity Int
+
+  price Float
+
+  is_outside_drug Boolean @default(false)
+
+  is_patient_denied Boolean @default(false)
+}
+
+model Drug {
+  drug_id Int @id @default(autoincrement())
+
+  name String @unique
+
+  category String
+
+  unit_type String
+
+  dosage_type String?
+
+  selling_price Float
+
+  reorder_level Int @default(10)
+
+  is_active Boolean @default(true)
+
+  created_at DateTime @default(now())
+
+  stockBatches StockBatch[]
+
+  prescriptionItems PrescriptionItem[]
+}
+
+model StockBatch {
+  stock_batch_id Int @id @default(autoincrement())
+
+  drug_id Int
+
+  drug Drug @relation(fields: [drug_id], references: [drug_id])
+
+  batch_number String?
+
+  expiry_date DateTime?
+
+  quantity Int
+
+  buying_price Float
+
+  selling_price Float
 
   created_at DateTime @default(now())
 }
