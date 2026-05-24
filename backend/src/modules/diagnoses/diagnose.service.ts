@@ -11,3 +11,18 @@ export const addDiagnosis = async (data: { consultation_id: any; diagnosis_name:
     },
   });
 };
+
+export const updateDiagnosis = async (
+  diagnosisId: number,
+  data: { diagnosis_name: any; notes: any; }
+) => {
+  return prisma.diagnosis.update({
+    where: {
+      diagnosis_id: diagnosisId,
+    },
+    data: {
+      diagnosis_name: data.diagnosis_name,
+      notes: data.notes,
+    },
+  });
+};

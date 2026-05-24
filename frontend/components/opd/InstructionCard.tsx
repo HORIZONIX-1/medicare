@@ -18,6 +18,8 @@ export default function InstructionCard({
   const [localInstructions, setLocalInstructions] = useState<any[]>(instructions || []);
   const [instruction, setInstruction] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [editingId, setEditingId] = useState<number | null>(null);
+  const [editInstruction, setEditInstruction] = useState("");
 
   useEffect(() => {
     setLocalInstructions(instructions || []);
@@ -31,18 +33,12 @@ export default function InstructionCard({
 
     setIsLoading(true);
     try {
-      await api.post("/instructions", {
+      const response = await api.post("/instructions", {
         consultation_id: consultationId,
         instruction: instruction.trim(),
       });
 
-      setLocalInstructions((current) => [
-        ...current,
-        {
-          instruction_id: Date.now(),
-          instruction: instruction.trim(),
-        },
-      ]);
+      setLocalInstructions((current) => [...current, response.data]);
 
       setInstruction("");
       setShowForm(false);
@@ -50,6 +46,41 @@ export default function InstructionCard({
     } catch (error) {
       console.error("Failed to add instruction:", error);
       alert("Failed to add instruction");
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const startEdit = (item: any) => {
+    setEditingId(item.instruction_id);
+    setEditInstruction(item.instruction || "");
+  };
+
+  const handleUpdateInstruction = async () => {
+    if (!editingId) return;
+
+    if (!editInstruction.trim()) {
+      alert("Please enter an instruction");
+      return;
+    }
+
+    setIsLoading(true);
+    try {
+      const response = await api.put(`/instructions/${editingId}`, {
+        instruction: editInstruction.trim(),
+      });
+
+      setLocalInstructions((current) =>
+        current.map((item) =>
+          item.instruction_id === editingId ? response.data : item
+        )
+      );
+
+      setEditingId(null);
+      onDataAdded?.();
+    } catch (error) {
+      console.error("Failed to update instruction:", error);
+      alert("Failed to update instruction");
     } finally {
       setIsLoading(false);
     }
@@ -104,10 +135,48 @@ export default function InstructionCard({
               key={item.instruction_id}
               className="instruction-item"
             >
-              <div className="instruction-bullet">•</div>
-              <p className="text-slate-100 text-sm">
-                {item.instruction}
-              </p>
+              <div className="flex-1">
+                <div className="flex items-start justify-between gap-3">
+                  <div className="instruction-bullet">•</div>
+                  <button
+                    type="button"
+                    onClick={() => startEdit(item)}
+                    className="text-xs font-semibold text-cyan-300 hover:text-cyan-200 border border-cyan-500/30 hover:border-cyan-400/50 rounded-lg px-3 py-1 transition-colors"
+                  >
+                    Edit
+                  </button>
+                </div>
+                <p className="text-slate-100 text-sm mt-1">
+                  {item.instruction}
+                </p>
+              </div>
+
+              {editingId === item.instruction_id && (
+                <div className="mt-3 space-y-3 rounded-2xl border border-slate-700/70 bg-slate-950/60 p-4 w-full">
+                  <div>
+                    <label className="form-label">Instruction</label>
+                    <textarea
+                      value={editInstruction}
+                      onChange={(e) => setEditInstruction(e.target.value)}
+                      className="textarea-dark"
+                      rows={3}
+                    />
+                  </div>
+                  <div className="flex gap-2 justify-end">
+                    <button type="button" onClick={() => setEditingId(null)} className="btn-cyan">
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleUpdateInstruction}
+                      disabled={isLoading}
+                      className="btn-indigo-gradient"
+                    >
+                      {isLoading ? "Saving..." : "Save"}
+                    </button>
+                  </div>
+                </div>
+              )}
             </div>
           ))
         ) : (

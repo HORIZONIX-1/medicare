@@ -13,3 +13,17 @@ export const addInstruction = async (data: {
 		},
 	});
 };
+
+export const updateInstruction = async (
+	instructionId: number,
+	data: { instruction: string }
+) => {
+	return prisma.patientInstruction.update({
+		where: {
+			instruction_id: instructionId,
+		},
+		data: {
+			instruction: data.instruction,
+		},
+	});
+};

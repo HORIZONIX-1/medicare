@@ -15,14 +15,10 @@ export default function ExaminationCard({
   onDataAdded,
 }: Props) {
   const [showForm, setShowForm] = useState(false);
-  const [localExaminations, setLocalExaminations] = useState<any[]>(examinations || []);
   const [title, setTitle] = useState("");
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
-  useEffect(() => {
-    setLocalExaminations(examinations || []);
-  }, [examinations]);
   const mainMetricNames = [
     "Blood Pressure",
     "Temperature",
@@ -49,15 +45,6 @@ export default function ExaminationCard({
         result,
       });
 
-      setLocalExaminations((current) => [
-        ...current,
-        {
-          examination_id: Date.now(),
-          title,
-          result,
-        },
-      ]);
-
       setTitle("");
       setResult("");
       setShowForm(false);
@@ -67,34 +54,6 @@ export default function ExaminationCard({
       alert("Failed to add examination");
     } finally {
       setIsLoading(false);
-    }
-  };
-
-  const handleSaveMetrics = async () => {
-    setIsSavingMetrics(true);
-    try {
-      const entries = Object.entries(metrics).filter(([, v]) => v && v.toString().trim() !== "");
-      if (entries.length === 0) {
-        alert("No metrics to save");
-        return;
-      }
-
-      await Promise.all(entries.map(([name, value]) =>
-        api.post("/examinations", {
-          consultation_id: consultationId,
-          title: name,
-          result: value,
-        })
-      ));
-
-      setMetrics(Object.fromEntries(mainMetricNames.map((n) => [n, ""])));
-      onDataAdded?.();
-      alert("Metrics saved");
-    } catch (error) {
-      console.error("Failed to save metrics:", error);
-      alert("Failed to save metrics");
-    } finally {
-      setIsSavingMetrics(false);
     }
   };
 
@@ -115,7 +74,7 @@ export default function ExaminationCard({
 
       <div className="metrics-container space-y-4">
         <div>
-          <h3 className="text-sm text-slate-300 font-semibold mb-2">Main metrics</h3>
+          <h3 className="text-sm text-slate-300 font-semibold mb-2">Default examinations</h3>
           <div className="grid grid-cols-1 gap-2">
             {mainMetricNames.map((name) => (
               <div key={name} className="flex items-center gap-3">
@@ -130,12 +89,8 @@ export default function ExaminationCard({
               </div>
             ))}
           </div>
-          <div className="mt-3">
-            <button onClick={handleSaveMetrics} disabled={isSavingMetrics} className="btn-indigo-gradient">
-              {isSavingMetrics ? "Saving..." : "Save Metrics"}
-            </button>
-          </div>
         </div>
+      </div>
 
       {showForm && (
         <div className="symptoms-form-container">
@@ -177,28 +132,6 @@ export default function ExaminationCard({
         </div>
       )}
 
-      <div className="space-y-2">
-        {localExaminations?.length > 0 ? (
-          localExaminations.map((exam) => (
-            <div
-              key={exam.examination_id}
-              className="symptom-item"
-            >
-              <div className="flex-1">
-                <p className="font-semibold text-slate-100">{exam.title}</p>
-                <p className="text-xs text-slate-400 mt-1">
-                  <span className="text-cyan-400 font-semibold">{exam.result}</span>
-                </p>
-              </div>
-            </div>
-          ))
-        ) : (
-          <p className="text-center text-slate-500 py-4 text-sm">
-            No examinations recorded
-          </p>
-        )}
-      </div>
     </div>
-  </div>
   );
 }

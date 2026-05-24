@@ -9,6 +9,11 @@ type AddInvestigationBody = {
 	description?: string;
 };
 
+type UpdateInvestigationBody = {
+	title?: string;
+	description?: string;
+};
+
 const addInvestigation = async (
 	req: Request<{}, {}, AddInvestigationBody>,
 	res: Response
@@ -36,8 +41,41 @@ const addInvestigation = async (
 	}
 };
 
+const updateInvestigation = async (
+	req: Request<{ investigationId: string }, {}, UpdateInvestigationBody>,
+	res: Response
+) => {
+	try {
+		const investigationId = Number(req.params.investigationId);
+		const { title, description } = req.body;
+
+		if (!investigationId || Number.isNaN(investigationId)) {
+			return res.status(400).json({ message: "investigationId is required" });
+		}
+
+		if (!title || !title.trim()) {
+			return res.status(400).json({ message: "title is required" });
+		}
+
+		const investigation = await investigationService.updateInvestigation(investigationId, {
+			title: title.trim(),
+			description: description ?? null,
+		});
+
+		return res.json(investigation);
+	} catch (_error: any) {
+		if (_error?.code === "P2025") {
+			return res.status(404).json({ message: "Investigation not found" });
+		}
+
+		return res.status(500).json({ message: "Failed to update investigation" });
+	}
+};
+
 const router = express.Router();
 
 router.post("/", authMiddleware, roleMiddleware("DOCTOR"), addInvestigation as any);
+
+router.put("/:investigationId", authMiddleware, roleMiddleware("DOCTOR"), updateInvestigation as any);
 
 export default router;

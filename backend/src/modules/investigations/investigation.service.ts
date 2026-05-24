@@ -19,3 +19,17 @@ export const addInvestigation =
     },
   });
 };
+
+export const updateInvestigation =
+  async (investigationId: number, data: { title: any; description: any; }) => {
+
+  return prisma.investigation.update({
+    where: {
+      investigation_id: investigationId,
+    },
+    data: {
+      title: data.title,
+      description: data.description,
+    },
+  });
+};
