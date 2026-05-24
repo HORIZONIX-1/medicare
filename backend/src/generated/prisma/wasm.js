@@ -100,6 +100,21 @@ exports.Prisma.UserScalarFieldEnum = {
   password: 'password',
   role: 'role',
   is_first_login: 'is_first_login',
+  is_active: 'is_active',
+  created_at: 'created_at',
+  updated_at: 'updated_at',
+  deleted_at: 'deleted_at'
+};
+
+exports.Prisma.AuditLogScalarFieldEnum = {
+  audit_log_id: 'audit_log_id',
+  actor_user_id: 'actor_user_id',
+  action: 'action',
+  entity: 'entity',
+  entity_id: 'entity_id',
+  metadata: 'metadata',
+  ip_address: 'ip_address',
+  user_agent: 'user_agent',
   created_at: 'created_at'
 };
 
@@ -152,15 +167,39 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
+};
+
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password'
 };
 
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
+  action: 'action',
+  entity: 'entity',
+  entity_id: 'entity_id',
+  ip_address: 'ip_address',
+  user_agent: 'user_agent'
 };
 
 exports.Prisma.PatientOrderByRelevanceFieldEnum = {
@@ -196,6 +235,7 @@ exports.Role = exports.$Enums.Role = {
 
 exports.Prisma.ModelName = {
   User: 'User',
+  AuditLog: 'AuditLog',
   Patient: 'Patient',
   Consultation: 'Consultation',
   PatientGuardian: 'PatientGuardian',
@@ -231,7 +271,8 @@ const config = {
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../prisma",
   "clientVersion": "6.19.3",
@@ -248,13 +289,13 @@ const config = {
       }
     }
   },
-  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  user_id Int @id @default(autoincrement())\n\n  name String\n\n  email    String @unique\n  password String\n\n  role Role\n\n  is_first_login Boolean @default(true)\n\n  created_at DateTime @default(now())\n}\n\nenum Role {\n  ADMIN\n  DOCTOR\n  RECEPTIONIST\n  DISPENSER\n}\n\nmodel Patient {\n  patient_id           Int      @id @default(autoincrement())\n  patient_code         String   @unique\n  name                 String\n  gender               String\n  date_of_birth        DateTime\n  address              String?\n  nic                  String?\n  phone                String?\n  is_profile_completed Boolean  @default(false)\n\n  created_by Int\n  created_at DateTime @default(now())\n\n  consultations Consultation[]\n  guardians     PatientGuardian[]\n  allergies     PatientAllergy[]\n}\n\nmodel Consultation {\n  consultation_id Int @id @default(autoincrement())\n\n  patient_id Int\n  patient    Patient @relation(fields: [patient_id], references: [patient_id])\n\n  doctor_id Int\n\n  visit_date DateTime\n  notes      String?\n\n  prescriptions Prescription[]\n}\n\nmodel PatientGuardian {\n  guardian_id Int @id @default(autoincrement())\n\n  patient_id Int\n  patient    Patient @relation(fields: [patient_id], references: [patient_id])\n\n  guardian_name    String\n  guardian_nic     String?\n  guardian_phone   String?\n  guardian_address String?\n  relationship     String\n}\n\nmodel PatientAllergy {\n  allergy_id Int @id @default(autoincrement())\n\n  patient_id Int\n  patient    Patient @relation(fields: [patient_id], references: [patient_id])\n\n  allergy_name String\n}\n\nmodel Prescription {\n  prescription_id Int @id @default(autoincrement())\n\n  consultation_id Int\n  consultation    Consultation @relation(fields: [consultation_id], references: [consultation_id])\n\n  created_at DateTime @default(now())\n}\n",
-  "inlineSchemaHash": "aefd9870ce7ff7184a80d9b1e07f57474dd8bf4fe1bb9e4674a95ca8841c5c25",
+  "inlineSchema": "// This is your Prisma schema file,\n// learn more about it in the docs: https://pris.ly/d/prisma-schema\n\n// Get a free hosted Postgres database in seconds: `npx create-db`\n\ngenerator client {\n  provider = \"prisma-client-js\"\n  output   = \"../generated/prisma\"\n}\n\ndatasource db {\n  provider = \"mysql\"\n  url      = env(\"DATABASE_URL\")\n}\n\nmodel User {\n  user_id Int @id @default(autoincrement())\n\n  name String\n\n  email    String @unique\n  password String\n\n  role Role\n\n  is_first_login Boolean @default(true)\n  is_active      Boolean @default(true)\n\n  created_at DateTime  @default(now())\n  updated_at DateTime  @default(now()) @updatedAt\n  deleted_at DateTime?\n\n  audit_logs AuditLog[]\n}\n\nmodel AuditLog {\n  audit_log_id Int @id @default(autoincrement())\n\n  actor_user_id Int?\n  actor         User? @relation(fields: [actor_user_id], references: [user_id])\n\n  action     String\n  entity     String\n  entity_id  String?\n  metadata   Json?\n  ip_address String?\n  user_agent String?\n\n  created_at DateTime @default(now())\n\n  @@index([actor_user_id])\n  @@index([entity, entity_id])\n}\n\nenum Role {\n  ADMIN\n  DOCTOR\n  RECEPTIONIST\n  DISPENSER\n}\n\nmodel Patient {\n  patient_id           Int      @id @default(autoincrement())\n  patient_code         String   @unique\n  name                 String\n  gender               String\n  date_of_birth        DateTime\n  address              String?\n  nic                  String?\n  phone                String?\n  is_profile_completed Boolean  @default(false)\n\n  created_by Int\n  created_at DateTime @default(now())\n\n  consultations Consultation[]\n  guardians     PatientGuardian[]\n  allergies     PatientAllergy[]\n}\n\nmodel Consultation {\n  consultation_id Int @id @default(autoincrement())\n\n  patient_id Int\n  patient    Patient @relation(fields: [patient_id], references: [patient_id])\n\n  doctor_id Int\n\n  visit_date DateTime\n  notes      String?\n\n  prescriptions Prescription[]\n}\n\nmodel PatientGuardian {\n  guardian_id Int @id @default(autoincrement())\n\n  patient_id Int\n  patient    Patient @relation(fields: [patient_id], references: [patient_id])\n\n  guardian_name    String\n  guardian_nic     String?\n  guardian_phone   String?\n  guardian_address String?\n  relationship     String\n}\n\nmodel PatientAllergy {\n  allergy_id Int @id @default(autoincrement())\n\n  patient_id Int\n  patient    Patient @relation(fields: [patient_id], references: [patient_id])\n\n  allergy_name String\n}\n\nmodel Prescription {\n  prescription_id Int @id @default(autoincrement())\n\n  consultation_id Int\n  consultation    Consultation @relation(fields: [consultation_id], references: [consultation_id])\n\n  created_at DateTime @default(now())\n}\n",
+  "inlineSchemaHash": "f7e70e43eab3065031ccb49d36cff32d8aff24d24cc040a7ca4f8c24a67f0a07",
   "copyEngine": true
 }
 config.dirname = '/'
 
-config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"is_first_login\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Patient\":{\"fields\":[{\"name\":\"patient_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"gender\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date_of_birth\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nic\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_profile_completed\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_by\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"consultations\",\"kind\":\"object\",\"type\":\"Consultation\",\"relationName\":\"ConsultationToPatient\"},{\"name\":\"guardians\",\"kind\":\"object\",\"type\":\"PatientGuardian\",\"relationName\":\"PatientToPatientGuardian\"},{\"name\":\"allergies\",\"kind\":\"object\",\"type\":\"PatientAllergy\",\"relationName\":\"PatientToPatientAllergy\"}],\"dbName\":null},\"Consultation\":{\"fields\":[{\"name\":\"consultation_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient\",\"kind\":\"object\",\"type\":\"Patient\",\"relationName\":\"ConsultationToPatient\"},{\"name\":\"doctor_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"visit_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"prescriptions\",\"kind\":\"object\",\"type\":\"Prescription\",\"relationName\":\"ConsultationToPrescription\"}],\"dbName\":null},\"PatientGuardian\":{\"fields\":[{\"name\":\"guardian_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient\",\"kind\":\"object\",\"type\":\"Patient\",\"relationName\":\"PatientToPatientGuardian\"},{\"name\":\"guardian_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guardian_nic\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guardian_phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guardian_address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"relationship\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"PatientAllergy\":{\"fields\":[{\"name\":\"allergy_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient\",\"kind\":\"object\",\"type\":\"Patient\",\"relationName\":\"PatientToPatientAllergy\"},{\"name\":\"allergy_name\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Prescription\":{\"fields\":[{\"name\":\"prescription_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"consultation_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"consultation\",\"kind\":\"object\",\"type\":\"Consultation\",\"relationName\":\"ConsultationToPrescription\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
+config.runtimeDataModel = JSON.parse("{\"models\":{\"User\":{\"fields\":[{\"name\":\"user_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"email\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"password\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"role\",\"kind\":\"enum\",\"type\":\"Role\"},{\"name\":\"is_first_login\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"is_active\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"updated_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"deleted_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"audit_logs\",\"kind\":\"object\",\"type\":\"AuditLog\",\"relationName\":\"AuditLogToUser\"}],\"dbName\":null},\"AuditLog\":{\"fields\":[{\"name\":\"audit_log_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"actor_user_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"actor\",\"kind\":\"object\",\"type\":\"User\",\"relationName\":\"AuditLogToUser\"},{\"name\":\"action\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entity\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"entity_id\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"metadata\",\"kind\":\"scalar\",\"type\":\"Json\"},{\"name\":\"ip_address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"user_agent\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null},\"Patient\":{\"fields\":[{\"name\":\"patient_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient_code\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"gender\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"date_of_birth\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"nic\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"is_profile_completed\",\"kind\":\"scalar\",\"type\":\"Boolean\"},{\"name\":\"created_by\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"consultations\",\"kind\":\"object\",\"type\":\"Consultation\",\"relationName\":\"ConsultationToPatient\"},{\"name\":\"guardians\",\"kind\":\"object\",\"type\":\"PatientGuardian\",\"relationName\":\"PatientToPatientGuardian\"},{\"name\":\"allergies\",\"kind\":\"object\",\"type\":\"PatientAllergy\",\"relationName\":\"PatientToPatientAllergy\"}],\"dbName\":null},\"Consultation\":{\"fields\":[{\"name\":\"consultation_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient\",\"kind\":\"object\",\"type\":\"Patient\",\"relationName\":\"ConsultationToPatient\"},{\"name\":\"doctor_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"visit_date\",\"kind\":\"scalar\",\"type\":\"DateTime\"},{\"name\":\"notes\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"prescriptions\",\"kind\":\"object\",\"type\":\"Prescription\",\"relationName\":\"ConsultationToPrescription\"}],\"dbName\":null},\"PatientGuardian\":{\"fields\":[{\"name\":\"guardian_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient\",\"kind\":\"object\",\"type\":\"Patient\",\"relationName\":\"PatientToPatientGuardian\"},{\"name\":\"guardian_name\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guardian_nic\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guardian_phone\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"guardian_address\",\"kind\":\"scalar\",\"type\":\"String\"},{\"name\":\"relationship\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"PatientAllergy\":{\"fields\":[{\"name\":\"allergy_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"patient\",\"kind\":\"object\",\"type\":\"Patient\",\"relationName\":\"PatientToPatientAllergy\"},{\"name\":\"allergy_name\",\"kind\":\"scalar\",\"type\":\"String\"}],\"dbName\":null},\"Prescription\":{\"fields\":[{\"name\":\"prescription_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"consultation_id\",\"kind\":\"scalar\",\"type\":\"Int\"},{\"name\":\"consultation\",\"kind\":\"object\",\"type\":\"Consultation\",\"relationName\":\"ConsultationToPrescription\"},{\"name\":\"created_at\",\"kind\":\"scalar\",\"type\":\"DateTime\"}],\"dbName\":null}},\"enums\":{},\"types\":{}}")
 defineDmmfProperty(exports.Prisma, config.runtimeDataModel)
 config.engineWasm = {
   getRuntime: async () => require('./query_engine_bg.js'),
