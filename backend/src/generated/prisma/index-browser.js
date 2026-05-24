@@ -145,11 +145,54 @@ exports.Prisma.PatientScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.SymptomScalarFieldEnum = {
+  symptom_id: 'symptom_id',
+  name: 'name'
+};
+
+exports.Prisma.ExaminationScalarFieldEnum = {
+  examination_id: 'examination_id',
+  consultation_id: 'consultation_id',
+  title: 'title',
+  result: 'result'
+};
+
+exports.Prisma.ConsultationSymptomScalarFieldEnum = {
+  consultation_symptom_id: 'consultation_symptom_id',
+  consultation_id: 'consultation_id',
+  symptom_id: 'symptom_id',
+  severity: 'severity',
+  duration_value: 'duration_value',
+  duration_unit: 'duration_unit'
+};
+
 exports.Prisma.ConsultationScalarFieldEnum = {
   consultation_id: 'consultation_id',
   patient_id: 'patient_id',
   doctor_id: 'doctor_id',
   visit_date: 'visit_date',
+  chief_complaint: 'chief_complaint',
+  notes: 'notes',
+  created_at: 'created_at'
+};
+
+exports.Prisma.InvestigationScalarFieldEnum = {
+  investigation_id: 'investigation_id',
+  consultation_id: 'consultation_id',
+  title: 'title',
+  description: 'description'
+};
+
+exports.Prisma.PatientInstructionScalarFieldEnum = {
+  instruction_id: 'instruction_id',
+  consultation_id: 'consultation_id',
+  instruction: 'instruction'
+};
+
+exports.Prisma.DiagnosisScalarFieldEnum = {
+  diagnosis_id: 'diagnosis_id',
+  consultation_id: 'consultation_id',
+  diagnosis_name: 'diagnosis_name',
   notes: 'notes'
 };
 
@@ -200,7 +243,35 @@ exports.Prisma.PatientOrderByRelevanceFieldEnum = {
   phone: 'phone'
 };
 
+exports.Prisma.SymptomOrderByRelevanceFieldEnum = {
+  name: 'name'
+};
+
+exports.Prisma.ExaminationOrderByRelevanceFieldEnum = {
+  title: 'title',
+  result: 'result'
+};
+
+exports.Prisma.ConsultationSymptomOrderByRelevanceFieldEnum = {
+  duration_unit: 'duration_unit'
+};
+
 exports.Prisma.ConsultationOrderByRelevanceFieldEnum = {
+  chief_complaint: 'chief_complaint',
+  notes: 'notes'
+};
+
+exports.Prisma.InvestigationOrderByRelevanceFieldEnum = {
+  title: 'title',
+  description: 'description'
+};
+
+exports.Prisma.PatientInstructionOrderByRelevanceFieldEnum = {
+  instruction: 'instruction'
+};
+
+exports.Prisma.DiagnosisOrderByRelevanceFieldEnum = {
+  diagnosis_name: 'diagnosis_name',
   notes: 'notes'
 };
 
@@ -225,7 +296,13 @@ exports.Role = exports.$Enums.Role = {
 exports.Prisma.ModelName = {
   User: 'User',
   Patient: 'Patient',
+  Symptom: 'Symptom',
+  Examination: 'Examination',
+  ConsultationSymptom: 'ConsultationSymptom',
   Consultation: 'Consultation',
+  Investigation: 'Investigation',
+  PatientInstruction: 'PatientInstruction',
+  Diagnosis: 'Diagnosis',
   PatientGuardian: 'PatientGuardian',
   PatientAllergy: 'PatientAllergy',
   Prescription: 'Prescription'

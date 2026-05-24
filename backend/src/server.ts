@@ -2,6 +2,12 @@ import "./config/env-loader";
 import express from "express";
 import authRoutes from "./modules/auth/auth.routes";
 import patientRoutes from "./modules/patients/patient.routes";
+import consultationRoutes from "./modules/consultations/consultation.routes";
+import symptomRoutes from "./modules/symptoms/symptom.routes";
+import examinationRoutes from "./modules/examinations/examination.routes";
+import investigationRoutes from "./modules/investigations/investigation.routes";
+import instructionRoutes from "./modules/instructions/instruction.routes";
+import diagnoseRoutes from "./modules/diagnoses/diagnose.routes";
 import { authMiddleware } from "./middleware/auth.middleware";
 import { roleMiddleware } from "./middleware/role.middleware";
 
@@ -24,6 +30,12 @@ app.get("/", (_req, res) => res.json({ message: "API is running" }));
 
 app.use("/auth", authRoutes);
 app.use("/patients", patientRoutes);
+app.use("/consultations", consultationRoutes);
+app.use("/symptoms", symptomRoutes);
+app.use("/examinations", examinationRoutes);
+app.use("/investigations", investigationRoutes);
+app.use("/instructions", instructionRoutes);
+app.use("/diagnoses", diagnoseRoutes);
 
 // Example protected routes for each role
 app.get(
