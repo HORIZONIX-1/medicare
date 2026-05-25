@@ -1,6 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import {
+  forwardRef,
+  type ForwardedRef,
+  useEffect,
+  useImperativeHandle,
+  useState,
+} from "react";
 import api from "@/lib/axios";
 
 interface Props {
@@ -9,12 +15,20 @@ interface Props {
   onDataAdded?: () => void;
 }
 
-export default function ExaminationCard({
-  consultationId,
-  examinations,
-  onDataAdded,
-}: Props) {
+export interface ExaminationCardHandle {
+  saveMetrics: () => Promise<void>;
+}
+
+function ExaminationCard(
+  {
+    consultationId,
+    examinations,
+    onDataAdded,
+  }: Props,
+  ref: ForwardedRef<ExaminationCardHandle>
+) {
   const [showForm, setShowForm] = useState(false);
+  const [localExaminations, setLocalExaminations] = useState<any[]>(examinations || []);
   const [title, setTitle] = useState("");
   const [result, setResult] = useState("");
   const [isLoading, setIsLoading] = useState(false);
@@ -31,6 +45,91 @@ export default function ExaminationCard({
   );
   const [isSavingMetrics, setIsSavingMetrics] = useState(false);
 
+  const normalizeTitle = (value: string) => value.trim().toLowerCase();
+
+  const mapExaminationsToMetrics = (items: any[]) => {
+    const nextMetrics = Object.fromEntries(mainMetricNames.map((n) => [n, ""]));
+
+    items.forEach((item) => {
+      const matchedMetric = mainMetricNames.find(
+        (metricName) => normalizeTitle(metricName) === normalizeTitle(item?.title || "")
+      );
+
+      if (matchedMetric) {
+        nextMetrics[matchedMetric] = item?.result || "";
+      }
+    });
+
+    return nextMetrics;
+  };
+
+  useEffect(() => {
+    setLocalExaminations(examinations || []);
+  }, [examinations]);
+
+  useEffect(() => {
+    setMetrics(mapExaminationsToMetrics(examinations || []));
+  }, [examinations]);
+
+  useImperativeHandle(ref, () => ({
+    saveMetrics: async () => {
+      setIsSavingMetrics(true);
+
+      try {
+        const existingByTitle = new Map(
+          localExaminations.map((item) => [
+            normalizeTitle(item?.title || ""),
+            item,
+          ])
+        );
+
+        const savedItems: any[] = [];
+
+        for (const metricName of mainMetricNames) {
+          const value = metrics[metricName]?.trim();
+
+          if (!value) {
+            continue;
+          }
+
+          const existing = existingByTitle.get(normalizeTitle(metricName));
+
+          if (existing?.examination_id) {
+            const response = await api.put(`/examinations/${existing.examination_id}`, {
+              title: metricName,
+              result: value,
+            });
+
+            savedItems.push(response.data);
+          } else {
+            const response = await api.post("/examinations", {
+              consultation_id: consultationId,
+              title: metricName,
+              result: value,
+            });
+
+            savedItems.push(response.data);
+          }
+        }
+
+        if (savedItems.length > 0) {
+          setLocalExaminations((current) => {
+            const remaining = current.filter(
+              (item) =>
+                !mainMetricNames.some(
+                  (metricName) => normalizeTitle(metricName) === normalizeTitle(item?.title || "")
+                )
+            );
+
+            return [...remaining, ...savedItems];
+          });
+        }
+      } finally {
+        setIsSavingMetrics(false);
+      }
+    },
+  }));
+
   const handleAddExamination = async () => {
     if (!title || !result) {
       alert("Please fill in all fields");
@@ -44,6 +143,11 @@ export default function ExaminationCard({
         title,
         result,
       });
+
+      setLocalExaminations((current) => [
+        ...current,
+        { consultation_id: consultationId, title, result },
+      ]);
 
       setTitle("");
       setResult("");
@@ -92,6 +196,21 @@ export default function ExaminationCard({
         </div>
       </div>
 
+      <div className="space-y-2">
+        {localExaminations.length > 0 ? (
+          localExaminations.map((item) => (
+            <div key={item.examination_id || `${item.title}-${item.result}`} className="symptom-item">
+              <div className="flex-1">
+                <p className="text-base font-semibold text-slate-100">{item.title}</p>
+                <p className="text-xs text-slate-400 mt-1">Result: <span className="text-cyan-400 font-semibold">{item.result}</span></p>
+              </div>
+            </div>
+          ))
+        ) : (
+          <p className="text-center text-slate-500 py-2 text-sm">No physical examinations recorded</p>
+        )}
+      </div>
+
       {showForm && (
         <div className="symptoms-form-container">
           <div className="space-y-4">
@@ -135,3 +254,5 @@ export default function ExaminationCard({
     </div>
   );
 }
+
+export default forwardRef(ExaminationCard);

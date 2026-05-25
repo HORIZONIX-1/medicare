@@ -9,6 +9,11 @@ type AddExaminationBody = {
 	result?: string;
 };
 
+type UpdateExaminationBody = {
+	title?: string;
+	result?: string;
+};
+
 const addExamination = async (
 	req: Request<{}, {}, AddExaminationBody>,
 	res: Response
@@ -36,8 +41,40 @@ const addExamination = async (
 	}
 };
 
+const updateExamination = async (
+	req: Request<{ examinationId: string }, {}, UpdateExaminationBody>,
+	res: Response
+) => {
+	try {
+		const examinationId = Number(req.params.examinationId);
+		const { title, result } = req.body;
+
+		if (!examinationId || Number.isNaN(examinationId)) {
+			return res.status(400).json({ message: "examinationId is required" });
+		}
+
+		if (!title || !result) {
+			return res.status(400).json({
+				message: "title and result are required",
+			});
+		}
+
+		const examination = await examinationService.updateExamination(examinationId, {
+			title,
+			result,
+		});
+
+		return res.json(examination);
+	} catch (_error) {
+		return res.status(500).json({
+			message: "Failed to update examination",
+		});
+	}
+};
+
 const router = express.Router();
 
 router.post("/", authMiddleware, roleMiddleware("DOCTOR"), addExamination as any);
+router.put("/:examinationId", authMiddleware, roleMiddleware("DOCTOR"), updateExamination as any);
 
 export default router;

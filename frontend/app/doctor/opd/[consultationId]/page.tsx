@@ -17,8 +17,9 @@ import ChiefComplaintCard
 import SymptomsCard
   from "@/components/opd/SymptomsCard";
 
-import ExaminationCard
-  from "@/components/opd/ExaminationCard";
+import ExaminationCard, {
+  type ExaminationCardHandle,
+} from "@/components/opd/ExaminationCard";
 
 import InvestigationCard
   from "@/components/opd/InvestigationCard";
@@ -45,6 +46,7 @@ export default function OPDPage({
   const resolvedParams = use(params);
   const chiefComplaintDirtyRef = useRef(false);
   const doctorNotesDirtyRef = useRef(false);
+  const examinationCardRef = useRef<ExaminationCardHandle | null>(null);
 
   const [consultation, setConsultation] =
     useState<Consultation | null>(null);
@@ -70,17 +72,24 @@ export default function OPDPage({
           `/consultations/${resolvedParams.consultationId}`
         );
 
-      setConsultation(response.data);
+      const nextConsultation = {
+        ...response.data,
+        symptoms:
+          response.data.symptoms ?? response.data.consultationSymptoms ?? [],
+        examinations: response.data.examinations ?? [],
+      };
+
+      setConsultation(nextConsultation);
 
       if (!chiefComplaintDirtyRef.current) {
-        setChiefComplaint(response.data.chief_complaint || "");
+        setChiefComplaint(nextConsultation.chief_complaint || "");
       }
 
       if (!doctorNotesDirtyRef.current) {
-        setDoctorNotes(response.data.notes || "");
+        setDoctorNotes(nextConsultation.notes || "");
       }
 
-      return response.data;
+      return nextConsultation;
 
     } catch (error) {
       console.error(error);
@@ -98,17 +107,9 @@ export default function OPDPage({
 
   const handleDataAdded = async () => {
     // After a section saves data on the server, re-fetch the consultation
-    // and navigate to prescription page when OPD has diagnoses (i.e. filled).
+    // but keep the user on the OPD page until they submit explicitly.
     try {
-      const latest = await fetchConsultation();
-
-      if (
-        latest &&
-        Array.isArray(latest.diagnoses) &&
-        latest.diagnoses.length > 0
-      ) {
-        router.push(`/doctor/prescription/${latest.consultation_id}`);
-      }
+      await fetchConsultation();
     } catch (err) {
       console.error("handleDataAdded navigation check failed", err);
     }
@@ -179,6 +180,7 @@ export default function OPDPage({
 
           <div className="opd-grid-item col-span-4">
             <ExaminationCard
+              ref={examinationCardRef}
               consultationId={
                 consultation.consultation_id
               }
@@ -241,6 +243,8 @@ export default function OPDPage({
               if (!consultation) return;
               setIsSubmitting(true);
               try {
+                await examinationCardRef.current?.saveMetrics();
+
                 await api.put(
                   `/consultations/${consultation.consultation_id}`,
                   {
@@ -251,16 +255,16 @@ export default function OPDPage({
                 chiefComplaintDirtyRef.current = false;
                 doctorNotesDirtyRef.current = false;
                 await fetchConsultation();
-                alert("Consultation submitted");
+                router.push(`/doctor/prescription/${consultation.consultation_id}`);
               } catch (error) {
                 console.error(error);
-                alert("Failed to submit consultation");
+                alert("Failed to proceed to prescription");
               } finally {
                 setIsSubmitting(false);
               }
             }}
           >
-            {isSubmitting ? "Submitting..." : "Submit"}
+            {isSubmitting ? "Saving..." : "Next"}
           </button>
         </div>
       </main>
