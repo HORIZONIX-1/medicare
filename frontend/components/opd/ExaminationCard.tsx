@@ -5,6 +5,7 @@ import {
   type ForwardedRef,
   useEffect,
   useImperativeHandle,
+  useRef,
   useState,
 } from "react";
 import api from "@/lib/axios";
@@ -44,6 +45,7 @@ function ExaminationCard(
     Object.fromEntries(mainMetricNames.map((n) => [n, ""]))
   );
   const [isSavingMetrics, setIsSavingMetrics] = useState(false);
+  const metricsDirtyRef = useRef(false);
 
   const normalizeTitle = (value: string) => value.trim().toLowerCase();
 
@@ -68,7 +70,9 @@ function ExaminationCard(
   }, [examinations]);
 
   useEffect(() => {
-    setMetrics(mapExaminationsToMetrics(examinations || []));
+    if (!metricsDirtyRef.current) {
+      setMetrics(mapExaminationsToMetrics(examinations || []));
+    }
   }, [examinations]);
 
   useImperativeHandle(ref, () => ({
@@ -124,6 +128,8 @@ function ExaminationCard(
             return [...remaining, ...savedItems];
           });
         }
+
+        metricsDirtyRef.current = false;
       } finally {
         setIsSavingMetrics(false);
       }
@@ -186,7 +192,10 @@ function ExaminationCard(
                 <input
                   type="text"
                   value={metrics[name]}
-                  onChange={(e) => setMetrics((m) => ({ ...m, [name]: e.target.value }))}
+                  onChange={(e) => {
+                    metricsDirtyRef.current = true;
+                    setMetrics((m) => ({ ...m, [name]: e.target.value }));
+                  }}
                   className="input-dark flex-1"
                   placeholder="Value"
                 />

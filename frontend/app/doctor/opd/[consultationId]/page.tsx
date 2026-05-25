@@ -254,7 +254,6 @@ export default function OPDPage({
                 );
                 chiefComplaintDirtyRef.current = false;
                 doctorNotesDirtyRef.current = false;
-                await fetchConsultation();
                 router.push(`/doctor/prescription/${consultation.consultation_id}`);
               } catch (error) {
                 console.error(error);
