@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState, use } from "react";
+import { useEffect, useRef, useState, use } from "react";
 import { useRouter } from "next/navigation";
 
 import api from "@/lib/axios";
@@ -43,6 +43,8 @@ export default function OPDPage({
 }: Props) {
   const router = useRouter();
   const resolvedParams = use(params);
+  const chiefComplaintDirtyRef = useRef(false);
+  const doctorNotesDirtyRef = useRef(false);
 
   const [consultation, setConsultation] =
     useState<Consultation | null>(null);
@@ -69,8 +71,14 @@ export default function OPDPage({
         );
 
       setConsultation(response.data);
-      setChiefComplaint(response.data.chief_complaint || "");
-      setDoctorNotes(response.data.notes || "");
+
+      if (!chiefComplaintDirtyRef.current) {
+        setChiefComplaint(response.data.chief_complaint || "");
+      }
+
+      if (!doctorNotesDirtyRef.current) {
+        setDoctorNotes(response.data.notes || "");
+      }
 
       return response.data;
 
@@ -107,6 +115,8 @@ export default function OPDPage({
   };
 
   useEffect(() => {
+    chiefComplaintDirtyRef.current = false;
+    doctorNotesDirtyRef.current = false;
     fetchConsultation();
   }, [resolvedParams.consultationId]);
 
@@ -150,7 +160,10 @@ export default function OPDPage({
             <ChiefComplaintCard
                 consultation={consultation}
                 value={chiefComplaint}
-                onChange={setChiefComplaint}
+                onChange={(nextValue) => {
+                  chiefComplaintDirtyRef.current = true;
+                  setChiefComplaint(nextValue);
+                }}
             />
           </div>
 
@@ -212,7 +225,10 @@ export default function OPDPage({
             <DoctorNotesCard
               consultation={consultation}
               value={doctorNotes}
-              onChange={setDoctorNotes}
+              onChange={(nextValue) => {
+                doctorNotesDirtyRef.current = true;
+                setDoctorNotes(nextValue);
+              }}
             />
           </div>
 
@@ -232,6 +248,8 @@ export default function OPDPage({
                     notes: doctorNotes,
                   }
                 );
+                chiefComplaintDirtyRef.current = false;
+                doctorNotesDirtyRef.current = false;
                 await fetchConsultation();
                 alert("Consultation submitted");
               } catch (error) {
