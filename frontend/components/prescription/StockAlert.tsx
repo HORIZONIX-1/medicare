@@ -14,9 +14,9 @@ export default function StockAlert({
   if (status === "OUT_OF_STOCK") {
 
     return (
-      <div className="text-red-600 font-semibold">
+      <div className="rounded-full border border-rose-500/30 bg-rose-500/10 px-3 py-1 text-sm font-semibold text-rose-300">
 
-        ❌ Out of Stock
+        Out of Stock
 
       </div>
     );
@@ -25,18 +25,18 @@ export default function StockAlert({
   if (status === "LOW_STOCK") {
 
     return (
-      <div className="text-yellow-600 font-semibold">
+      <div className="rounded-full border border-amber-500/30 bg-amber-500/10 px-3 py-1 text-sm font-semibold text-amber-300">
 
-        ⚠ Only {quantity} remaining
+        Only {quantity} remaining
 
       </div>
     );
   }
 
   return (
-    <div className="text-green-600 font-semibold">
+    <div className="rounded-full border border-emerald-500/30 bg-emerald-500/10 px-3 py-1 text-sm font-semibold text-emerald-300">
 
-      ✅ In Stock
+      In Stock
 
     </div>
   );

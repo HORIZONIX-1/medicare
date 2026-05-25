@@ -88,16 +88,26 @@ export default function PrescriptionRow({
   ]);
 
   return (
-    <div className="border rounded-lg p-4">
+    <div className="rounded-2xl border border-slate-800 bg-slate-950/70 p-4 text-slate-100 shadow-lg shadow-slate-950/20">
 
-      <div className="grid grid-cols-4 gap-4">
+      <div className="mb-3 flex items-center justify-between">
+        <p className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-400">
+          Drug Line
+        </p>
+
+        <p className="text-xs text-slate-500">
+          Auto-calculates quantity from frequency and duration.
+        </p>
+      </div>
+
+      <div className="grid gap-4 lg:grid-cols-4">
 
         <div>
 
           <input
             value={item.drug_name}
             placeholder="Search Drug"
-            className="border p-2 rounded w-full"
+            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder-slate-500"
 
             onChange={(e) => {
 
@@ -113,7 +123,7 @@ export default function PrescriptionRow({
 
           {searchResults.length > 0 && (
 
-            <div className="border rounded mt-1 bg-white">
+            <div className="mt-2 overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-xl shadow-slate-950/40">
 
               {searchResults.map((drug) => (
 
@@ -124,7 +134,7 @@ export default function PrescriptionRow({
                     selectDrug(drug)
                   }
 
-                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                  className="cursor-pointer px-3 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
                 >
                   {drug.name}
                 </div>
@@ -137,7 +147,7 @@ export default function PrescriptionRow({
         </div>
 
         <select
-          className="border p-2 rounded"
+          className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-white"
 
           onChange={(e) =>
             updateItem({
@@ -160,7 +170,7 @@ export default function PrescriptionRow({
         </select>
 
         <select
-          className="border p-2 rounded"
+          className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-white"
 
           onChange={(e) =>
             updateItem({
@@ -187,7 +197,7 @@ export default function PrescriptionRow({
         </select>
 
         <select
-          className="border p-2 rounded"
+          className="rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-white"
 
           onChange={(e) =>
             updateItem({
@@ -211,17 +221,17 @@ export default function PrescriptionRow({
 
       </div>
 
-      <div className="flex justify-between mt-4">
+      <div className="mt-4 flex items-end justify-between gap-4 rounded-2xl border border-slate-800 bg-slate-900/70 p-4">
 
         <div>
 
-          <p>
+          <p className="text-sm text-slate-300">
             Quantity:
             {" "}
             {item.quantity}
           </p>
 
-          <p>
+          <p className="text-sm text-slate-300">
             Price:
             {" "}
             Rs.{item.price}
