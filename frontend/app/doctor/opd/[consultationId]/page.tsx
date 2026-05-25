@@ -52,7 +52,7 @@ export default function OPDPage({
   const [loadError, setLoadError] = useState<string | null>(null);
 
   const fetchConsultation =
-    async () => {
+    async (): Promise<Consultation | null> => {
 
     try {
       const token = localStorage.getItem("token");
@@ -60,7 +60,7 @@ export default function OPDPage({
       if (!token) {
         setLoadError("Please sign in to view this consultation.");
         router.replace("/auth/login");
-        return;
+        return null;
       }
 
       const response =
@@ -72,6 +72,8 @@ export default function OPDPage({
       setChiefComplaint(response.data.chief_complaint || "");
       setDoctorNotes(response.data.notes || "");
 
+      return response.data;
+
     } catch (error) {
       console.error(error);
       setLoadError("Unable to load consultation.");
@@ -81,11 +83,27 @@ export default function OPDPage({
       if (status === 401) {
         router.replace("/auth/login");
       }
+
+      return null;
     }
   };
 
-  const handleDataAdded = () => {
-    // Section cards manage their own local lists so saves stay scoped to that section.
+  const handleDataAdded = async () => {
+    // After a section saves data on the server, re-fetch the consultation
+    // and navigate to prescription page when OPD has diagnoses (i.e. filled).
+    try {
+      const latest = await fetchConsultation();
+
+      if (
+        latest &&
+        Array.isArray(latest.diagnoses) &&
+        latest.diagnoses.length > 0
+      ) {
+        router.push(`/doctor/prescription/${latest.consultation_id}`);
+      }
+    } catch (err) {
+      console.error("handleDataAdded navigation check failed", err);
+    }
   };
 
   useEffect(() => {
