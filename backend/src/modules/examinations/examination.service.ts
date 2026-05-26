@@ -11,3 +11,18 @@ export const addExamination = async (data: { consultation_id: any; title: any; r
     },
   });
 };
+
+export const updateExamination = async (
+  examinationId: number,
+  data: { title: any; result: any; }
+) => {
+  return prisma.examination.update({
+    where: {
+      examination_id: examinationId,
+    },
+    data: {
+      title: data.title,
+      result: data.result,
+    },
+  });
+};

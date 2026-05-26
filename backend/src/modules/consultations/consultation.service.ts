@@ -43,7 +43,13 @@ export const getConsultation =
     },
 
     include: {
-      patient: true,
+      patient: {
+        include: {
+          allergies: true,
+        },
+      },
+
+      doctor: true,
 
       consultationSymptoms: {
         include: {

@@ -8,6 +8,9 @@ import examinationRoutes from "./modules/examinations/examination.routes";
 import investigationRoutes from "./modules/investigations/investigation.routes";
 import instructionRoutes from "./modules/instructions/instruction.routes";
 import diagnoseRoutes from "./modules/diagnoses/diagnose.routes";
+import prescriptionRoutes from "./modules/prescriptions/prescription.routes";
+import drugRoutes from "./modules/drugs/drug.routes";
+import stockRoutes from "./modules/stock/stock.routes";
 import { authMiddleware } from "./middleware/auth.middleware";
 import { roleMiddleware } from "./middleware/role.middleware";
 
@@ -36,6 +39,9 @@ app.use("/examinations", examinationRoutes);
 app.use("/investigations", investigationRoutes);
 app.use("/instructions", instructionRoutes);
 app.use("/diagnoses", diagnoseRoutes);
+app.use("/prescriptions", prescriptionRoutes);
+app.use("/drugs", drugRoutes);
+app.use("/stock", stockRoutes);
 
 // Example protected routes for each role
 app.get(
