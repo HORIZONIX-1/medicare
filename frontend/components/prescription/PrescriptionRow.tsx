@@ -1,11 +1,9 @@
 "use client";
 
-import { useEffect, useRef, useState }
-  from "react";
-
-import api from "@/lib/axios";
+import { useEffect } from "react";
 
 import StockAlert from "./StockAlert";
+import DrugSearchInput from "./DrugSearchInput";
 
 interface Props {
   item: any;
@@ -18,101 +16,15 @@ export default function PrescriptionRow({
   updateItem,
 }: Props) {
 
-  const [searchResults, setSearchResults] =
-    useState<any[]>([]);
-  const [isSearching, setIsSearching] =
-    useState(false);
-  const searchRequestId =
-    useRef(0);
-
-  const searchDrugs =
-    async (query: string) => {
-
-    const trimmedQuery = query.trim();
-
-    if (!trimmedQuery) {
-      setSearchResults([]);
-      setIsSearching(false);
-      return;
-    }
-
-    const requestId = ++searchRequestId.current;
-
-    setIsSearching(true);
-
-    try {
-      const response =
-        await api.get(
-          `/drugs/search?query=${encodeURIComponent(trimmedQuery)}`
-        );
-
-      const candidates =
-        Array.isArray(response.data)
-          ? response.data
-          : [];
-
-      const stockedDrugs =
-        await Promise.all(
-          candidates.map(async (drug) => {
-            try {
-              const stock =
-                await api.get(
-                  `/drugs/${drug.drug_id}/availability`
-                );
-
-              return {
-                ...drug,
-                available_quantity:
-                  stock.data.available_quantity,
-                stock_status:
-                  stock.data.status,
-              };
-            } catch {
-              return null;
-            }
-          })
-        );
-
-      if (requestId !== searchRequestId.current) return;
-
-      setSearchResults(
-        stockedDrugs.filter(
-          (drug) =>
-            drug &&
-            Number(drug.available_quantity) > 0
-        )
-      );
-    } finally {
-      if (requestId === searchRequestId.current) {
-        setIsSearching(false);
-      }
-    }
-  };
-
-  const selectDrug =
-    async (drug: any) => {
-
-    const stock =
-      await api.get(
-        `/drugs/${drug.drug_id}/availability`
-      );
-
+  const selectDrug = async (drug: any) => {
+    // Drug from DrugSearchInput already includes availability and status
     updateItem({
-
       drug_id: drug.drug_id,
-
       drug_name: drug.name,
-
       price: drug.selling_price,
-
-      available_quantity:
-        stock.data.available_quantity,
-
-      stock_status:
-        stock.data.status,
+      available_quantity: drug.available_quantity,
+      stock_status: drug.stock_status,
     });
-
-    setSearchResults([]);
   };
 
   useEffect(() => {
@@ -159,61 +71,11 @@ export default function PrescriptionRow({
 
         <div>
 
-          <input
+          <DrugSearchInput
             value={item.drug_name}
-            placeholder="Search Drug"
-            className="w-full rounded-xl border border-slate-700 bg-slate-900 px-3 py-2.5 text-sm text-white placeholder-slate-500"
-
-            onChange={(e) => {
-
-              updateItem({
-                drug_name: e.target.value,
-              });
-
-              searchDrugs(
-                e.target.value
-              );
-            }}
+            onChange={(val) => updateItem({ drug_name: val })}
+            onSelect={selectDrug}
           />
-
-          {(isSearching || searchResults.length > 0) && (
-
-            <div className="mt-2 overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-xl shadow-slate-950/40">
-
-              {isSearching && searchResults.length === 0 && (
-                <div className="px-3 py-2 text-sm text-slate-400">
-                  Searching stocked drugs...
-                </div>
-              )}
-
-              {!isSearching && searchResults.length === 0 && (
-                <div className="px-3 py-2 text-sm text-slate-400">
-                  No stocked drugs found.
-                </div>
-              )}
-
-              {searchResults.map((drug) => (
-
-                <button
-                  key={drug.drug_id}
-                  type="button"
-
-                  onClick={() =>
-                    selectDrug(drug)
-                  }
-
-                  className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-slate-100 transition hover:bg-slate-800"
-                >
-                  <span>{drug.name}</span>
-                  <span className="text-xs text-slate-400">
-                    {drug.available_quantity} in stock
-                  </span>
-                </button>
-
-              ))}
-
-            </div>
-          )}
 
         </div>
 

@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 
 import api from "@/lib/axios";
 import { PrescriptionItem } from "@/types/prescription";
+import DrugSearchInput from "@/components/prescription/DrugSearchInput";
 
 interface Props {
   params: Promise<{
@@ -343,12 +344,20 @@ export default function PrescriptionPage({ params }: Props) {
                   <tr key={index} className="border-b border-slate-800 align-top">
                     <td className="px-3 py-3 text-slate-100">{index + 1}</td>
                     <td className="px-3 py-3">
-                      <input
-                        value={item.drug_name}
-                        onChange={(e) => updateItem(index, { drug_name: e.target.value })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100 placeholder-slate-500"
-                        placeholder="Paracetamol 500mg"
-                      />
+                      <div>
+                        {/* Shared autocomplete input */}
+                        <DrugSearchInput
+                          value={item.drug_name}
+                          onChange={(val) => updateItem(index, { drug_name: val })}
+                          onSelect={(drug) => updateItem(index, {
+                            drug_id: drug.drug_id,
+                            drug_name: drug.name,
+                            price: drug.selling_price,
+                            available_quantity: drug.available_quantity,
+                            stock_status: drug.stock_status,
+                          })}
+                        />
+                      </div>
                       <p className="mt-1 text-xs text-slate-400">Type: {item.is_outside_drug ? "Outside Drug" : item.dosage?.includes("Cream") ? "Cream" : "Tablet"}</p>
                     </td>
                     <td className="px-3 py-3">
