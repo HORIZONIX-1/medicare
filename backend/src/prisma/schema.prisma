@@ -106,6 +106,7 @@ model Consultation {
   created_at      DateTime @default(now())
 
   prescriptions        Prescription[]
+  outsideDrugs         OutsideDrug[]
   examinations         Examination[]
   consultationSymptoms ConsultationSymptom[]
   investigations       Investigation[]
@@ -180,6 +181,7 @@ model Prescription {
   created_at DateTime @default(now())
 
   items PrescriptionItem[]
+  outsideDrugs OutsideDrug[]
 }
 
 model PrescriptionItem {
@@ -254,6 +256,23 @@ model StockBatch {
   buying_price Float
 
   selling_price Float
+
+  created_at DateTime @default(now())
+}
+
+model OutsideDrug {
+  outside_drug_id Int @id @default(autoincrement())
+
+  consultation_id Int?
+  consultation Consultation? @relation(fields: [consultation_id], references: [consultation_id])
+
+  prescription_id Int?
+  prescription Prescription? @relation(fields: [prescription_id], references: [prescription_id])
+
+  drug_name String
+  instructions String?
+  quantity Int
+  price Float?
 
   created_at DateTime @default(now())
 }

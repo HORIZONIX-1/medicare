@@ -259,6 +259,17 @@ exports.Prisma.StockBatchScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.OutsideDrugScalarFieldEnum = {
+  outside_drug_id: 'outside_drug_id',
+  consultation_id: 'consultation_id',
+  prescription_id: 'prescription_id',
+  drug_name: 'drug_name',
+  instructions: 'instructions',
+  quantity: 'quantity',
+  price: 'price',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -348,6 +359,11 @@ exports.Prisma.DrugOrderByRelevanceFieldEnum = {
 exports.Prisma.StockBatchOrderByRelevanceFieldEnum = {
   batch_number: 'batch_number'
 };
+
+exports.Prisma.OutsideDrugOrderByRelevanceFieldEnum = {
+  drug_name: 'drug_name',
+  instructions: 'instructions'
+};
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   DOCTOR: 'DOCTOR',
@@ -370,7 +386,8 @@ exports.Prisma.ModelName = {
   Prescription: 'Prescription',
   PrescriptionItem: 'PrescriptionItem',
   Drug: 'Drug',
-  StockBatch: 'StockBatch'
+  StockBatch: 'StockBatch',
+  OutsideDrug: 'OutsideDrug'
 };
 
 /**

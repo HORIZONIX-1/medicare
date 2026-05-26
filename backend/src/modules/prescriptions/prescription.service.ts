@@ -64,6 +64,21 @@ export const createPrescription =
             },
           });
 
+          // If this item is an outside drug, also record it in the OutsideDrug table
+          if (item.is_outside_drug) {
+            // cast tx to any because generated prisma client may not include the new model until client is regenerated
+            await (tx as any).outsideDrug.create({
+              data: {
+                consultation_id: data.consultation_id,
+                prescription_id: prescription.prescription_id,
+                drug_name: item.drug_name,
+                instructions: item.instruction_1 || item.instruction_3 || null,
+                quantity: item.quantity || 1,
+                price: item.price || 0,
+              },
+            });
+          }
+
           const totalAvailable =
             await tx.stockBatch.aggregate({
               where: {
