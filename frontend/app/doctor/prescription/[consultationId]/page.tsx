@@ -46,46 +46,18 @@ export default function PrescriptionPage({ params }: Props) {
         } else {
           setItems([
             {
-              drug_name: "Paracetamol 500mg",
+              drug_name: "",
               dosage: "1 Tablet",
-              instruction_1: "Only at night",
-              instruction_2: "After Food",
-              instruction_3: "Take with warm water",
-              frequency: "3 Times / Day",
-              duration: "5 Days",
-              quantity: 15,
-              price: 15,
-              is_outside_drug: false,
-              available_quantity: 5,
-              stock_status: "LOW_STOCK",
-            },
-            {
-              drug_name: "Cetirizine 10mg",
-              dosage: "1 Tablet",
-              instruction_1: "At Night",
-              instruction_2: "After Food",
-              instruction_3: "For allergy",
+              instruction_1: "",
+              instruction_2: "",
+              instruction_3: "",
               frequency: "1 Time / Day",
               duration: "5 Days",
-              quantity: 5,
-              price: 10,
-              is_outside_drug: false,
-              available_quantity: 18,
-              stock_status: "IN_STOCK",
-            },
-            {
-              drug_name: "Clobetasol Cream",
-              dosage: "Apply to affected area",
-              instruction_1: "Apply to affected area",
-              instruction_2: "N/A",
-              instruction_3: "Thin layer only",
-              frequency: "2 Times / Day",
-              duration: "--",
               quantity: 1,
-              price: 120,
+              price: 0,
               is_outside_drug: false,
-              available_quantity: 2,
-              stock_status: "IN_STOCK",
+              available_quantity: undefined,
+              stock_status: undefined,
             },
           ]);
         }
@@ -114,9 +86,10 @@ export default function PrescriptionPage({ params }: Props) {
   const patient = consultation?.patient ?? {
     name: "Kamal Perera",
     patient_code: "P000123",
-    phone: "077 123 4567",
-    gender: "Male",
+    date_of_birth: undefined,
   };
+
+  const doctor = consultation?.doctor ?? null;
 
   const diagnoses = Array.isArray(consultation?.diagnoses)
     ? consultation.diagnoses.map((diagnosis: any) => diagnosis.diagnosis_name).filter(Boolean)
@@ -125,7 +98,9 @@ export default function PrescriptionPage({ params }: Props) {
   const visitDate =
     consultation?.visit_date || consultation?.created_at || consultation?.appointment_date || "2024-05-20";
 
-  const allergies = consultation?.allergies || consultation?.patient?.allergies || "Penicillin, Pollen";
+  const allergies = Array.isArray(consultation?.patient?.allergies)
+    ? consultation.patient.allergies.map((allergy: any) => allergy.allergy_name).filter(Boolean)
+    : [];
 
   const parseQuantity = (frequency?: string, duration?: string, dosage?: string) => {
     const frequencyValue = Number((frequency || "").split(" ")[0]);
@@ -249,8 +224,12 @@ export default function PrescriptionPage({ params }: Props) {
             <div className="flex items-center gap-2">
               <div className="h-10 w-10 rounded-full bg-slate-700" />
               <div className="text-right leading-tight">
-                <p className="text-sm font-semibold text-slate-50">Dr. Nimal Perera</p>
-                <p className="text-xs text-slate-400">General Physician</p>
+                <p className="text-sm font-semibold text-slate-50">
+                  {doctor?.name || "Doctor Profile"}
+                </p>
+                <p className="text-xs text-slate-400">
+                  {doctor?.role || "DOCTOR"}
+                </p>
               </div>
             </div>
             <span>⌄</span>
@@ -262,15 +241,22 @@ export default function PrescriptionPage({ params }: Props) {
             <div className="flex items-center gap-4">
               <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-800 text-2xl text-slate-200">👤</div>
               <div>
-                <h2 className="text-lg font-semibold text-slate-50">{patient.name}</h2>
-                <div className="mt-1 flex flex-wrap gap-x-3 gap-y-1 text-sm text-slate-300">
-                  <span>Patient ID: {patient.patient_code}</span>
-                  <span>|</span>
-                  <span>32 Years</span>
-                  <span>|</span>
-                  <span>{patient.gender}</span>
+                <div className="mt-2 grid grid-cols-1 gap-3 text-sm text-slate-300 sm:grid-cols-3">
+                  <div>
+                    <div className="text-xs">Name</div>
+                    <div className="font-medium text-slate-100">{patient.name || "-"}</div>
+                  </div>
+
+                  <div>
+                    <div className="text-xs">Patient Code</div>
+                    <div className="font-medium text-slate-100">{patient.patient_code || "-"}</div>
+                  </div>
+
+                  <div>
+                    <div className="text-xs">Date of Birth</div>
+                    <div className="font-medium text-slate-100">{patient.date_of_birth ? String(patient.date_of_birth).slice(0,10) : "-"}</div>
+                  </div>
                 </div>
-                <p className="mt-1 text-sm text-slate-300">Phone: {patient.phone || "-"}</p>
               </div>
             </div>
 
@@ -285,7 +271,9 @@ export default function PrescriptionPage({ params }: Props) {
               </div>
               <div className="rounded-lg border border-slate-800 bg-slate-900 px-4 py-3">
                 <p className="text-xs text-slate-400">Allergies</p>
-                <p className="mt-1 text-sm font-medium text-slate-100">{String(allergies)}</p>
+                <p className="mt-1 text-sm font-medium text-slate-100">
+                  {allergies.length > 0 ? allergies.join(", ") : "No allergies recorded"}
+                </p>
               </div>
             </div>
 
@@ -299,9 +287,11 @@ export default function PrescriptionPage({ params }: Props) {
           </div>
         </div>
 
-        <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-          <span className="font-medium">⚠ Stock Alert:</span> {lowStockItem ? `${lowStockItem.drug_name} has only ${lowStockItem.available_quantity ?? lowStockItem.quantity} tablets remaining in stock.` : "Paracetamol 500mg has only 5 tablets remaining in stock."}
-        </div>
+        {lowStockItem && (
+          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
+            <span className="font-medium">⚠ Stock Alert:</span> {lowStockItem.drug_name} has only {lowStockItem.available_quantity ?? lowStockItem.quantity} tablets remaining in stock.
+          </div>
+        )}
 
         <div className="rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
           <div className="mb-3 flex items-center justify-between gap-3">
@@ -430,7 +420,7 @@ export default function PrescriptionPage({ params }: Props) {
                       <input
                         value={item.quantity}
                         onChange={(e) => updateItem(index, { quantity: Number(e.target.value) || 0 })}
-                        className="w-full rounded-md border border-slate-300 px-2 py-2 text-sm text-slate-800"
+                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100 placeholder-slate-500"
                       />
                       <p className="mt-1 text-xs text-slate-400">D x F x D</p>
                     </td>

@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState }
+import { useEffect, useRef, useState }
   from "react";
 
 import api from "@/lib/axios";
@@ -20,18 +20,73 @@ export default function PrescriptionRow({
 
   const [searchResults, setSearchResults] =
     useState<any[]>([]);
+  const [isSearching, setIsSearching] =
+    useState(false);
+  const searchRequestId =
+    useRef(0);
 
   const searchDrugs =
     async (query: string) => {
 
-    if (!query) return;
+    const trimmedQuery = query.trim();
 
-    const response =
-      await api.get(
-        `/drugs/search?query=${query}`
+    if (!trimmedQuery) {
+      setSearchResults([]);
+      setIsSearching(false);
+      return;
+    }
+
+    const requestId = ++searchRequestId.current;
+
+    setIsSearching(true);
+
+    try {
+      const response =
+        await api.get(
+          `/drugs/search?query=${encodeURIComponent(trimmedQuery)}`
+        );
+
+      const candidates =
+        Array.isArray(response.data)
+          ? response.data
+          : [];
+
+      const stockedDrugs =
+        await Promise.all(
+          candidates.map(async (drug) => {
+            try {
+              const stock =
+                await api.get(
+                  `/drugs/${drug.drug_id}/availability`
+                );
+
+              return {
+                ...drug,
+                available_quantity:
+                  stock.data.available_quantity,
+                stock_status:
+                  stock.data.status,
+              };
+            } catch {
+              return null;
+            }
+          })
+        );
+
+      if (requestId !== searchRequestId.current) return;
+
+      setSearchResults(
+        stockedDrugs.filter(
+          (drug) =>
+            drug &&
+            Number(drug.available_quantity) > 0
+        )
       );
-
-    setSearchResults(response.data);
+    } finally {
+      if (requestId === searchRequestId.current) {
+        setIsSearching(false);
+      }
+    }
   };
 
   const selectDrug =
@@ -121,23 +176,39 @@ export default function PrescriptionRow({
             }}
           />
 
-          {searchResults.length > 0 && (
+          {(isSearching || searchResults.length > 0) && (
 
             <div className="mt-2 overflow-hidden rounded-xl border border-slate-700 bg-slate-900 shadow-xl shadow-slate-950/40">
 
+              {isSearching && searchResults.length === 0 && (
+                <div className="px-3 py-2 text-sm text-slate-400">
+                  Searching stocked drugs...
+                </div>
+              )}
+
+              {!isSearching && searchResults.length === 0 && (
+                <div className="px-3 py-2 text-sm text-slate-400">
+                  No stocked drugs found.
+                </div>
+              )}
+
               {searchResults.map((drug) => (
 
-                <div
+                <button
                   key={drug.drug_id}
+                  type="button"
 
                   onClick={() =>
                     selectDrug(drug)
                   }
 
-                  className="cursor-pointer px-3 py-2 text-sm text-slate-100 transition hover:bg-slate-800"
+                  className="flex w-full items-center justify-between gap-3 px-3 py-2 text-left text-sm text-slate-100 transition hover:bg-slate-800"
                 >
-                  {drug.name}
-                </div>
+                  <span>{drug.name}</span>
+                  <span className="text-xs text-slate-400">
+                    {drug.available_quantity} in stock
+                  </span>
+                </button>
 
               ))}
 
