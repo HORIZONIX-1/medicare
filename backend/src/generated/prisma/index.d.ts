@@ -93,6 +93,11 @@ export type StockBatch = $Result.DefaultSelection<Prisma.$StockBatchPayload>
  * 
  */
 export type OutsideDrug = $Result.DefaultSelection<Prisma.$OutsideDrugPayload>
+/**
+ * Model Invoice
+ * 
+ */
+export type Invoice = $Result.DefaultSelection<Prisma.$InvoicePayload>
 
 /**
  * Enums
@@ -390,6 +395,16 @@ export class PrismaClient<
     * ```
     */
   get outsideDrug(): Prisma.OutsideDrugDelegate<ExtArgs, ClientOptions>;
+
+  /**
+   * `prisma.invoice`: Exposes CRUD operations for the **Invoice** model.
+    * Example usage:
+    * ```ts
+    * // Fetch zero or more Invoices
+    * const invoices = await prisma.invoice.findMany()
+    * ```
+    */
+  get invoice(): Prisma.InvoiceDelegate<ExtArgs, ClientOptions>;
 }
 
 export namespace Prisma {
@@ -846,7 +861,8 @@ export namespace Prisma {
     PrescriptionItem: 'PrescriptionItem',
     Drug: 'Drug',
     StockBatch: 'StockBatch',
-    OutsideDrug: 'OutsideDrug'
+    OutsideDrug: 'OutsideDrug',
+    Invoice: 'Invoice'
   };
 
   export type ModelName = (typeof ModelName)[keyof typeof ModelName]
@@ -865,7 +881,7 @@ export namespace Prisma {
       omit: GlobalOmitOptions
     }
     meta: {
-      modelProps: "user" | "patient" | "symptom" | "examination" | "consultationSymptom" | "consultation" | "investigation" | "patientInstruction" | "diagnosis" | "patientGuardian" | "patientAllergy" | "prescription" | "prescriptionItem" | "drug" | "stockBatch" | "outsideDrug"
+      modelProps: "user" | "patient" | "symptom" | "examination" | "consultationSymptom" | "consultation" | "investigation" | "patientInstruction" | "diagnosis" | "patientGuardian" | "patientAllergy" | "prescription" | "prescriptionItem" | "drug" | "stockBatch" | "outsideDrug" | "invoice"
       txIsolationLevel: Prisma.TransactionIsolationLevel
     }
     model: {
@@ -1925,6 +1941,72 @@ export namespace Prisma {
           }
         }
       }
+      Invoice: {
+        payload: Prisma.$InvoicePayload<ExtArgs>
+        fields: Prisma.InvoiceFieldRefs
+        operations: {
+          findUnique: {
+            args: Prisma.InvoiceFindUniqueArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload> | null
+          }
+          findUniqueOrThrow: {
+            args: Prisma.InvoiceFindUniqueOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload>
+          }
+          findFirst: {
+            args: Prisma.InvoiceFindFirstArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload> | null
+          }
+          findFirstOrThrow: {
+            args: Prisma.InvoiceFindFirstOrThrowArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload>
+          }
+          findMany: {
+            args: Prisma.InvoiceFindManyArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload>[]
+          }
+          create: {
+            args: Prisma.InvoiceCreateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload>
+          }
+          createMany: {
+            args: Prisma.InvoiceCreateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          delete: {
+            args: Prisma.InvoiceDeleteArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload>
+          }
+          update: {
+            args: Prisma.InvoiceUpdateArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload>
+          }
+          deleteMany: {
+            args: Prisma.InvoiceDeleteManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          updateMany: {
+            args: Prisma.InvoiceUpdateManyArgs<ExtArgs>
+            result: BatchPayload
+          }
+          upsert: {
+            args: Prisma.InvoiceUpsertArgs<ExtArgs>
+            result: $Utils.PayloadToResult<Prisma.$InvoicePayload>
+          }
+          aggregate: {
+            args: Prisma.InvoiceAggregateArgs<ExtArgs>
+            result: $Utils.Optional<AggregateInvoice>
+          }
+          groupBy: {
+            args: Prisma.InvoiceGroupByArgs<ExtArgs>
+            result: $Utils.Optional<InvoiceGroupByOutputType>[]
+          }
+          count: {
+            args: Prisma.InvoiceCountArgs<ExtArgs>
+            result: $Utils.Optional<InvoiceCountAggregateOutputType> | number
+          }
+        }
+      }
     }
   } & {
     other: {
@@ -2037,6 +2119,7 @@ export namespace Prisma {
     drug?: DrugOmit
     stockBatch?: StockBatchOmit
     outsideDrug?: OutsideDrugOmit
+    invoice?: InvoiceOmit
   }
 
   /* Types for Logging */
@@ -7650,6 +7733,7 @@ export namespace Prisma {
     doctor?: boolean | UserDefaultArgs<ExtArgs>
     prescriptions?: boolean | Consultation$prescriptionsArgs<ExtArgs>
     outsideDrugs?: boolean | Consultation$outsideDrugsArgs<ExtArgs>
+    invoice?: boolean | Consultation$invoiceArgs<ExtArgs>
     examinations?: boolean | Consultation$examinationsArgs<ExtArgs>
     consultationSymptoms?: boolean | Consultation$consultationSymptomsArgs<ExtArgs>
     investigations?: boolean | Consultation$investigationsArgs<ExtArgs>
@@ -7676,6 +7760,7 @@ export namespace Prisma {
     doctor?: boolean | UserDefaultArgs<ExtArgs>
     prescriptions?: boolean | Consultation$prescriptionsArgs<ExtArgs>
     outsideDrugs?: boolean | Consultation$outsideDrugsArgs<ExtArgs>
+    invoice?: boolean | Consultation$invoiceArgs<ExtArgs>
     examinations?: boolean | Consultation$examinationsArgs<ExtArgs>
     consultationSymptoms?: boolean | Consultation$consultationSymptomsArgs<ExtArgs>
     investigations?: boolean | Consultation$investigationsArgs<ExtArgs>
@@ -7691,6 +7776,7 @@ export namespace Prisma {
       doctor: Prisma.$UserPayload<ExtArgs>
       prescriptions: Prisma.$PrescriptionPayload<ExtArgs>[]
       outsideDrugs: Prisma.$OutsideDrugPayload<ExtArgs>[]
+      invoice: Prisma.$InvoicePayload<ExtArgs> | null
       examinations: Prisma.$ExaminationPayload<ExtArgs>[]
       consultationSymptoms: Prisma.$ConsultationSymptomPayload<ExtArgs>[]
       investigations: Prisma.$InvestigationPayload<ExtArgs>[]
@@ -8049,6 +8135,7 @@ export namespace Prisma {
     doctor<T extends UserDefaultArgs<ExtArgs> = {}>(args?: Subset<T, UserDefaultArgs<ExtArgs>>): Prisma__UserClient<$Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     prescriptions<T extends Consultation$prescriptionsArgs<ExtArgs> = {}>(args?: Subset<T, Consultation$prescriptionsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PrescriptionPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     outsideDrugs<T extends Consultation$outsideDrugsArgs<ExtArgs> = {}>(args?: Subset<T, Consultation$outsideDrugsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutsideDrugPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invoice<T extends Consultation$invoiceArgs<ExtArgs> = {}>(args?: Subset<T, Consultation$invoiceArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     examinations<T extends Consultation$examinationsArgs<ExtArgs> = {}>(args?: Subset<T, Consultation$examinationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ExaminationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     consultationSymptoms<T extends Consultation$consultationSymptomsArgs<ExtArgs> = {}>(args?: Subset<T, Consultation$consultationSymptomsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$ConsultationSymptomPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     investigations<T extends Consultation$investigationsArgs<ExtArgs> = {}>(args?: Subset<T, Consultation$investigationsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvestigationPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
@@ -8478,6 +8565,25 @@ export namespace Prisma {
     take?: number
     skip?: number
     distinct?: OutsideDrugScalarFieldEnum | OutsideDrugScalarFieldEnum[]
+  }
+
+  /**
+   * Consultation.invoice
+   */
+  export type Consultation$invoiceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    where?: InvoiceWhereInput
   }
 
   /**
@@ -13611,6 +13717,7 @@ export namespace Prisma {
     consultation?: boolean | ConsultationDefaultArgs<ExtArgs>
     items?: boolean | Prescription$itemsArgs<ExtArgs>
     outsideDrugs?: boolean | Prescription$outsideDrugsArgs<ExtArgs>
+    invoice?: boolean | Prescription$invoiceArgs<ExtArgs>
     _count?: boolean | PrescriptionCountOutputTypeDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["prescription"]>
 
@@ -13628,6 +13735,7 @@ export namespace Prisma {
     consultation?: boolean | ConsultationDefaultArgs<ExtArgs>
     items?: boolean | Prescription$itemsArgs<ExtArgs>
     outsideDrugs?: boolean | Prescription$outsideDrugsArgs<ExtArgs>
+    invoice?: boolean | Prescription$invoiceArgs<ExtArgs>
     _count?: boolean | PrescriptionCountOutputTypeDefaultArgs<ExtArgs>
   }
 
@@ -13637,6 +13745,7 @@ export namespace Prisma {
       consultation: Prisma.$ConsultationPayload<ExtArgs>
       items: Prisma.$PrescriptionItemPayload<ExtArgs>[]
       outsideDrugs: Prisma.$OutsideDrugPayload<ExtArgs>[]
+      invoice: Prisma.$InvoicePayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
       prescription_id: number
@@ -13986,6 +14095,7 @@ export namespace Prisma {
     consultation<T extends ConsultationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConsultationDefaultArgs<ExtArgs>>): Prisma__ConsultationClient<$Result.GetResult<Prisma.$ConsultationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
     items<T extends Prescription$itemsArgs<ExtArgs> = {}>(args?: Subset<T, Prescription$itemsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$PrescriptionItemPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
     outsideDrugs<T extends Prescription$outsideDrugsArgs<ExtArgs> = {}>(args?: Subset<T, Prescription$outsideDrugsArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$OutsideDrugPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
+    invoice<T extends Prescription$invoiceArgs<ExtArgs> = {}>(args?: Subset<T, Prescription$invoiceArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
      * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -14410,6 +14520,25 @@ export namespace Prisma {
   }
 
   /**
+   * Prescription.invoice
+   */
+  export type Prescription$invoiceArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    where?: InvoiceWhereInput
+  }
+
+  /**
    * Prescription without action
    */
   export type PrescriptionDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
@@ -14714,7 +14843,7 @@ export namespace Prisma {
     price?: boolean
     is_outside_drug?: boolean
     is_patient_denied?: boolean
-    prescription?: boolean | PrescriptionDefaultArgs<ExtArgs>
+    prescription?: boolean | PrescriptionItem$prescriptionArgs<ExtArgs>
     drug?: boolean | PrescriptionItem$drugArgs<ExtArgs>
   }, ExtArgs["result"]["prescriptionItem"]>
 
@@ -14739,14 +14868,14 @@ export namespace Prisma {
 
   export type PrescriptionItemOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"prescription_item_id" | "prescription_id" | "drug_id" | "drug_name" | "dosage" | "instruction_1" | "instruction_2" | "instruction_3" | "frequency" | "duration" | "quantity" | "price" | "is_outside_drug" | "is_patient_denied", ExtArgs["result"]["prescriptionItem"]>
   export type PrescriptionItemInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
-    prescription?: boolean | PrescriptionDefaultArgs<ExtArgs>
+    prescription?: boolean | PrescriptionItem$prescriptionArgs<ExtArgs>
     drug?: boolean | PrescriptionItem$drugArgs<ExtArgs>
   }
 
   export type $PrescriptionItemPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "PrescriptionItem"
     objects: {
-      prescription: Prisma.$PrescriptionPayload<ExtArgs>
+      prescription: Prisma.$PrescriptionPayload<ExtArgs> | null
       drug: Prisma.$DrugPayload<ExtArgs> | null
     }
     scalars: $Extensions.GetPayloadResult<{
@@ -15104,7 +15233,7 @@ export namespace Prisma {
    */
   export interface Prisma__PrescriptionItemClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
     readonly [Symbol.toStringTag]: "PrismaPromise"
-    prescription<T extends PrescriptionDefaultArgs<ExtArgs> = {}>(args?: Subset<T, PrescriptionDefaultArgs<ExtArgs>>): Prisma__PrescriptionClient<$Result.GetResult<Prisma.$PrescriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    prescription<T extends PrescriptionItem$prescriptionArgs<ExtArgs> = {}>(args?: Subset<T, PrescriptionItem$prescriptionArgs<ExtArgs>>): Prisma__PrescriptionClient<$Result.GetResult<Prisma.$PrescriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     drug<T extends PrescriptionItem$drugArgs<ExtArgs> = {}>(args?: Subset<T, PrescriptionItem$drugArgs<ExtArgs>>): Prisma__DrugClient<$Result.GetResult<Prisma.$DrugPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
     /**
      * Attaches callbacks for the resolution and/or rejection of the Promise.
@@ -15489,6 +15618,25 @@ export namespace Prisma {
      * Limit how many PrescriptionItems to delete.
      */
     limit?: number
+  }
+
+  /**
+   * PrescriptionItem.prescription
+   */
+  export type PrescriptionItem$prescriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prescription
+     */
+    select?: PrescriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prescription
+     */
+    omit?: PrescriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrescriptionInclude<ExtArgs> | null
+    where?: PrescriptionWhereInput
   }
 
   /**
@@ -18665,6 +18813,1082 @@ export namespace Prisma {
 
 
   /**
+   * Model Invoice
+   */
+
+  export type AggregateInvoice = {
+    _count: InvoiceCountAggregateOutputType | null
+    _avg: InvoiceAvgAggregateOutputType | null
+    _sum: InvoiceSumAggregateOutputType | null
+    _min: InvoiceMinAggregateOutputType | null
+    _max: InvoiceMaxAggregateOutputType | null
+  }
+
+  export type InvoiceAvgAggregateOutputType = {
+    invoice_id: number | null
+    consultation_id: number | null
+    prescription_id: number | null
+    total_drug_cost: number | null
+    doctor_fee: number | null
+    discount: number | null
+    total_amount: number | null
+  }
+
+  export type InvoiceSumAggregateOutputType = {
+    invoice_id: number | null
+    consultation_id: number | null
+    prescription_id: number | null
+    total_drug_cost: number | null
+    doctor_fee: number | null
+    discount: number | null
+    total_amount: number | null
+  }
+
+  export type InvoiceMinAggregateOutputType = {
+    invoice_id: number | null
+    consultation_id: number | null
+    prescription_id: number | null
+    total_drug_cost: number | null
+    doctor_fee: number | null
+    discount: number | null
+    total_amount: number | null
+    is_patient_denied: boolean | null
+    is_finalized: boolean | null
+    finalized_at: Date | null
+    created_at: Date | null
+  }
+
+  export type InvoiceMaxAggregateOutputType = {
+    invoice_id: number | null
+    consultation_id: number | null
+    prescription_id: number | null
+    total_drug_cost: number | null
+    doctor_fee: number | null
+    discount: number | null
+    total_amount: number | null
+    is_patient_denied: boolean | null
+    is_finalized: boolean | null
+    finalized_at: Date | null
+    created_at: Date | null
+  }
+
+  export type InvoiceCountAggregateOutputType = {
+    invoice_id: number
+    consultation_id: number
+    prescription_id: number
+    total_drug_cost: number
+    doctor_fee: number
+    discount: number
+    total_amount: number
+    is_patient_denied: number
+    is_finalized: number
+    finalized_at: number
+    created_at: number
+    _all: number
+  }
+
+
+  export type InvoiceAvgAggregateInputType = {
+    invoice_id?: true
+    consultation_id?: true
+    prescription_id?: true
+    total_drug_cost?: true
+    doctor_fee?: true
+    discount?: true
+    total_amount?: true
+  }
+
+  export type InvoiceSumAggregateInputType = {
+    invoice_id?: true
+    consultation_id?: true
+    prescription_id?: true
+    total_drug_cost?: true
+    doctor_fee?: true
+    discount?: true
+    total_amount?: true
+  }
+
+  export type InvoiceMinAggregateInputType = {
+    invoice_id?: true
+    consultation_id?: true
+    prescription_id?: true
+    total_drug_cost?: true
+    doctor_fee?: true
+    discount?: true
+    total_amount?: true
+    is_patient_denied?: true
+    is_finalized?: true
+    finalized_at?: true
+    created_at?: true
+  }
+
+  export type InvoiceMaxAggregateInputType = {
+    invoice_id?: true
+    consultation_id?: true
+    prescription_id?: true
+    total_drug_cost?: true
+    doctor_fee?: true
+    discount?: true
+    total_amount?: true
+    is_patient_denied?: true
+    is_finalized?: true
+    finalized_at?: true
+    created_at?: true
+  }
+
+  export type InvoiceCountAggregateInputType = {
+    invoice_id?: true
+    consultation_id?: true
+    prescription_id?: true
+    total_drug_cost?: true
+    doctor_fee?: true
+    discount?: true
+    total_amount?: true
+    is_patient_denied?: true
+    is_finalized?: true
+    finalized_at?: true
+    created_at?: true
+    _all?: true
+  }
+
+  export type InvoiceAggregateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Invoice to aggregate.
+     */
+    where?: InvoiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Invoices to fetch.
+     */
+    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the start position
+     */
+    cursor?: InvoiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Invoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Invoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Count returned Invoices
+    **/
+    _count?: true | InvoiceCountAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to average
+    **/
+    _avg?: InvoiceAvgAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to sum
+    **/
+    _sum?: InvoiceSumAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the minimum value
+    **/
+    _min?: InvoiceMinAggregateInputType
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
+     * 
+     * Select which fields to find the maximum value
+    **/
+    _max?: InvoiceMaxAggregateInputType
+  }
+
+  export type GetInvoiceAggregateType<T extends InvoiceAggregateArgs> = {
+        [P in keyof T & keyof AggregateInvoice]: P extends '_count' | 'count'
+      ? T[P] extends true
+        ? number
+        : GetScalarType<T[P], AggregateInvoice[P]>
+      : GetScalarType<T[P], AggregateInvoice[P]>
+  }
+
+
+
+
+  export type InvoiceGroupByArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    where?: InvoiceWhereInput
+    orderBy?: InvoiceOrderByWithAggregationInput | InvoiceOrderByWithAggregationInput[]
+    by: InvoiceScalarFieldEnum[] | InvoiceScalarFieldEnum
+    having?: InvoiceScalarWhereWithAggregatesInput
+    take?: number
+    skip?: number
+    _count?: InvoiceCountAggregateInputType | true
+    _avg?: InvoiceAvgAggregateInputType
+    _sum?: InvoiceSumAggregateInputType
+    _min?: InvoiceMinAggregateInputType
+    _max?: InvoiceMaxAggregateInputType
+  }
+
+  export type InvoiceGroupByOutputType = {
+    invoice_id: number
+    consultation_id: number
+    prescription_id: number | null
+    total_drug_cost: number
+    doctor_fee: number
+    discount: number
+    total_amount: number
+    is_patient_denied: boolean
+    is_finalized: boolean
+    finalized_at: Date | null
+    created_at: Date
+    _count: InvoiceCountAggregateOutputType | null
+    _avg: InvoiceAvgAggregateOutputType | null
+    _sum: InvoiceSumAggregateOutputType | null
+    _min: InvoiceMinAggregateOutputType | null
+    _max: InvoiceMaxAggregateOutputType | null
+  }
+
+  type GetInvoiceGroupByPayload<T extends InvoiceGroupByArgs> = Prisma.PrismaPromise<
+    Array<
+      PickEnumerable<InvoiceGroupByOutputType, T['by']> &
+        {
+          [P in ((keyof T) & (keyof InvoiceGroupByOutputType))]: P extends '_count'
+            ? T[P] extends boolean
+              ? number
+              : GetScalarType<T[P], InvoiceGroupByOutputType[P]>
+            : GetScalarType<T[P], InvoiceGroupByOutputType[P]>
+        }
+      >
+    >
+
+
+  export type InvoiceSelect<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetSelect<{
+    invoice_id?: boolean
+    consultation_id?: boolean
+    prescription_id?: boolean
+    total_drug_cost?: boolean
+    doctor_fee?: boolean
+    discount?: boolean
+    total_amount?: boolean
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: boolean
+    created_at?: boolean
+    consultation?: boolean | ConsultationDefaultArgs<ExtArgs>
+    prescription?: boolean | Invoice$prescriptionArgs<ExtArgs>
+  }, ExtArgs["result"]["invoice"]>
+
+
+
+  export type InvoiceSelectScalar = {
+    invoice_id?: boolean
+    consultation_id?: boolean
+    prescription_id?: boolean
+    total_drug_cost?: boolean
+    doctor_fee?: boolean
+    discount?: boolean
+    total_amount?: boolean
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: boolean
+    created_at?: boolean
+  }
+
+  export type InvoiceOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"invoice_id" | "consultation_id" | "prescription_id" | "total_drug_cost" | "doctor_fee" | "discount" | "total_amount" | "is_patient_denied" | "is_finalized" | "finalized_at" | "created_at", ExtArgs["result"]["invoice"]>
+  export type InvoiceInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    consultation?: boolean | ConsultationDefaultArgs<ExtArgs>
+    prescription?: boolean | Invoice$prescriptionArgs<ExtArgs>
+  }
+
+  export type $InvoicePayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    name: "Invoice"
+    objects: {
+      consultation: Prisma.$ConsultationPayload<ExtArgs>
+      prescription: Prisma.$PrescriptionPayload<ExtArgs> | null
+    }
+    scalars: $Extensions.GetPayloadResult<{
+      invoice_id: number
+      consultation_id: number
+      prescription_id: number | null
+      total_drug_cost: number
+      doctor_fee: number
+      discount: number
+      total_amount: number
+      is_patient_denied: boolean
+      is_finalized: boolean
+      finalized_at: Date | null
+      created_at: Date
+    }, ExtArgs["result"]["invoice"]>
+    composites: {}
+  }
+
+  type InvoiceGetPayload<S extends boolean | null | undefined | InvoiceDefaultArgs> = $Result.GetResult<Prisma.$InvoicePayload, S>
+
+  type InvoiceCountArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> =
+    Omit<InvoiceFindManyArgs, 'select' | 'include' | 'distinct' | 'omit'> & {
+      select?: InvoiceCountAggregateInputType | true
+    }
+
+  export interface InvoiceDelegate<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> {
+    [K: symbol]: { types: Prisma.TypeMap<ExtArgs>['model']['Invoice'], meta: { name: 'Invoice' } }
+    /**
+     * Find zero or one Invoice that matches the filter.
+     * @param {InvoiceFindUniqueArgs} args - Arguments to find a Invoice
+     * @example
+     * // Get one Invoice
+     * const invoice = await prisma.invoice.findUnique({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUnique<T extends InvoiceFindUniqueArgs>(args: SelectSubset<T, InvoiceFindUniqueArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findUnique", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find one Invoice that matches the filter or throw an error with `error.code='P2025'`
+     * if no matches were found.
+     * @param {InvoiceFindUniqueOrThrowArgs} args - Arguments to find a Invoice
+     * @example
+     * // Get one Invoice
+     * const invoice = await prisma.invoice.findUniqueOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findUniqueOrThrow<T extends InvoiceFindUniqueOrThrowArgs>(args: SelectSubset<T, InvoiceFindUniqueOrThrowArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Invoice that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvoiceFindFirstArgs} args - Arguments to find a Invoice
+     * @example
+     * // Get one Invoice
+     * const invoice = await prisma.invoice.findFirst({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirst<T extends InvoiceFindFirstArgs>(args?: SelectSubset<T, InvoiceFindFirstArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findFirst", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find the first Invoice that matches the filter or
+     * throw `PrismaKnownClientError` with `P2025` code if no matches were found.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvoiceFindFirstOrThrowArgs} args - Arguments to find a Invoice
+     * @example
+     * // Get one Invoice
+     * const invoice = await prisma.invoice.findFirstOrThrow({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     */
+    findFirstOrThrow<T extends InvoiceFindFirstOrThrowArgs>(args?: SelectSubset<T, InvoiceFindFirstOrThrowArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findFirstOrThrow", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Find zero or more Invoices that matches the filter.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvoiceFindManyArgs} args - Arguments to filter and select certain fields only.
+     * @example
+     * // Get all Invoices
+     * const invoices = await prisma.invoice.findMany()
+     * 
+     * // Get first 10 Invoices
+     * const invoices = await prisma.invoice.findMany({ take: 10 })
+     * 
+     * // Only select the `invoice_id`
+     * const invoiceWithInvoice_idOnly = await prisma.invoice.findMany({ select: { invoice_id: true } })
+     * 
+     */
+    findMany<T extends InvoiceFindManyArgs>(args?: SelectSubset<T, InvoiceFindManyArgs<ExtArgs>>): Prisma.PrismaPromise<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "findMany", GlobalOmitOptions>>
+
+    /**
+     * Create a Invoice.
+     * @param {InvoiceCreateArgs} args - Arguments to create a Invoice.
+     * @example
+     * // Create one Invoice
+     * const Invoice = await prisma.invoice.create({
+     *   data: {
+     *     // ... data to create a Invoice
+     *   }
+     * })
+     * 
+     */
+    create<T extends InvoiceCreateArgs>(args: SelectSubset<T, InvoiceCreateArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "create", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Create many Invoices.
+     * @param {InvoiceCreateManyArgs} args - Arguments to create many Invoices.
+     * @example
+     * // Create many Invoices
+     * const invoice = await prisma.invoice.createMany({
+     *   data: [
+     *     // ... provide data here
+     *   ]
+     * })
+     *     
+     */
+    createMany<T extends InvoiceCreateManyArgs>(args?: SelectSubset<T, InvoiceCreateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Delete a Invoice.
+     * @param {InvoiceDeleteArgs} args - Arguments to delete one Invoice.
+     * @example
+     * // Delete one Invoice
+     * const Invoice = await prisma.invoice.delete({
+     *   where: {
+     *     // ... filter to delete one Invoice
+     *   }
+     * })
+     * 
+     */
+    delete<T extends InvoiceDeleteArgs>(args: SelectSubset<T, InvoiceDeleteArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "delete", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Update one Invoice.
+     * @param {InvoiceUpdateArgs} args - Arguments to update one Invoice.
+     * @example
+     * // Update one Invoice
+     * const invoice = await prisma.invoice.update({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    update<T extends InvoiceUpdateArgs>(args: SelectSubset<T, InvoiceUpdateArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "update", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+    /**
+     * Delete zero or more Invoices.
+     * @param {InvoiceDeleteManyArgs} args - Arguments to filter Invoices to delete.
+     * @example
+     * // Delete a few Invoices
+     * const { count } = await prisma.invoice.deleteMany({
+     *   where: {
+     *     // ... provide filter here
+     *   }
+     * })
+     * 
+     */
+    deleteMany<T extends InvoiceDeleteManyArgs>(args?: SelectSubset<T, InvoiceDeleteManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Update zero or more Invoices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvoiceUpdateManyArgs} args - Arguments to update one or more rows.
+     * @example
+     * // Update many Invoices
+     * const invoice = await prisma.invoice.updateMany({
+     *   where: {
+     *     // ... provide filter here
+     *   },
+     *   data: {
+     *     // ... provide data here
+     *   }
+     * })
+     * 
+     */
+    updateMany<T extends InvoiceUpdateManyArgs>(args: SelectSubset<T, InvoiceUpdateManyArgs<ExtArgs>>): Prisma.PrismaPromise<BatchPayload>
+
+    /**
+     * Create or update one Invoice.
+     * @param {InvoiceUpsertArgs} args - Arguments to update or create a Invoice.
+     * @example
+     * // Update or create a Invoice
+     * const invoice = await prisma.invoice.upsert({
+     *   create: {
+     *     // ... data to create a Invoice
+     *   },
+     *   update: {
+     *     // ... in case it already exists, update
+     *   },
+     *   where: {
+     *     // ... the filter for the Invoice we want to update
+     *   }
+     * })
+     */
+    upsert<T extends InvoiceUpsertArgs>(args: SelectSubset<T, InvoiceUpsertArgs<ExtArgs>>): Prisma__InvoiceClient<$Result.GetResult<Prisma.$InvoicePayload<ExtArgs>, T, "upsert", GlobalOmitOptions>, never, ExtArgs, GlobalOmitOptions>
+
+
+    /**
+     * Count the number of Invoices.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvoiceCountArgs} args - Arguments to filter Invoices to count.
+     * @example
+     * // Count the number of Invoices
+     * const count = await prisma.invoice.count({
+     *   where: {
+     *     // ... the filter for the Invoices we want to count
+     *   }
+     * })
+    **/
+    count<T extends InvoiceCountArgs>(
+      args?: Subset<T, InvoiceCountArgs>,
+    ): Prisma.PrismaPromise<
+      T extends $Utils.Record<'select', any>
+        ? T['select'] extends true
+          ? number
+          : GetScalarType<T['select'], InvoiceCountAggregateOutputType>
+        : number
+    >
+
+    /**
+     * Allows you to perform aggregations operations on a Invoice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvoiceAggregateArgs} args - Select which aggregations you would like to apply and on what fields.
+     * @example
+     * // Ordered by age ascending
+     * // Where email contains prisma.io
+     * // Limited to the 10 users
+     * const aggregations = await prisma.user.aggregate({
+     *   _avg: {
+     *     age: true,
+     *   },
+     *   where: {
+     *     email: {
+     *       contains: "prisma.io",
+     *     },
+     *   },
+     *   orderBy: {
+     *     age: "asc",
+     *   },
+     *   take: 10,
+     * })
+    **/
+    aggregate<T extends InvoiceAggregateArgs>(args: Subset<T, InvoiceAggregateArgs>): Prisma.PrismaPromise<GetInvoiceAggregateType<T>>
+
+    /**
+     * Group by Invoice.
+     * Note, that providing `undefined` is treated as the value not being there.
+     * Read more here: https://pris.ly/d/null-undefined
+     * @param {InvoiceGroupByArgs} args - Group by arguments.
+     * @example
+     * // Group by city, order by createdAt, get count
+     * const result = await prisma.user.groupBy({
+     *   by: ['city', 'createdAt'],
+     *   orderBy: {
+     *     createdAt: true
+     *   },
+     *   _count: {
+     *     _all: true
+     *   },
+     * })
+     * 
+    **/
+    groupBy<
+      T extends InvoiceGroupByArgs,
+      HasSelectOrTake extends Or<
+        Extends<'skip', Keys<T>>,
+        Extends<'take', Keys<T>>
+      >,
+      OrderByArg extends True extends HasSelectOrTake
+        ? { orderBy: InvoiceGroupByArgs['orderBy'] }
+        : { orderBy?: InvoiceGroupByArgs['orderBy'] },
+      OrderFields extends ExcludeUnderscoreKeys<Keys<MaybeTupleToUnion<T['orderBy']>>>,
+      ByFields extends MaybeTupleToUnion<T['by']>,
+      ByValid extends Has<ByFields, OrderFields>,
+      HavingFields extends GetHavingFields<T['having']>,
+      HavingValid extends Has<ByFields, HavingFields>,
+      ByEmpty extends T['by'] extends never[] ? True : False,
+      InputErrors extends ByEmpty extends True
+      ? `Error: "by" must not be empty.`
+      : HavingValid extends False
+      ? {
+          [P in HavingFields]: P extends ByFields
+            ? never
+            : P extends string
+            ? `Error: Field "${P}" used in "having" needs to be provided in "by".`
+            : [
+                Error,
+                'Field ',
+                P,
+                ` in "having" needs to be provided in "by"`,
+              ]
+        }[HavingFields]
+      : 'take' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "take", you also need to provide "orderBy"'
+      : 'skip' extends Keys<T>
+      ? 'orderBy' extends Keys<T>
+        ? ByValid extends True
+          ? {}
+          : {
+              [P in OrderFields]: P extends ByFields
+                ? never
+                : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+            }[OrderFields]
+        : 'Error: If you provide "skip", you also need to provide "orderBy"'
+      : ByValid extends True
+      ? {}
+      : {
+          [P in OrderFields]: P extends ByFields
+            ? never
+            : `Error: Field "${P}" in "orderBy" needs to be provided in "by"`
+        }[OrderFields]
+    >(args: SubsetIntersection<T, InvoiceGroupByArgs, OrderByArg> & InputErrors): {} extends InputErrors ? GetInvoiceGroupByPayload<T> : Prisma.PrismaPromise<InputErrors>
+  /**
+   * Fields of the Invoice model
+   */
+  readonly fields: InvoiceFieldRefs;
+  }
+
+  /**
+   * The delegate class that acts as a "Promise-like" for Invoice.
+   * Why is this prefixed with `Prisma__`?
+   * Because we want to prevent naming conflicts as mentioned in
+   * https://github.com/prisma/prisma-client-js/issues/707
+   */
+  export interface Prisma__InvoiceClient<T, Null = never, ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs, GlobalOmitOptions = {}> extends Prisma.PrismaPromise<T> {
+    readonly [Symbol.toStringTag]: "PrismaPromise"
+    consultation<T extends ConsultationDefaultArgs<ExtArgs> = {}>(args?: Subset<T, ConsultationDefaultArgs<ExtArgs>>): Prisma__ConsultationClient<$Result.GetResult<Prisma.$ConsultationPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
+    prescription<T extends Invoice$prescriptionArgs<ExtArgs> = {}>(args?: Subset<T, Invoice$prescriptionArgs<ExtArgs>>): Prisma__PrescriptionClient<$Result.GetResult<Prisma.$PrescriptionPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+    /**
+     * Attaches callbacks for the resolution and/or rejection of the Promise.
+     * @param onfulfilled The callback to execute when the Promise is resolved.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of which ever callback is executed.
+     */
+    then<TResult1 = T, TResult2 = never>(onfulfilled?: ((value: T) => TResult1 | PromiseLike<TResult1>) | undefined | null, onrejected?: ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null): $Utils.JsPromise<TResult1 | TResult2>
+    /**
+     * Attaches a callback for only the rejection of the Promise.
+     * @param onrejected The callback to execute when the Promise is rejected.
+     * @returns A Promise for the completion of the callback.
+     */
+    catch<TResult = never>(onrejected?: ((reason: any) => TResult | PromiseLike<TResult>) | undefined | null): $Utils.JsPromise<T | TResult>
+    /**
+     * Attaches a callback that is invoked when the Promise is settled (fulfilled or rejected). The
+     * resolved value cannot be modified from the callback.
+     * @param onfinally The callback to execute when the Promise is settled (fulfilled or rejected).
+     * @returns A Promise for the completion of the callback.
+     */
+    finally(onfinally?: (() => void) | undefined | null): $Utils.JsPromise<T>
+  }
+
+
+
+
+  /**
+   * Fields of the Invoice model
+   */
+  interface InvoiceFieldRefs {
+    readonly invoice_id: FieldRef<"Invoice", 'Int'>
+    readonly consultation_id: FieldRef<"Invoice", 'Int'>
+    readonly prescription_id: FieldRef<"Invoice", 'Int'>
+    readonly total_drug_cost: FieldRef<"Invoice", 'Float'>
+    readonly doctor_fee: FieldRef<"Invoice", 'Float'>
+    readonly discount: FieldRef<"Invoice", 'Float'>
+    readonly total_amount: FieldRef<"Invoice", 'Float'>
+    readonly is_patient_denied: FieldRef<"Invoice", 'Boolean'>
+    readonly is_finalized: FieldRef<"Invoice", 'Boolean'>
+    readonly finalized_at: FieldRef<"Invoice", 'DateTime'>
+    readonly created_at: FieldRef<"Invoice", 'DateTime'>
+  }
+    
+
+  // Custom InputTypes
+  /**
+   * Invoice findUnique
+   */
+  export type InvoiceFindUniqueArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which Invoice to fetch.
+     */
+    where: InvoiceWhereUniqueInput
+  }
+
+  /**
+   * Invoice findUniqueOrThrow
+   */
+  export type InvoiceFindUniqueOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which Invoice to fetch.
+     */
+    where: InvoiceWhereUniqueInput
+  }
+
+  /**
+   * Invoice findFirst
+   */
+  export type InvoiceFindFirstArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which Invoice to fetch.
+     */
+    where?: InvoiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Invoices to fetch.
+     */
+    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Invoices.
+     */
+    cursor?: InvoiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Invoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Invoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Invoices.
+     */
+    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * Invoice findFirstOrThrow
+   */
+  export type InvoiceFindFirstOrThrowArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which Invoice to fetch.
+     */
+    where?: InvoiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Invoices to fetch.
+     */
+    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for searching for Invoices.
+     */
+    cursor?: InvoiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Invoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Invoices.
+     */
+    skip?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/distinct Distinct Docs}
+     * 
+     * Filter by unique combinations of Invoices.
+     */
+    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * Invoice findMany
+   */
+  export type InvoiceFindManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * Filter, which Invoices to fetch.
+     */
+    where?: InvoiceWhereInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/sorting Sorting Docs}
+     * 
+     * Determine the order of Invoices to fetch.
+     */
+    orderBy?: InvoiceOrderByWithRelationInput | InvoiceOrderByWithRelationInput[]
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination#cursor-based-pagination Cursor Docs}
+     * 
+     * Sets the position for listing Invoices.
+     */
+    cursor?: InvoiceWhereUniqueInput
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Take `±n` Invoices from the position of the cursor.
+     */
+    take?: number
+    /**
+     * {@link https://www.prisma.io/docs/concepts/components/prisma-client/pagination Pagination Docs}
+     * 
+     * Skip the first `n` Invoices.
+     */
+    skip?: number
+    distinct?: InvoiceScalarFieldEnum | InvoiceScalarFieldEnum[]
+  }
+
+  /**
+   * Invoice create
+   */
+  export type InvoiceCreateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * The data needed to create a Invoice.
+     */
+    data: XOR<InvoiceCreateInput, InvoiceUncheckedCreateInput>
+  }
+
+  /**
+   * Invoice createMany
+   */
+  export type InvoiceCreateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to create many Invoices.
+     */
+    data: InvoiceCreateManyInput | InvoiceCreateManyInput[]
+    skipDuplicates?: boolean
+  }
+
+  /**
+   * Invoice update
+   */
+  export type InvoiceUpdateArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * The data needed to update a Invoice.
+     */
+    data: XOR<InvoiceUpdateInput, InvoiceUncheckedUpdateInput>
+    /**
+     * Choose, which Invoice to update.
+     */
+    where: InvoiceWhereUniqueInput
+  }
+
+  /**
+   * Invoice updateMany
+   */
+  export type InvoiceUpdateManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * The data used to update Invoices.
+     */
+    data: XOR<InvoiceUpdateManyMutationInput, InvoiceUncheckedUpdateManyInput>
+    /**
+     * Filter which Invoices to update
+     */
+    where?: InvoiceWhereInput
+    /**
+     * Limit how many Invoices to update.
+     */
+    limit?: number
+  }
+
+  /**
+   * Invoice upsert
+   */
+  export type InvoiceUpsertArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * The filter to search for the Invoice to update in case it exists.
+     */
+    where: InvoiceWhereUniqueInput
+    /**
+     * In case the Invoice found by the `where` argument doesn't exist, create a new Invoice with this data.
+     */
+    create: XOR<InvoiceCreateInput, InvoiceUncheckedCreateInput>
+    /**
+     * In case the Invoice was found with the provided `where` argument, update it with this data.
+     */
+    update: XOR<InvoiceUpdateInput, InvoiceUncheckedUpdateInput>
+  }
+
+  /**
+   * Invoice delete
+   */
+  export type InvoiceDeleteArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+    /**
+     * Filter which Invoice to delete.
+     */
+    where: InvoiceWhereUniqueInput
+  }
+
+  /**
+   * Invoice deleteMany
+   */
+  export type InvoiceDeleteManyArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Filter which Invoices to delete
+     */
+    where?: InvoiceWhereInput
+    /**
+     * Limit how many Invoices to delete.
+     */
+    limit?: number
+  }
+
+  /**
+   * Invoice.prescription
+   */
+  export type Invoice$prescriptionArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Prescription
+     */
+    select?: PrescriptionSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Prescription
+     */
+    omit?: PrescriptionOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: PrescriptionInclude<ExtArgs> | null
+    where?: PrescriptionWhereInput
+  }
+
+  /**
+   * Invoice without action
+   */
+  export type InvoiceDefaultArgs<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
+    /**
+     * Select specific fields to fetch from the Invoice
+     */
+    select?: InvoiceSelect<ExtArgs> | null
+    /**
+     * Omit specific fields from the Invoice
+     */
+    omit?: InvoiceOmit<ExtArgs> | null
+    /**
+     * Choose, which related nodes to fetch as well
+     */
+    include?: InvoiceInclude<ExtArgs> | null
+  }
+
+
+  /**
    * Enums
    */
 
@@ -18873,6 +20097,23 @@ export namespace Prisma {
   };
 
   export type OutsideDrugScalarFieldEnum = (typeof OutsideDrugScalarFieldEnum)[keyof typeof OutsideDrugScalarFieldEnum]
+
+
+  export const InvoiceScalarFieldEnum: {
+    invoice_id: 'invoice_id',
+    consultation_id: 'consultation_id',
+    prescription_id: 'prescription_id',
+    total_drug_cost: 'total_drug_cost',
+    doctor_fee: 'doctor_fee',
+    discount: 'discount',
+    total_amount: 'total_amount',
+    is_patient_denied: 'is_patient_denied',
+    is_finalized: 'is_finalized',
+    finalized_at: 'finalized_at',
+    created_at: 'created_at'
+  };
+
+  export type InvoiceScalarFieldEnum = (typeof InvoiceScalarFieldEnum)[keyof typeof InvoiceScalarFieldEnum]
 
 
   export const SortOrder: {
@@ -19410,6 +20651,7 @@ export namespace Prisma {
     doctor?: XOR<UserScalarRelationFilter, UserWhereInput>
     prescriptions?: PrescriptionListRelationFilter
     outsideDrugs?: OutsideDrugListRelationFilter
+    invoice?: XOR<InvoiceNullableScalarRelationFilter, InvoiceWhereInput> | null
     examinations?: ExaminationListRelationFilter
     consultationSymptoms?: ConsultationSymptomListRelationFilter
     investigations?: InvestigationListRelationFilter
@@ -19429,6 +20671,7 @@ export namespace Prisma {
     doctor?: UserOrderByWithRelationInput
     prescriptions?: PrescriptionOrderByRelationAggregateInput
     outsideDrugs?: OutsideDrugOrderByRelationAggregateInput
+    invoice?: InvoiceOrderByWithRelationInput
     examinations?: ExaminationOrderByRelationAggregateInput
     consultationSymptoms?: ConsultationSymptomOrderByRelationAggregateInput
     investigations?: InvestigationOrderByRelationAggregateInput
@@ -19452,6 +20695,7 @@ export namespace Prisma {
     doctor?: XOR<UserScalarRelationFilter, UserWhereInput>
     prescriptions?: PrescriptionListRelationFilter
     outsideDrugs?: OutsideDrugListRelationFilter
+    invoice?: XOR<InvoiceNullableScalarRelationFilter, InvoiceWhereInput> | null
     examinations?: ExaminationListRelationFilter
     consultationSymptoms?: ConsultationSymptomListRelationFilter
     investigations?: InvestigationListRelationFilter
@@ -19768,6 +21012,7 @@ export namespace Prisma {
     consultation?: XOR<ConsultationScalarRelationFilter, ConsultationWhereInput>
     items?: PrescriptionItemListRelationFilter
     outsideDrugs?: OutsideDrugListRelationFilter
+    invoice?: XOR<InvoiceNullableScalarRelationFilter, InvoiceWhereInput> | null
   }
 
   export type PrescriptionOrderByWithRelationInput = {
@@ -19778,6 +21023,7 @@ export namespace Prisma {
     consultation?: ConsultationOrderByWithRelationInput
     items?: PrescriptionItemOrderByRelationAggregateInput
     outsideDrugs?: OutsideDrugOrderByRelationAggregateInput
+    invoice?: InvoiceOrderByWithRelationInput
   }
 
   export type PrescriptionWhereUniqueInput = Prisma.AtLeast<{
@@ -19791,6 +21037,7 @@ export namespace Prisma {
     consultation?: XOR<ConsultationScalarRelationFilter, ConsultationWhereInput>
     items?: PrescriptionItemListRelationFilter
     outsideDrugs?: OutsideDrugListRelationFilter
+    invoice?: XOR<InvoiceNullableScalarRelationFilter, InvoiceWhereInput> | null
   }, "prescription_id">
 
   export type PrescriptionOrderByWithAggregationInput = {
@@ -19833,7 +21080,7 @@ export namespace Prisma {
     price?: FloatFilter<"PrescriptionItem"> | number
     is_outside_drug?: BoolFilter<"PrescriptionItem"> | boolean
     is_patient_denied?: BoolFilter<"PrescriptionItem"> | boolean
-    prescription?: XOR<PrescriptionScalarRelationFilter, PrescriptionWhereInput>
+    prescription?: XOR<PrescriptionNullableScalarRelationFilter, PrescriptionWhereInput> | null
     drug?: XOR<DrugNullableScalarRelationFilter, DrugWhereInput> | null
   }
 
@@ -19875,7 +21122,7 @@ export namespace Prisma {
     price?: FloatFilter<"PrescriptionItem"> | number
     is_outside_drug?: BoolFilter<"PrescriptionItem"> | boolean
     is_patient_denied?: BoolFilter<"PrescriptionItem"> | boolean
-    prescription?: XOR<PrescriptionScalarRelationFilter, PrescriptionWhereInput>
+    prescription?: XOR<PrescriptionNullableScalarRelationFilter, PrescriptionWhereInput> | null
     drug?: XOR<DrugNullableScalarRelationFilter, DrugWhereInput> | null
   }, "prescription_item_id">
 
@@ -20149,6 +21396,96 @@ export namespace Prisma {
     quantity?: IntWithAggregatesFilter<"OutsideDrug"> | number
     price?: FloatNullableWithAggregatesFilter<"OutsideDrug"> | number | null
     created_at?: DateTimeWithAggregatesFilter<"OutsideDrug"> | Date | string
+  }
+
+  export type InvoiceWhereInput = {
+    AND?: InvoiceWhereInput | InvoiceWhereInput[]
+    OR?: InvoiceWhereInput[]
+    NOT?: InvoiceWhereInput | InvoiceWhereInput[]
+    invoice_id?: IntFilter<"Invoice"> | number
+    consultation_id?: IntFilter<"Invoice"> | number
+    prescription_id?: IntNullableFilter<"Invoice"> | number | null
+    total_drug_cost?: FloatFilter<"Invoice"> | number
+    doctor_fee?: FloatFilter<"Invoice"> | number
+    discount?: FloatFilter<"Invoice"> | number
+    total_amount?: FloatFilter<"Invoice"> | number
+    is_patient_denied?: BoolFilter<"Invoice"> | boolean
+    is_finalized?: BoolFilter<"Invoice"> | boolean
+    finalized_at?: DateTimeNullableFilter<"Invoice"> | Date | string | null
+    created_at?: DateTimeFilter<"Invoice"> | Date | string
+    consultation?: XOR<ConsultationScalarRelationFilter, ConsultationWhereInput>
+    prescription?: XOR<PrescriptionNullableScalarRelationFilter, PrescriptionWhereInput> | null
+  }
+
+  export type InvoiceOrderByWithRelationInput = {
+    invoice_id?: SortOrder
+    consultation_id?: SortOrder
+    prescription_id?: SortOrderInput | SortOrder
+    total_drug_cost?: SortOrder
+    doctor_fee?: SortOrder
+    discount?: SortOrder
+    total_amount?: SortOrder
+    is_patient_denied?: SortOrder
+    is_finalized?: SortOrder
+    finalized_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    consultation?: ConsultationOrderByWithRelationInput
+    prescription?: PrescriptionOrderByWithRelationInput
+  }
+
+  export type InvoiceWhereUniqueInput = Prisma.AtLeast<{
+    invoice_id?: number
+    consultation_id?: number
+    prescription_id?: number
+    AND?: InvoiceWhereInput | InvoiceWhereInput[]
+    OR?: InvoiceWhereInput[]
+    NOT?: InvoiceWhereInput | InvoiceWhereInput[]
+    total_drug_cost?: FloatFilter<"Invoice"> | number
+    doctor_fee?: FloatFilter<"Invoice"> | number
+    discount?: FloatFilter<"Invoice"> | number
+    total_amount?: FloatFilter<"Invoice"> | number
+    is_patient_denied?: BoolFilter<"Invoice"> | boolean
+    is_finalized?: BoolFilter<"Invoice"> | boolean
+    finalized_at?: DateTimeNullableFilter<"Invoice"> | Date | string | null
+    created_at?: DateTimeFilter<"Invoice"> | Date | string
+    consultation?: XOR<ConsultationScalarRelationFilter, ConsultationWhereInput>
+    prescription?: XOR<PrescriptionNullableScalarRelationFilter, PrescriptionWhereInput> | null
+  }, "invoice_id" | "consultation_id" | "prescription_id">
+
+  export type InvoiceOrderByWithAggregationInput = {
+    invoice_id?: SortOrder
+    consultation_id?: SortOrder
+    prescription_id?: SortOrderInput | SortOrder
+    total_drug_cost?: SortOrder
+    doctor_fee?: SortOrder
+    discount?: SortOrder
+    total_amount?: SortOrder
+    is_patient_denied?: SortOrder
+    is_finalized?: SortOrder
+    finalized_at?: SortOrderInput | SortOrder
+    created_at?: SortOrder
+    _count?: InvoiceCountOrderByAggregateInput
+    _avg?: InvoiceAvgOrderByAggregateInput
+    _max?: InvoiceMaxOrderByAggregateInput
+    _min?: InvoiceMinOrderByAggregateInput
+    _sum?: InvoiceSumOrderByAggregateInput
+  }
+
+  export type InvoiceScalarWhereWithAggregatesInput = {
+    AND?: InvoiceScalarWhereWithAggregatesInput | InvoiceScalarWhereWithAggregatesInput[]
+    OR?: InvoiceScalarWhereWithAggregatesInput[]
+    NOT?: InvoiceScalarWhereWithAggregatesInput | InvoiceScalarWhereWithAggregatesInput[]
+    invoice_id?: IntWithAggregatesFilter<"Invoice"> | number
+    consultation_id?: IntWithAggregatesFilter<"Invoice"> | number
+    prescription_id?: IntNullableWithAggregatesFilter<"Invoice"> | number | null
+    total_drug_cost?: FloatWithAggregatesFilter<"Invoice"> | number
+    doctor_fee?: FloatWithAggregatesFilter<"Invoice"> | number
+    discount?: FloatWithAggregatesFilter<"Invoice"> | number
+    total_amount?: FloatWithAggregatesFilter<"Invoice"> | number
+    is_patient_denied?: BoolWithAggregatesFilter<"Invoice"> | boolean
+    is_finalized?: BoolWithAggregatesFilter<"Invoice"> | boolean
+    finalized_at?: DateTimeNullableWithAggregatesFilter<"Invoice"> | Date | string | null
+    created_at?: DateTimeWithAggregatesFilter<"Invoice"> | Date | string
   }
 
   export type UserCreateInput = {
@@ -20477,6 +21814,7 @@ export namespace Prisma {
     doctor: UserCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
@@ -20494,6 +21832,7 @@ export namespace Prisma {
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
@@ -20510,6 +21849,7 @@ export namespace Prisma {
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
@@ -20527,6 +21867,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
@@ -20799,6 +22140,7 @@ export namespace Prisma {
     consultation: ConsultationCreateNestedOneWithoutPrescriptionsInput
     items?: PrescriptionItemCreateNestedManyWithoutPrescriptionInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutPrescriptionInput
+    invoice?: InvoiceCreateNestedOneWithoutPrescriptionInput
   }
 
   export type PrescriptionUncheckedCreateInput = {
@@ -20808,6 +22150,7 @@ export namespace Prisma {
     created_at?: Date | string
     items?: PrescriptionItemUncheckedCreateNestedManyWithoutPrescriptionInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutPrescriptionInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutPrescriptionInput
   }
 
   export type PrescriptionUpdateInput = {
@@ -20816,6 +22159,7 @@ export namespace Prisma {
     consultation?: ConsultationUpdateOneRequiredWithoutPrescriptionsNestedInput
     items?: PrescriptionItemUpdateManyWithoutPrescriptionNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutPrescriptionNestedInput
+    invoice?: InvoiceUpdateOneWithoutPrescriptionNestedInput
   }
 
   export type PrescriptionUncheckedUpdateInput = {
@@ -20825,6 +22169,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: PrescriptionItemUncheckedUpdateManyWithoutPrescriptionNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutPrescriptionNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutPrescriptionNestedInput
   }
 
   export type PrescriptionCreateManyInput = {
@@ -20858,7 +22203,7 @@ export namespace Prisma {
     price: number
     is_outside_drug?: boolean
     is_patient_denied?: boolean
-    prescription: PrescriptionCreateNestedOneWithoutItemsInput
+    prescription?: PrescriptionCreateNestedOneWithoutItemsInput
     drug?: DrugCreateNestedOneWithoutPrescriptionItemsInput
   }
 
@@ -20891,7 +22236,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     is_outside_drug?: BoolFieldUpdateOperationsInput | boolean
     is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
-    prescription?: PrescriptionUpdateOneRequiredWithoutItemsNestedInput
+    prescription?: PrescriptionUpdateOneWithoutItemsNestedInput
     drug?: DrugUpdateOneWithoutPrescriptionItemsNestedInput
   }
 
@@ -21191,6 +22536,99 @@ export namespace Prisma {
     instructions?: NullableStringFieldUpdateOperationsInput | string | null
     quantity?: IntFieldUpdateOperationsInput | number
     price?: NullableFloatFieldUpdateOperationsInput | number | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InvoiceCreateInput = {
+    total_drug_cost: number
+    doctor_fee: number
+    discount?: number
+    total_amount: number
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: Date | string | null
+    created_at?: Date | string
+    consultation: ConsultationCreateNestedOneWithoutInvoiceInput
+    prescription?: PrescriptionCreateNestedOneWithoutInvoiceInput
+  }
+
+  export type InvoiceUncheckedCreateInput = {
+    invoice_id?: number
+    consultation_id: number
+    prescription_id?: number | null
+    total_drug_cost: number
+    doctor_fee: number
+    discount?: number
+    total_amount: number
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: Date | string | null
+    created_at?: Date | string
+  }
+
+  export type InvoiceUpdateInput = {
+    total_drug_cost?: FloatFieldUpdateOperationsInput | number
+    doctor_fee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
+    is_finalized?: BoolFieldUpdateOperationsInput | boolean
+    finalized_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    consultation?: ConsultationUpdateOneRequiredWithoutInvoiceNestedInput
+    prescription?: PrescriptionUpdateOneWithoutInvoiceNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateInput = {
+    invoice_id?: IntFieldUpdateOperationsInput | number
+    consultation_id?: IntFieldUpdateOperationsInput | number
+    prescription_id?: NullableIntFieldUpdateOperationsInput | number | null
+    total_drug_cost?: FloatFieldUpdateOperationsInput | number
+    doctor_fee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
+    is_finalized?: BoolFieldUpdateOperationsInput | boolean
+    finalized_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InvoiceCreateManyInput = {
+    invoice_id?: number
+    consultation_id: number
+    prescription_id?: number | null
+    total_drug_cost: number
+    doctor_fee: number
+    discount?: number
+    total_amount: number
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: Date | string | null
+    created_at?: Date | string
+  }
+
+  export type InvoiceUpdateManyMutationInput = {
+    total_drug_cost?: FloatFieldUpdateOperationsInput | number
+    doctor_fee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
+    is_finalized?: BoolFieldUpdateOperationsInput | boolean
+    finalized_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
+  export type InvoiceUncheckedUpdateManyInput = {
+    invoice_id?: IntFieldUpdateOperationsInput | number
+    consultation_id?: IntFieldUpdateOperationsInput | number
+    prescription_id?: NullableIntFieldUpdateOperationsInput | number | null
+    total_drug_cost?: FloatFieldUpdateOperationsInput | number
+    doctor_fee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
+    is_finalized?: BoolFieldUpdateOperationsInput | boolean
+    finalized_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21663,6 +23101,11 @@ export namespace Prisma {
     none?: OutsideDrugWhereInput
   }
 
+  export type InvoiceNullableScalarRelationFilter = {
+    is?: InvoiceWhereInput | null
+    isNot?: InvoiceWhereInput | null
+  }
+
   export type ExaminationListRelationFilter = {
     every?: ExaminationWhereInput
     some?: ExaminationWhereInput
@@ -22028,9 +23471,9 @@ export namespace Prisma {
     not?: NestedIntNullableFilter<$PrismaModel> | number | null
   }
 
-  export type PrescriptionScalarRelationFilter = {
-    is?: PrescriptionWhereInput
-    isNot?: PrescriptionWhereInput
+  export type PrescriptionNullableScalarRelationFilter = {
+    is?: PrescriptionWhereInput | null
+    isNot?: PrescriptionWhereInput | null
   }
 
   export type DrugNullableScalarRelationFilter = {
@@ -22281,11 +23724,6 @@ export namespace Prisma {
     isNot?: ConsultationWhereInput | null
   }
 
-  export type PrescriptionNullableScalarRelationFilter = {
-    is?: PrescriptionWhereInput | null
-    isNot?: PrescriptionWhereInput | null
-  }
-
   export type OutsideDrugOrderByRelevanceInput = {
     fields: OutsideDrugOrderByRelevanceFieldEnum | OutsideDrugOrderByRelevanceFieldEnum[]
     sort: SortOrder
@@ -22339,6 +23777,68 @@ export namespace Prisma {
     prescription_id?: SortOrder
     quantity?: SortOrder
     price?: SortOrder
+  }
+
+  export type InvoiceCountOrderByAggregateInput = {
+    invoice_id?: SortOrder
+    consultation_id?: SortOrder
+    prescription_id?: SortOrder
+    total_drug_cost?: SortOrder
+    doctor_fee?: SortOrder
+    discount?: SortOrder
+    total_amount?: SortOrder
+    is_patient_denied?: SortOrder
+    is_finalized?: SortOrder
+    finalized_at?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type InvoiceAvgOrderByAggregateInput = {
+    invoice_id?: SortOrder
+    consultation_id?: SortOrder
+    prescription_id?: SortOrder
+    total_drug_cost?: SortOrder
+    doctor_fee?: SortOrder
+    discount?: SortOrder
+    total_amount?: SortOrder
+  }
+
+  export type InvoiceMaxOrderByAggregateInput = {
+    invoice_id?: SortOrder
+    consultation_id?: SortOrder
+    prescription_id?: SortOrder
+    total_drug_cost?: SortOrder
+    doctor_fee?: SortOrder
+    discount?: SortOrder
+    total_amount?: SortOrder
+    is_patient_denied?: SortOrder
+    is_finalized?: SortOrder
+    finalized_at?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type InvoiceMinOrderByAggregateInput = {
+    invoice_id?: SortOrder
+    consultation_id?: SortOrder
+    prescription_id?: SortOrder
+    total_drug_cost?: SortOrder
+    doctor_fee?: SortOrder
+    discount?: SortOrder
+    total_amount?: SortOrder
+    is_patient_denied?: SortOrder
+    is_finalized?: SortOrder
+    finalized_at?: SortOrder
+    created_at?: SortOrder
+  }
+
+  export type InvoiceSumOrderByAggregateInput = {
+    invoice_id?: SortOrder
+    consultation_id?: SortOrder
+    prescription_id?: SortOrder
+    total_drug_cost?: SortOrder
+    doctor_fee?: SortOrder
+    discount?: SortOrder
+    total_amount?: SortOrder
   }
 
   export type ConsultationCreateNestedManyWithoutDoctorInput = {
@@ -22655,6 +24155,12 @@ export namespace Prisma {
     connect?: OutsideDrugWhereUniqueInput | OutsideDrugWhereUniqueInput[]
   }
 
+  export type InvoiceCreateNestedOneWithoutConsultationInput = {
+    create?: XOR<InvoiceCreateWithoutConsultationInput, InvoiceUncheckedCreateWithoutConsultationInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutConsultationInput
+    connect?: InvoiceWhereUniqueInput
+  }
+
   export type ExaminationCreateNestedManyWithoutConsultationInput = {
     create?: XOR<ExaminationCreateWithoutConsultationInput, ExaminationUncheckedCreateWithoutConsultationInput> | ExaminationCreateWithoutConsultationInput[] | ExaminationUncheckedCreateWithoutConsultationInput[]
     connectOrCreate?: ExaminationCreateOrConnectWithoutConsultationInput | ExaminationCreateOrConnectWithoutConsultationInput[]
@@ -22702,6 +24208,12 @@ export namespace Prisma {
     connectOrCreate?: OutsideDrugCreateOrConnectWithoutConsultationInput | OutsideDrugCreateOrConnectWithoutConsultationInput[]
     createMany?: OutsideDrugCreateManyConsultationInputEnvelope
     connect?: OutsideDrugWhereUniqueInput | OutsideDrugWhereUniqueInput[]
+  }
+
+  export type InvoiceUncheckedCreateNestedOneWithoutConsultationInput = {
+    create?: XOR<InvoiceCreateWithoutConsultationInput, InvoiceUncheckedCreateWithoutConsultationInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutConsultationInput
+    connect?: InvoiceWhereUniqueInput
   }
 
   export type ExaminationUncheckedCreateNestedManyWithoutConsultationInput = {
@@ -22781,6 +24293,16 @@ export namespace Prisma {
     update?: OutsideDrugUpdateWithWhereUniqueWithoutConsultationInput | OutsideDrugUpdateWithWhereUniqueWithoutConsultationInput[]
     updateMany?: OutsideDrugUpdateManyWithWhereWithoutConsultationInput | OutsideDrugUpdateManyWithWhereWithoutConsultationInput[]
     deleteMany?: OutsideDrugScalarWhereInput | OutsideDrugScalarWhereInput[]
+  }
+
+  export type InvoiceUpdateOneWithoutConsultationNestedInput = {
+    create?: XOR<InvoiceCreateWithoutConsultationInput, InvoiceUncheckedCreateWithoutConsultationInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutConsultationInput
+    upsert?: InvoiceUpsertWithoutConsultationInput
+    disconnect?: InvoiceWhereInput | boolean
+    delete?: InvoiceWhereInput | boolean
+    connect?: InvoiceWhereUniqueInput
+    update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutConsultationInput, InvoiceUpdateWithoutConsultationInput>, InvoiceUncheckedUpdateWithoutConsultationInput>
   }
 
   export type ExaminationUpdateManyWithoutConsultationNestedInput = {
@@ -22879,6 +24401,16 @@ export namespace Prisma {
     update?: OutsideDrugUpdateWithWhereUniqueWithoutConsultationInput | OutsideDrugUpdateWithWhereUniqueWithoutConsultationInput[]
     updateMany?: OutsideDrugUpdateManyWithWhereWithoutConsultationInput | OutsideDrugUpdateManyWithWhereWithoutConsultationInput[]
     deleteMany?: OutsideDrugScalarWhereInput | OutsideDrugScalarWhereInput[]
+  }
+
+  export type InvoiceUncheckedUpdateOneWithoutConsultationNestedInput = {
+    create?: XOR<InvoiceCreateWithoutConsultationInput, InvoiceUncheckedCreateWithoutConsultationInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutConsultationInput
+    upsert?: InvoiceUpsertWithoutConsultationInput
+    disconnect?: InvoiceWhereInput | boolean
+    delete?: InvoiceWhereInput | boolean
+    connect?: InvoiceWhereUniqueInput
+    update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutConsultationInput, InvoiceUpdateWithoutConsultationInput>, InvoiceUncheckedUpdateWithoutConsultationInput>
   }
 
   export type ExaminationUncheckedUpdateManyWithoutConsultationNestedInput = {
@@ -23041,6 +24573,12 @@ export namespace Prisma {
     connect?: OutsideDrugWhereUniqueInput | OutsideDrugWhereUniqueInput[]
   }
 
+  export type InvoiceCreateNestedOneWithoutPrescriptionInput = {
+    create?: XOR<InvoiceCreateWithoutPrescriptionInput, InvoiceUncheckedCreateWithoutPrescriptionInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutPrescriptionInput
+    connect?: InvoiceWhereUniqueInput
+  }
+
   export type PrescriptionItemUncheckedCreateNestedManyWithoutPrescriptionInput = {
     create?: XOR<PrescriptionItemCreateWithoutPrescriptionInput, PrescriptionItemUncheckedCreateWithoutPrescriptionInput> | PrescriptionItemCreateWithoutPrescriptionInput[] | PrescriptionItemUncheckedCreateWithoutPrescriptionInput[]
     connectOrCreate?: PrescriptionItemCreateOrConnectWithoutPrescriptionInput | PrescriptionItemCreateOrConnectWithoutPrescriptionInput[]
@@ -23053,6 +24591,12 @@ export namespace Prisma {
     connectOrCreate?: OutsideDrugCreateOrConnectWithoutPrescriptionInput | OutsideDrugCreateOrConnectWithoutPrescriptionInput[]
     createMany?: OutsideDrugCreateManyPrescriptionInputEnvelope
     connect?: OutsideDrugWhereUniqueInput | OutsideDrugWhereUniqueInput[]
+  }
+
+  export type InvoiceUncheckedCreateNestedOneWithoutPrescriptionInput = {
+    create?: XOR<InvoiceCreateWithoutPrescriptionInput, InvoiceUncheckedCreateWithoutPrescriptionInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutPrescriptionInput
+    connect?: InvoiceWhereUniqueInput
   }
 
   export type FloatFieldUpdateOperationsInput = {
@@ -23099,6 +24643,16 @@ export namespace Prisma {
     deleteMany?: OutsideDrugScalarWhereInput | OutsideDrugScalarWhereInput[]
   }
 
+  export type InvoiceUpdateOneWithoutPrescriptionNestedInput = {
+    create?: XOR<InvoiceCreateWithoutPrescriptionInput, InvoiceUncheckedCreateWithoutPrescriptionInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutPrescriptionInput
+    upsert?: InvoiceUpsertWithoutPrescriptionInput
+    disconnect?: InvoiceWhereInput | boolean
+    delete?: InvoiceWhereInput | boolean
+    connect?: InvoiceWhereUniqueInput
+    update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutPrescriptionInput, InvoiceUpdateWithoutPrescriptionInput>, InvoiceUncheckedUpdateWithoutPrescriptionInput>
+  }
+
   export type PrescriptionItemUncheckedUpdateManyWithoutPrescriptionNestedInput = {
     create?: XOR<PrescriptionItemCreateWithoutPrescriptionInput, PrescriptionItemUncheckedCreateWithoutPrescriptionInput> | PrescriptionItemCreateWithoutPrescriptionInput[] | PrescriptionItemUncheckedCreateWithoutPrescriptionInput[]
     connectOrCreate?: PrescriptionItemCreateOrConnectWithoutPrescriptionInput | PrescriptionItemCreateOrConnectWithoutPrescriptionInput[]
@@ -23127,6 +24681,16 @@ export namespace Prisma {
     deleteMany?: OutsideDrugScalarWhereInput | OutsideDrugScalarWhereInput[]
   }
 
+  export type InvoiceUncheckedUpdateOneWithoutPrescriptionNestedInput = {
+    create?: XOR<InvoiceCreateWithoutPrescriptionInput, InvoiceUncheckedCreateWithoutPrescriptionInput>
+    connectOrCreate?: InvoiceCreateOrConnectWithoutPrescriptionInput
+    upsert?: InvoiceUpsertWithoutPrescriptionInput
+    disconnect?: InvoiceWhereInput | boolean
+    delete?: InvoiceWhereInput | boolean
+    connect?: InvoiceWhereUniqueInput
+    update?: XOR<XOR<InvoiceUpdateToOneWithWhereWithoutPrescriptionInput, InvoiceUpdateWithoutPrescriptionInput>, InvoiceUncheckedUpdateWithoutPrescriptionInput>
+  }
+
   export type PrescriptionCreateNestedOneWithoutItemsInput = {
     create?: XOR<PrescriptionCreateWithoutItemsInput, PrescriptionUncheckedCreateWithoutItemsInput>
     connectOrCreate?: PrescriptionCreateOrConnectWithoutItemsInput
@@ -23139,10 +24703,12 @@ export namespace Prisma {
     connect?: DrugWhereUniqueInput
   }
 
-  export type PrescriptionUpdateOneRequiredWithoutItemsNestedInput = {
+  export type PrescriptionUpdateOneWithoutItemsNestedInput = {
     create?: XOR<PrescriptionCreateWithoutItemsInput, PrescriptionUncheckedCreateWithoutItemsInput>
     connectOrCreate?: PrescriptionCreateOrConnectWithoutItemsInput
     upsert?: PrescriptionUpsertWithoutItemsInput
+    disconnect?: PrescriptionWhereInput | boolean
+    delete?: PrescriptionWhereInput | boolean
     connect?: PrescriptionWhereUniqueInput
     update?: XOR<XOR<PrescriptionUpdateToOneWithWhereWithoutItemsInput, PrescriptionUpdateWithoutItemsInput>, PrescriptionUncheckedUpdateWithoutItemsInput>
   }
@@ -23297,6 +24863,36 @@ export namespace Prisma {
     delete?: PrescriptionWhereInput | boolean
     connect?: PrescriptionWhereUniqueInput
     update?: XOR<XOR<PrescriptionUpdateToOneWithWhereWithoutOutsideDrugsInput, PrescriptionUpdateWithoutOutsideDrugsInput>, PrescriptionUncheckedUpdateWithoutOutsideDrugsInput>
+  }
+
+  export type ConsultationCreateNestedOneWithoutInvoiceInput = {
+    create?: XOR<ConsultationCreateWithoutInvoiceInput, ConsultationUncheckedCreateWithoutInvoiceInput>
+    connectOrCreate?: ConsultationCreateOrConnectWithoutInvoiceInput
+    connect?: ConsultationWhereUniqueInput
+  }
+
+  export type PrescriptionCreateNestedOneWithoutInvoiceInput = {
+    create?: XOR<PrescriptionCreateWithoutInvoiceInput, PrescriptionUncheckedCreateWithoutInvoiceInput>
+    connectOrCreate?: PrescriptionCreateOrConnectWithoutInvoiceInput
+    connect?: PrescriptionWhereUniqueInput
+  }
+
+  export type ConsultationUpdateOneRequiredWithoutInvoiceNestedInput = {
+    create?: XOR<ConsultationCreateWithoutInvoiceInput, ConsultationUncheckedCreateWithoutInvoiceInput>
+    connectOrCreate?: ConsultationCreateOrConnectWithoutInvoiceInput
+    upsert?: ConsultationUpsertWithoutInvoiceInput
+    connect?: ConsultationWhereUniqueInput
+    update?: XOR<XOR<ConsultationUpdateToOneWithWhereWithoutInvoiceInput, ConsultationUpdateWithoutInvoiceInput>, ConsultationUncheckedUpdateWithoutInvoiceInput>
+  }
+
+  export type PrescriptionUpdateOneWithoutInvoiceNestedInput = {
+    create?: XOR<PrescriptionCreateWithoutInvoiceInput, PrescriptionUncheckedCreateWithoutInvoiceInput>
+    connectOrCreate?: PrescriptionCreateOrConnectWithoutInvoiceInput
+    upsert?: PrescriptionUpsertWithoutInvoiceInput
+    disconnect?: PrescriptionWhereInput | boolean
+    delete?: PrescriptionWhereInput | boolean
+    connect?: PrescriptionWhereUniqueInput
+    update?: XOR<XOR<PrescriptionUpdateToOneWithWhereWithoutInvoiceInput, PrescriptionUpdateWithoutInvoiceInput>, PrescriptionUncheckedUpdateWithoutInvoiceInput>
   }
 
   export type NestedIntFilter<$PrismaModel = never> = {
@@ -23561,6 +25157,7 @@ export namespace Prisma {
     patient: PatientCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
@@ -23577,6 +25174,7 @@ export namespace Prisma {
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
@@ -23631,6 +25229,7 @@ export namespace Prisma {
     doctor: UserCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
@@ -23647,6 +25246,7 @@ export namespace Prisma {
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
@@ -23842,6 +25442,7 @@ export namespace Prisma {
     doctor: UserCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
     instructions?: PatientInstructionCreateNestedManyWithoutConsultationInput
@@ -23858,6 +25459,7 @@ export namespace Prisma {
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
     instructions?: PatientInstructionUncheckedCreateNestedManyWithoutConsultationInput
@@ -23889,6 +25491,7 @@ export namespace Prisma {
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
     instructions?: PatientInstructionUpdateManyWithoutConsultationNestedInput
@@ -23905,6 +25508,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
     instructions?: PatientInstructionUncheckedUpdateManyWithoutConsultationNestedInput
@@ -23920,6 +25524,7 @@ export namespace Prisma {
     doctor: UserCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
     instructions?: PatientInstructionCreateNestedManyWithoutConsultationInput
@@ -23936,6 +25541,7 @@ export namespace Prisma {
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
     instructions?: PatientInstructionUncheckedCreateNestedManyWithoutConsultationInput
@@ -23981,6 +25587,7 @@ export namespace Prisma {
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
     instructions?: PatientInstructionUpdateManyWithoutConsultationNestedInput
@@ -23997,6 +25604,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
     instructions?: PatientInstructionUncheckedUpdateManyWithoutConsultationNestedInput
@@ -24088,6 +25696,7 @@ export namespace Prisma {
     created_at?: Date | string
     items?: PrescriptionItemCreateNestedManyWithoutPrescriptionInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutPrescriptionInput
+    invoice?: InvoiceCreateNestedOneWithoutPrescriptionInput
   }
 
   export type PrescriptionUncheckedCreateWithoutConsultationInput = {
@@ -24096,6 +25705,7 @@ export namespace Prisma {
     created_at?: Date | string
     items?: PrescriptionItemUncheckedCreateNestedManyWithoutPrescriptionInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutPrescriptionInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutPrescriptionInput
   }
 
   export type PrescriptionCreateOrConnectWithoutConsultationInput = {
@@ -24135,6 +25745,36 @@ export namespace Prisma {
   export type OutsideDrugCreateManyConsultationInputEnvelope = {
     data: OutsideDrugCreateManyConsultationInput | OutsideDrugCreateManyConsultationInput[]
     skipDuplicates?: boolean
+  }
+
+  export type InvoiceCreateWithoutConsultationInput = {
+    total_drug_cost: number
+    doctor_fee: number
+    discount?: number
+    total_amount: number
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: Date | string | null
+    created_at?: Date | string
+    prescription?: PrescriptionCreateNestedOneWithoutInvoiceInput
+  }
+
+  export type InvoiceUncheckedCreateWithoutConsultationInput = {
+    invoice_id?: number
+    prescription_id?: number | null
+    total_drug_cost: number
+    doctor_fee: number
+    discount?: number
+    total_amount: number
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: Date | string | null
+    created_at?: Date | string
+  }
+
+  export type InvoiceCreateOrConnectWithoutConsultationInput = {
+    where: InvoiceWhereUniqueInput
+    create: XOR<InvoiceCreateWithoutConsultationInput, InvoiceUncheckedCreateWithoutConsultationInput>
   }
 
   export type ExaminationCreateWithoutConsultationInput = {
@@ -24372,6 +26012,42 @@ export namespace Prisma {
     created_at?: DateTimeFilter<"OutsideDrug"> | Date | string
   }
 
+  export type InvoiceUpsertWithoutConsultationInput = {
+    update: XOR<InvoiceUpdateWithoutConsultationInput, InvoiceUncheckedUpdateWithoutConsultationInput>
+    create: XOR<InvoiceCreateWithoutConsultationInput, InvoiceUncheckedCreateWithoutConsultationInput>
+    where?: InvoiceWhereInput
+  }
+
+  export type InvoiceUpdateToOneWithWhereWithoutConsultationInput = {
+    where?: InvoiceWhereInput
+    data: XOR<InvoiceUpdateWithoutConsultationInput, InvoiceUncheckedUpdateWithoutConsultationInput>
+  }
+
+  export type InvoiceUpdateWithoutConsultationInput = {
+    total_drug_cost?: FloatFieldUpdateOperationsInput | number
+    doctor_fee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
+    is_finalized?: BoolFieldUpdateOperationsInput | boolean
+    finalized_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    prescription?: PrescriptionUpdateOneWithoutInvoiceNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateWithoutConsultationInput = {
+    invoice_id?: IntFieldUpdateOperationsInput | number
+    prescription_id?: NullableIntFieldUpdateOperationsInput | number | null
+    total_drug_cost?: FloatFieldUpdateOperationsInput | number
+    doctor_fee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
+    is_finalized?: BoolFieldUpdateOperationsInput | boolean
+    finalized_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type ExaminationUpsertWithWhereUniqueWithoutConsultationInput = {
     where: ExaminationWhereUniqueInput
     update: XOR<ExaminationUpdateWithoutConsultationInput, ExaminationUncheckedUpdateWithoutConsultationInput>
@@ -24500,6 +26176,7 @@ export namespace Prisma {
     doctor: UserCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     instructions?: PatientInstructionCreateNestedManyWithoutConsultationInput
@@ -24516,6 +26193,7 @@ export namespace Prisma {
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     instructions?: PatientInstructionUncheckedCreateNestedManyWithoutConsultationInput
@@ -24547,6 +26225,7 @@ export namespace Prisma {
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     instructions?: PatientInstructionUpdateManyWithoutConsultationNestedInput
@@ -24563,6 +26242,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     instructions?: PatientInstructionUncheckedUpdateManyWithoutConsultationNestedInput
@@ -24578,6 +26258,7 @@ export namespace Prisma {
     doctor: UserCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
@@ -24594,6 +26275,7 @@ export namespace Prisma {
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
@@ -24625,6 +26307,7 @@ export namespace Prisma {
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
@@ -24641,6 +26324,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
@@ -24656,6 +26340,7 @@ export namespace Prisma {
     doctor: UserCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
@@ -24672,6 +26357,7 @@ export namespace Prisma {
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
@@ -24703,6 +26389,7 @@ export namespace Prisma {
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
@@ -24719,6 +26406,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
@@ -24889,6 +26577,7 @@ export namespace Prisma {
     patient: PatientCreateNestedOneWithoutConsultationsInput
     doctor: UserCreateNestedOneWithoutConsultationsInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
@@ -24905,6 +26594,7 @@ export namespace Prisma {
     notes?: string | null
     created_at?: Date | string
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
@@ -24987,6 +26677,36 @@ export namespace Prisma {
     skipDuplicates?: boolean
   }
 
+  export type InvoiceCreateWithoutPrescriptionInput = {
+    total_drug_cost: number
+    doctor_fee: number
+    discount?: number
+    total_amount: number
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: Date | string | null
+    created_at?: Date | string
+    consultation: ConsultationCreateNestedOneWithoutInvoiceInput
+  }
+
+  export type InvoiceUncheckedCreateWithoutPrescriptionInput = {
+    invoice_id?: number
+    consultation_id: number
+    total_drug_cost: number
+    doctor_fee: number
+    discount?: number
+    total_amount: number
+    is_patient_denied?: boolean
+    is_finalized?: boolean
+    finalized_at?: Date | string | null
+    created_at?: Date | string
+  }
+
+  export type InvoiceCreateOrConnectWithoutPrescriptionInput = {
+    where: InvoiceWhereUniqueInput
+    create: XOR<InvoiceCreateWithoutPrescriptionInput, InvoiceUncheckedCreateWithoutPrescriptionInput>
+  }
+
   export type ConsultationUpsertWithoutPrescriptionsInput = {
     update: XOR<ConsultationUpdateWithoutPrescriptionsInput, ConsultationUncheckedUpdateWithoutPrescriptionsInput>
     create: XOR<ConsultationCreateWithoutPrescriptionsInput, ConsultationUncheckedCreateWithoutPrescriptionsInput>
@@ -25006,6 +26726,7 @@ export namespace Prisma {
     patient?: PatientUpdateOneRequiredWithoutConsultationsNestedInput
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
@@ -25022,6 +26743,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
@@ -25081,11 +26803,48 @@ export namespace Prisma {
     data: XOR<OutsideDrugUpdateManyMutationInput, OutsideDrugUncheckedUpdateManyWithoutPrescriptionInput>
   }
 
+  export type InvoiceUpsertWithoutPrescriptionInput = {
+    update: XOR<InvoiceUpdateWithoutPrescriptionInput, InvoiceUncheckedUpdateWithoutPrescriptionInput>
+    create: XOR<InvoiceCreateWithoutPrescriptionInput, InvoiceUncheckedCreateWithoutPrescriptionInput>
+    where?: InvoiceWhereInput
+  }
+
+  export type InvoiceUpdateToOneWithWhereWithoutPrescriptionInput = {
+    where?: InvoiceWhereInput
+    data: XOR<InvoiceUpdateWithoutPrescriptionInput, InvoiceUncheckedUpdateWithoutPrescriptionInput>
+  }
+
+  export type InvoiceUpdateWithoutPrescriptionInput = {
+    total_drug_cost?: FloatFieldUpdateOperationsInput | number
+    doctor_fee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
+    is_finalized?: BoolFieldUpdateOperationsInput | boolean
+    finalized_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    consultation?: ConsultationUpdateOneRequiredWithoutInvoiceNestedInput
+  }
+
+  export type InvoiceUncheckedUpdateWithoutPrescriptionInput = {
+    invoice_id?: IntFieldUpdateOperationsInput | number
+    consultation_id?: IntFieldUpdateOperationsInput | number
+    total_drug_cost?: FloatFieldUpdateOperationsInput | number
+    doctor_fee?: FloatFieldUpdateOperationsInput | number
+    discount?: FloatFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
+    is_finalized?: BoolFieldUpdateOperationsInput | boolean
+    finalized_at?: NullableDateTimeFieldUpdateOperationsInput | Date | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+  }
+
   export type PrescriptionCreateWithoutItemsInput = {
     total_amount?: number
     created_at?: Date | string
     consultation: ConsultationCreateNestedOneWithoutPrescriptionsInput
     outsideDrugs?: OutsideDrugCreateNestedManyWithoutPrescriptionInput
+    invoice?: InvoiceCreateNestedOneWithoutPrescriptionInput
   }
 
   export type PrescriptionUncheckedCreateWithoutItemsInput = {
@@ -25094,6 +26853,7 @@ export namespace Prisma {
     total_amount?: number
     created_at?: Date | string
     outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutPrescriptionInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutPrescriptionInput
   }
 
   export type PrescriptionCreateOrConnectWithoutItemsInput = {
@@ -25147,6 +26907,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     consultation?: ConsultationUpdateOneRequiredWithoutPrescriptionsNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutPrescriptionNestedInput
+    invoice?: InvoiceUpdateOneWithoutPrescriptionNestedInput
   }
 
   export type PrescriptionUncheckedUpdateWithoutItemsInput = {
@@ -25155,6 +26916,7 @@ export namespace Prisma {
     total_amount?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutPrescriptionNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutPrescriptionNestedInput
   }
 
   export type DrugUpsertWithoutPrescriptionItemsInput = {
@@ -25234,7 +26996,7 @@ export namespace Prisma {
     price: number
     is_outside_drug?: boolean
     is_patient_denied?: boolean
-    prescription: PrescriptionCreateNestedOneWithoutItemsInput
+    prescription?: PrescriptionCreateNestedOneWithoutItemsInput
   }
 
   export type PrescriptionItemUncheckedCreateWithoutDrugInput = {
@@ -25383,6 +27145,7 @@ export namespace Prisma {
     patient: PatientCreateNestedOneWithoutConsultationsInput
     doctor: UserCreateNestedOneWithoutConsultationsInput
     prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationCreateNestedManyWithoutConsultationInput
@@ -25399,6 +27162,7 @@ export namespace Prisma {
     notes?: string | null
     created_at?: Date | string
     prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutConsultationInput
     examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
     consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
     investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
@@ -25416,6 +27180,7 @@ export namespace Prisma {
     created_at?: Date | string
     consultation: ConsultationCreateNestedOneWithoutPrescriptionsInput
     items?: PrescriptionItemCreateNestedManyWithoutPrescriptionInput
+    invoice?: InvoiceCreateNestedOneWithoutPrescriptionInput
   }
 
   export type PrescriptionUncheckedCreateWithoutOutsideDrugsInput = {
@@ -25424,6 +27189,7 @@ export namespace Prisma {
     total_amount?: number
     created_at?: Date | string
     items?: PrescriptionItemUncheckedCreateNestedManyWithoutPrescriptionInput
+    invoice?: InvoiceUncheckedCreateNestedOneWithoutPrescriptionInput
   }
 
   export type PrescriptionCreateOrConnectWithoutOutsideDrugsInput = {
@@ -25450,6 +27216,7 @@ export namespace Prisma {
     patient?: PatientUpdateOneRequiredWithoutConsultationsNestedInput
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
@@ -25466,6 +27233,7 @@ export namespace Prisma {
     notes?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
@@ -25489,6 +27257,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     consultation?: ConsultationUpdateOneRequiredWithoutPrescriptionsNestedInput
     items?: PrescriptionItemUpdateManyWithoutPrescriptionNestedInput
+    invoice?: InvoiceUpdateOneWithoutPrescriptionNestedInput
   }
 
   export type PrescriptionUncheckedUpdateWithoutOutsideDrugsInput = {
@@ -25497,6 +27266,139 @@ export namespace Prisma {
     total_amount?: FloatFieldUpdateOperationsInput | number
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: PrescriptionItemUncheckedUpdateManyWithoutPrescriptionNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutPrescriptionNestedInput
+  }
+
+  export type ConsultationCreateWithoutInvoiceInput = {
+    visit_date: Date | string
+    chief_complaint?: string | null
+    notes?: string | null
+    created_at?: Date | string
+    patient: PatientCreateNestedOneWithoutConsultationsInput
+    doctor: UserCreateNestedOneWithoutConsultationsInput
+    prescriptions?: PrescriptionCreateNestedManyWithoutConsultationInput
+    outsideDrugs?: OutsideDrugCreateNestedManyWithoutConsultationInput
+    examinations?: ExaminationCreateNestedManyWithoutConsultationInput
+    consultationSymptoms?: ConsultationSymptomCreateNestedManyWithoutConsultationInput
+    investigations?: InvestigationCreateNestedManyWithoutConsultationInput
+    instructions?: PatientInstructionCreateNestedManyWithoutConsultationInput
+    diagnoses?: DiagnosisCreateNestedManyWithoutConsultationInput
+  }
+
+  export type ConsultationUncheckedCreateWithoutInvoiceInput = {
+    consultation_id?: number
+    patient_id: number
+    doctor_id: number
+    visit_date: Date | string
+    chief_complaint?: string | null
+    notes?: string | null
+    created_at?: Date | string
+    prescriptions?: PrescriptionUncheckedCreateNestedManyWithoutConsultationInput
+    outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutConsultationInput
+    examinations?: ExaminationUncheckedCreateNestedManyWithoutConsultationInput
+    consultationSymptoms?: ConsultationSymptomUncheckedCreateNestedManyWithoutConsultationInput
+    investigations?: InvestigationUncheckedCreateNestedManyWithoutConsultationInput
+    instructions?: PatientInstructionUncheckedCreateNestedManyWithoutConsultationInput
+    diagnoses?: DiagnosisUncheckedCreateNestedManyWithoutConsultationInput
+  }
+
+  export type ConsultationCreateOrConnectWithoutInvoiceInput = {
+    where: ConsultationWhereUniqueInput
+    create: XOR<ConsultationCreateWithoutInvoiceInput, ConsultationUncheckedCreateWithoutInvoiceInput>
+  }
+
+  export type PrescriptionCreateWithoutInvoiceInput = {
+    total_amount?: number
+    created_at?: Date | string
+    consultation: ConsultationCreateNestedOneWithoutPrescriptionsInput
+    items?: PrescriptionItemCreateNestedManyWithoutPrescriptionInput
+    outsideDrugs?: OutsideDrugCreateNestedManyWithoutPrescriptionInput
+  }
+
+  export type PrescriptionUncheckedCreateWithoutInvoiceInput = {
+    prescription_id?: number
+    consultation_id: number
+    total_amount?: number
+    created_at?: Date | string
+    items?: PrescriptionItemUncheckedCreateNestedManyWithoutPrescriptionInput
+    outsideDrugs?: OutsideDrugUncheckedCreateNestedManyWithoutPrescriptionInput
+  }
+
+  export type PrescriptionCreateOrConnectWithoutInvoiceInput = {
+    where: PrescriptionWhereUniqueInput
+    create: XOR<PrescriptionCreateWithoutInvoiceInput, PrescriptionUncheckedCreateWithoutInvoiceInput>
+  }
+
+  export type ConsultationUpsertWithoutInvoiceInput = {
+    update: XOR<ConsultationUpdateWithoutInvoiceInput, ConsultationUncheckedUpdateWithoutInvoiceInput>
+    create: XOR<ConsultationCreateWithoutInvoiceInput, ConsultationUncheckedCreateWithoutInvoiceInput>
+    where?: ConsultationWhereInput
+  }
+
+  export type ConsultationUpdateToOneWithWhereWithoutInvoiceInput = {
+    where?: ConsultationWhereInput
+    data: XOR<ConsultationUpdateWithoutInvoiceInput, ConsultationUncheckedUpdateWithoutInvoiceInput>
+  }
+
+  export type ConsultationUpdateWithoutInvoiceInput = {
+    visit_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    chief_complaint?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    patient?: PatientUpdateOneRequiredWithoutConsultationsNestedInput
+    doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
+    prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
+    outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
+    consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
+    investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
+    instructions?: PatientInstructionUpdateManyWithoutConsultationNestedInput
+    diagnoses?: DiagnosisUpdateManyWithoutConsultationNestedInput
+  }
+
+  export type ConsultationUncheckedUpdateWithoutInvoiceInput = {
+    consultation_id?: IntFieldUpdateOperationsInput | number
+    patient_id?: IntFieldUpdateOperationsInput | number
+    doctor_id?: IntFieldUpdateOperationsInput | number
+    visit_date?: DateTimeFieldUpdateOperationsInput | Date | string
+    chief_complaint?: NullableStringFieldUpdateOperationsInput | string | null
+    notes?: NullableStringFieldUpdateOperationsInput | string | null
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
+    outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
+    consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
+    investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
+    instructions?: PatientInstructionUncheckedUpdateManyWithoutConsultationNestedInput
+    diagnoses?: DiagnosisUncheckedUpdateManyWithoutConsultationNestedInput
+  }
+
+  export type PrescriptionUpsertWithoutInvoiceInput = {
+    update: XOR<PrescriptionUpdateWithoutInvoiceInput, PrescriptionUncheckedUpdateWithoutInvoiceInput>
+    create: XOR<PrescriptionCreateWithoutInvoiceInput, PrescriptionUncheckedCreateWithoutInvoiceInput>
+    where?: PrescriptionWhereInput
+  }
+
+  export type PrescriptionUpdateToOneWithWhereWithoutInvoiceInput = {
+    where?: PrescriptionWhereInput
+    data: XOR<PrescriptionUpdateWithoutInvoiceInput, PrescriptionUncheckedUpdateWithoutInvoiceInput>
+  }
+
+  export type PrescriptionUpdateWithoutInvoiceInput = {
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    consultation?: ConsultationUpdateOneRequiredWithoutPrescriptionsNestedInput
+    items?: PrescriptionItemUpdateManyWithoutPrescriptionNestedInput
+    outsideDrugs?: OutsideDrugUpdateManyWithoutPrescriptionNestedInput
+  }
+
+  export type PrescriptionUncheckedUpdateWithoutInvoiceInput = {
+    prescription_id?: IntFieldUpdateOperationsInput | number
+    consultation_id?: IntFieldUpdateOperationsInput | number
+    total_amount?: FloatFieldUpdateOperationsInput | number
+    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
+    items?: PrescriptionItemUncheckedUpdateManyWithoutPrescriptionNestedInput
+    outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutPrescriptionNestedInput
   }
 
   export type ConsultationCreateManyDoctorInput = {
@@ -25516,6 +27418,7 @@ export namespace Prisma {
     patient?: PatientUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
@@ -25532,6 +27435,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
@@ -25579,6 +27483,7 @@ export namespace Prisma {
     doctor?: UserUpdateOneRequiredWithoutConsultationsNestedInput
     prescriptions?: PrescriptionUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUpdateManyWithoutConsultationNestedInput
@@ -25595,6 +27500,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     prescriptions?: PrescriptionUncheckedUpdateManyWithoutConsultationNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutConsultationNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutConsultationNestedInput
     examinations?: ExaminationUncheckedUpdateManyWithoutConsultationNestedInput
     consultationSymptoms?: ConsultationSymptomUncheckedUpdateManyWithoutConsultationNestedInput
     investigations?: InvestigationUncheckedUpdateManyWithoutConsultationNestedInput
@@ -25734,6 +27640,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: PrescriptionItemUpdateManyWithoutPrescriptionNestedInput
     outsideDrugs?: OutsideDrugUpdateManyWithoutPrescriptionNestedInput
+    invoice?: InvoiceUpdateOneWithoutPrescriptionNestedInput
   }
 
   export type PrescriptionUncheckedUpdateWithoutConsultationInput = {
@@ -25742,6 +27649,7 @@ export namespace Prisma {
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     items?: PrescriptionItemUncheckedUpdateManyWithoutPrescriptionNestedInput
     outsideDrugs?: OutsideDrugUncheckedUpdateManyWithoutPrescriptionNestedInput
+    invoice?: InvoiceUncheckedUpdateOneWithoutPrescriptionNestedInput
   }
 
   export type PrescriptionUncheckedUpdateManyWithoutConsultationInput = {
@@ -26036,7 +27944,7 @@ export namespace Prisma {
     price?: FloatFieldUpdateOperationsInput | number
     is_outside_drug?: BoolFieldUpdateOperationsInput | boolean
     is_patient_denied?: BoolFieldUpdateOperationsInput | boolean
-    prescription?: PrescriptionUpdateOneRequiredWithoutItemsNestedInput
+    prescription?: PrescriptionUpdateOneWithoutItemsNestedInput
   }
 
   export type PrescriptionItemUncheckedUpdateWithoutDrugInput = {
