@@ -160,11 +160,54 @@ exports.Prisma.PatientScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.SymptomScalarFieldEnum = {
+  symptom_id: 'symptom_id',
+  name: 'name'
+};
+
+exports.Prisma.ExaminationScalarFieldEnum = {
+  examination_id: 'examination_id',
+  consultation_id: 'consultation_id',
+  title: 'title',
+  result: 'result'
+};
+
+exports.Prisma.ConsultationSymptomScalarFieldEnum = {
+  consultation_symptom_id: 'consultation_symptom_id',
+  consultation_id: 'consultation_id',
+  symptom_id: 'symptom_id',
+  severity: 'severity',
+  duration_value: 'duration_value',
+  duration_unit: 'duration_unit'
+};
+
 exports.Prisma.ConsultationScalarFieldEnum = {
   consultation_id: 'consultation_id',
   patient_id: 'patient_id',
   doctor_id: 'doctor_id',
   visit_date: 'visit_date',
+  chief_complaint: 'chief_complaint',
+  notes: 'notes',
+  created_at: 'created_at'
+};
+
+exports.Prisma.InvestigationScalarFieldEnum = {
+  investigation_id: 'investigation_id',
+  consultation_id: 'consultation_id',
+  title: 'title',
+  description: 'description'
+};
+
+exports.Prisma.PatientInstructionScalarFieldEnum = {
+  instruction_id: 'instruction_id',
+  consultation_id: 'consultation_id',
+  instruction: 'instruction'
+};
+
+exports.Prisma.DiagnosisScalarFieldEnum = {
+  diagnosis_id: 'diagnosis_id',
+  consultation_id: 'consultation_id',
+  diagnosis_name: 'diagnosis_name',
   notes: 'notes'
 };
 
@@ -187,6 +230,58 @@ exports.Prisma.PatientAllergyScalarFieldEnum = {
 exports.Prisma.PrescriptionScalarFieldEnum = {
   prescription_id: 'prescription_id',
   consultation_id: 'consultation_id',
+  total_amount: 'total_amount',
+  created_at: 'created_at'
+};
+
+exports.Prisma.PrescriptionItemScalarFieldEnum = {
+  prescription_item_id: 'prescription_item_id',
+  prescription_id: 'prescription_id',
+  drug_id: 'drug_id',
+  drug_name: 'drug_name',
+  dosage: 'dosage',
+  instruction_1: 'instruction_1',
+  instruction_2: 'instruction_2',
+  instruction_3: 'instruction_3',
+  frequency: 'frequency',
+  duration: 'duration',
+  quantity: 'quantity',
+  price: 'price',
+  is_outside_drug: 'is_outside_drug',
+  is_patient_denied: 'is_patient_denied'
+};
+
+exports.Prisma.DrugScalarFieldEnum = {
+  drug_id: 'drug_id',
+  name: 'name',
+  category: 'category',
+  unit_type: 'unit_type',
+  dosage_type: 'dosage_type',
+  selling_price: 'selling_price',
+  reorder_level: 'reorder_level',
+  is_active: 'is_active',
+  created_at: 'created_at'
+};
+
+exports.Prisma.StockBatchScalarFieldEnum = {
+  stock_batch_id: 'stock_batch_id',
+  drug_id: 'drug_id',
+  batch_number: 'batch_number',
+  expiry_date: 'expiry_date',
+  quantity: 'quantity',
+  buying_price: 'buying_price',
+  selling_price: 'selling_price',
+  created_at: 'created_at'
+};
+
+exports.Prisma.OutsideDrugScalarFieldEnum = {
+  outside_drug_id: 'outside_drug_id',
+  consultation_id: 'consultation_id',
+  prescription_id: 'prescription_id',
+  drug_name: 'drug_name',
+  instructions: 'instructions',
+  quantity: 'quantity',
+  price: 'price',
   created_at: 'created_at'
 };
 
@@ -239,7 +334,35 @@ exports.Prisma.PatientOrderByRelevanceFieldEnum = {
   phone: 'phone'
 };
 
+exports.Prisma.SymptomOrderByRelevanceFieldEnum = {
+  name: 'name'
+};
+
+exports.Prisma.ExaminationOrderByRelevanceFieldEnum = {
+  title: 'title',
+  result: 'result'
+};
+
+exports.Prisma.ConsultationSymptomOrderByRelevanceFieldEnum = {
+  duration_unit: 'duration_unit'
+};
+
 exports.Prisma.ConsultationOrderByRelevanceFieldEnum = {
+  chief_complaint: 'chief_complaint',
+  notes: 'notes'
+};
+
+exports.Prisma.InvestigationOrderByRelevanceFieldEnum = {
+  title: 'title',
+  description: 'description'
+};
+
+exports.Prisma.PatientInstructionOrderByRelevanceFieldEnum = {
+  instruction: 'instruction'
+};
+
+exports.Prisma.DiagnosisOrderByRelevanceFieldEnum = {
+  diagnosis_name: 'diagnosis_name',
   notes: 'notes'
 };
 
@@ -254,6 +377,32 @@ exports.Prisma.PatientGuardianOrderByRelevanceFieldEnum = {
 exports.Prisma.PatientAllergyOrderByRelevanceFieldEnum = {
   allergy_name: 'allergy_name'
 };
+
+exports.Prisma.PrescriptionItemOrderByRelevanceFieldEnum = {
+  drug_name: 'drug_name',
+  dosage: 'dosage',
+  instruction_1: 'instruction_1',
+  instruction_2: 'instruction_2',
+  instruction_3: 'instruction_3',
+  frequency: 'frequency',
+  duration: 'duration'
+};
+
+exports.Prisma.DrugOrderByRelevanceFieldEnum = {
+  name: 'name',
+  category: 'category',
+  unit_type: 'unit_type',
+  dosage_type: 'dosage_type'
+};
+
+exports.Prisma.StockBatchOrderByRelevanceFieldEnum = {
+  batch_number: 'batch_number'
+};
+
+exports.Prisma.OutsideDrugOrderByRelevanceFieldEnum = {
+  drug_name: 'drug_name',
+  instructions: 'instructions'
+};
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   DOCTOR: 'DOCTOR',
@@ -265,10 +414,20 @@ exports.Prisma.ModelName = {
   User: 'User',
   AuditLog: 'AuditLog',
   Patient: 'Patient',
+  Symptom: 'Symptom',
+  Examination: 'Examination',
+  ConsultationSymptom: 'ConsultationSymptom',
   Consultation: 'Consultation',
+  Investigation: 'Investigation',
+  PatientInstruction: 'PatientInstruction',
+  Diagnosis: 'Diagnosis',
   PatientGuardian: 'PatientGuardian',
   PatientAllergy: 'PatientAllergy',
-  Prescription: 'Prescription'
+  Prescription: 'Prescription',
+  PrescriptionItem: 'PrescriptionItem',
+  Drug: 'Drug',
+  StockBatch: 'StockBatch',
+  OutsideDrug: 'OutsideDrug'
 };
 
 /**

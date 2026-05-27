@@ -48,8 +48,7 @@ model AuditLog {
 
   created_at DateTime @default(now())
 
-  @@index([actor_user_id])
-  @@index([entity, entity_id])
+  consultations Consultation[]
 }
 
 enum Role {
@@ -78,6 +77,41 @@ model Patient {
   allergies     PatientAllergy[]
 }
 
+model Symptom {
+  symptom_id Int @id @default(autoincrement())
+
+  name String @unique
+
+  consultationSymptoms ConsultationSymptom[]
+}
+
+model Examination {
+  examination_id Int @id @default(autoincrement())
+
+  consultation_id Int
+
+  title  String
+  result String
+
+  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
+}
+
+model ConsultationSymptom {
+  consultation_symptom_id Int @id @default(autoincrement())
+
+  consultation_id Int
+  symptom_id      Int
+
+  severity Float?
+
+  duration_value Float?
+  duration_unit  String?
+
+  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
+
+  symptom Symptom @relation(fields: [symptom_id], references: [symptom_id], onDelete: Cascade)
+}
+
 model Consultation {
   consultation_id Int @id @default(autoincrement())
 
@@ -85,11 +119,51 @@ model Consultation {
   patient    Patient @relation(fields: [patient_id], references: [patient_id])
 
   doctor_id Int
+  doctor    User @relation(fields: [doctor_id], references: [user_id])
 
   visit_date DateTime
   notes      String?
+  created_at DateTime @default(now())
 
-  prescriptions Prescription[]
+  prescriptions        Prescription[]
+  examinations         Examination[]
+  consultationSymptoms ConsultationSymptom[]
+  investigations       Investigation[]
+  instructions         PatientInstruction[]
+  diagnoses            Diagnosis[]
+}
+
+model Investigation {
+  investigation_id Int @id @default(autoincrement())
+
+  consultation_id Int
+
+  title       String
+  description String?
+
+  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
+}
+
+model PatientInstruction {
+  instruction_id Int @id @default(autoincrement())
+
+  consultation_id Int
+
+  instruction String
+
+  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
+}
+
+model Diagnosis {
+  diagnosis_id Int @id @default(autoincrement())
+
+  consultation_id Int
+
+  diagnosis_name String
+
+  notes String?
+
+  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
 }
 
 model PatientGuardian {
@@ -118,7 +192,7 @@ model Prescription {
   prescription_id Int @id @default(autoincrement())
 
   consultation_id Int
-  consultation    Consultation @relation(fields: [consultation_id], references: [consultation_id])
+  consultation    Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
 
   created_at DateTime @default(now())
 }
