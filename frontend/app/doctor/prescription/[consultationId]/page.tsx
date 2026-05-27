@@ -170,13 +170,19 @@ export default function PrescriptionPage({ params }: Props) {
 
   const savePrescription = async () => {
     try {
-      await api.post("/prescriptions", {
+      const response = await api.post("/prescriptions", {
         consultation_id: Number(resolvedParams.consultationId),
         total_amount: totalAmount,
         items,
       });
 
-      alert("Prescription saved");
+      const prescriptionId = response.data?.prescription_id;
+
+      if (!prescriptionId) {
+        throw new Error("Prescription was saved, but the invoice route could not be determined.");
+      }
+
+      router.push(`/doctor/invoice/${prescriptionId}`);
     } catch (error: any) {
       alert(error.response?.data?.message || "Failed to save prescription");
     }
