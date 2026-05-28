@@ -139,134 +139,198 @@ export default function OPDPage({
   }
 
   return (
-    <div className="opd-page">
-      <header className="opd-header">
-        <div className="opd-header-content">
-          <div className="opd-header-left">
-            <span className="opd-header-icon">🏥</span>
-            <div>
-              <h1 className="opd-header-title">OPD Consultation</h1>
-              <p className="opd-header-subtitle">Patient Clinical Assessment</p>
+    <>
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+
+        .header-main,
+        .footer {
+          display: none !important;
+        }
+
+        .main-content {
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+      `}</style>
+
+      <div className="opd-page">
+        {/* ── Animated gradient orbs (matches login) ── */}
+        <div className="opd-orb opd-orb-1" />
+        <div className="opd-orb opd-orb-2" />
+        <div className="opd-orb opd-orb-3" />
+        <div className="opd-grid-lines" />
+
+        {/* ── Header ── */}
+        <header className="opd-header">
+          <div className="opd-header-content">
+            <div className="opd-header-left">
+              <button
+                type="button"
+                className="opd-back-btn"
+                onClick={() => router.back()}
+                title="Go back"
+              >
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M19 12H5" /><polyline points="12 19 5 12 12 5" />
+                </svg>
+              </button>
+              <span className="opd-header-icon">
+                <svg width="18" height="18" viewBox="0 0 40 40" fill="none">
+                  <rect x="16" y="4" width="8" height="32" rx="4" fill="white" />
+                  <rect x="4" y="16" width="32" height="8" rx="4" fill="white" />
+                </svg>
+              </span>
+              <div>
+                <h1 className="opd-header-title">OPD Consultation</h1>
+                <p className="opd-header-subtitle">Patient Clinical Assessment</p>
+              </div>
+            </div>
+            <div className="opd-header-right">
+              <div className="opd-header-badge">
+                <span className="opd-header-badge-dot" />
+                Live Session
+              </div>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      <main className="opd-main">
-        <PatientHeader patient={consultation.patient} />
+        {/* ── Main content ── */}
+        <main className="opd-main">
+          <PatientHeader patient={consultation.patient} />
 
-        <div className="opd-grid">
+          <div className="opd-grid">
 
-          <div className="opd-grid-item col-span-3">
-            <ChiefComplaintCard
+            <div className="opd-grid-item col-span-3">
+              <ChiefComplaintCard
+                  consultation={consultation}
+                  value={chiefComplaint}
+                  onChange={(nextValue) => {
+                    chiefComplaintDirtyRef.current = true;
+                    setChiefComplaint(nextValue);
+                  }}
+              />
+            </div>
+
+            <div className="opd-grid-item col-span-5">
+              <SymptomsCard
+                consultationId={
+                  consultation.consultation_id
+                }
+                symptoms={consultation.symptoms}
+                onDataAdded={handleDataAdded}
+              />
+            </div>
+
+            <div className="opd-grid-item col-span-4">
+              <ExaminationCard
+                ref={examinationCardRef}
+                consultationId={
+                  consultation.consultation_id
+                }
+                examinations={
+                  consultation.examinations
+                }
+                onDataAdded={handleDataAdded}
+              />
+            </div>
+
+            <div className="opd-grid-item col-span-5">
+              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
+              {/* @ts-ignore */}
+              <InvestigationCard
+                consultationId={consultation.consultation_id}
+                investigations={consultation.investigations}
+                onDataAdded={handleDataAdded}
+              />
+
+              <InstructionCard
+                consultationId={
+                  consultation.consultation_id
+                }
+                instructions={
+                  consultation.instructions
+                }
+                onDataAdded={handleDataAdded}
+              />
+            </div>
+
+            <div className="opd-grid-item col-span-3">
+              <DiagnosisCard
+                consultationId={
+                  consultation.consultation_id
+                }
+                diagnoses={
+                  consultation.diagnoses
+                }
+                onDataAdded={handleDataAdded}
+              />
+            </div>
+
+            <div className="opd-grid-item col-span-4">
+              <DoctorNotesCard
                 consultation={consultation}
-                value={chiefComplaint}
+                value={doctorNotes}
                 onChange={(nextValue) => {
-                  chiefComplaintDirtyRef.current = true;
-                  setChiefComplaint(nextValue);
+                  doctorNotesDirtyRef.current = true;
+                  setDoctorNotes(nextValue);
                 }}
-            />
+              />
+            </div>
+
           </div>
+          <div className="opd-submit-container">
+            <button
+              className="opd-submit-btn"
+              disabled={isSubmitting}
+              onClick={async () => {
+                if (!consultation) return;
+                setIsSubmitting(true);
+                try {
+                  await examinationCardRef.current?.saveMetrics();
 
-          <div className="opd-grid-item col-span-5">
-            <SymptomsCard
-              consultationId={
-                consultation.consultation_id
-              }
-              symptoms={consultation.symptoms}
-              onDataAdded={handleDataAdded}
-            />
-          </div>
-
-          <div className="opd-grid-item col-span-4">
-            <ExaminationCard
-              ref={examinationCardRef}
-              consultationId={
-                consultation.consultation_id
-              }
-              examinations={
-                consultation.examinations
-              }
-              onDataAdded={handleDataAdded}
-            />
-          </div>
-
-          <div className="opd-grid-item col-span-5">
-            {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-            {/* @ts-ignore */}
-            <InvestigationCard
-              consultationId={consultation.consultation_id}
-              investigations={consultation.investigations}
-              onDataAdded={handleDataAdded}
-            />
-
-            <InstructionCard
-              consultationId={
-                consultation.consultation_id
-              }
-              instructions={
-                consultation.instructions
-              }
-              onDataAdded={handleDataAdded}
-            />
-          </div>
-
-          <div className="opd-grid-item col-span-3">
-            <DiagnosisCard
-              consultationId={
-                consultation.consultation_id
-              }
-              diagnoses={
-                consultation.diagnoses
-              }
-              onDataAdded={handleDataAdded}
-            />
-          </div>
-
-          <div className="opd-grid-item col-span-4">
-            <DoctorNotesCard
-              consultation={consultation}
-              value={doctorNotes}
-              onChange={(nextValue) => {
-                doctorNotesDirtyRef.current = true;
-                setDoctorNotes(nextValue);
+                  await api.put(
+                    `/consultations/${consultation.consultation_id}`,
+                    {
+                      chief_complaint: chiefComplaint,
+                      notes: doctorNotes,
+                    }
+                  );
+                  chiefComplaintDirtyRef.current = false;
+                  doctorNotesDirtyRef.current = false;
+                  router.push(`/doctor/prescription/${consultation.consultation_id}`);
+                } catch (error) {
+                  console.error(error);
+                  alert("Failed to proceed to prescription");
+                } finally {
+                  setIsSubmitting(false);
+                }
               }}
-            />
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="btn-spinner" style={{
+                    width: 18, height: 18,
+                    border: '2px solid rgba(255,255,255,0.3)',
+                    borderTopColor: '#fff',
+                    borderRadius: '50%',
+                    animation: 'spin 0.7s linear infinite',
+                  }} />
+                  Saving...
+                </>
+              ) : (
+                <>
+                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
+                    <path d="M5 12h14" /><polyline points="12 5 19 12 12 19" />
+                  </svg>
+                  Proceed to Prescription
+                </>
+              )}
+            </button>
           </div>
-
-        </div>
-        <div className="opd-submit-container">
-          <button
-            className="btn-indigo-gradient w-40 ml-auto"
-            disabled={isSubmitting}
-            onClick={async () => {
-              if (!consultation) return;
-              setIsSubmitting(true);
-              try {
-                await examinationCardRef.current?.saveMetrics();
-
-                await api.put(
-                  `/consultations/${consultation.consultation_id}`,
-                  {
-                    chief_complaint: chiefComplaint,
-                    notes: doctorNotes,
-                  }
-                );
-                chiefComplaintDirtyRef.current = false;
-                doctorNotesDirtyRef.current = false;
-                router.push(`/doctor/prescription/${consultation.consultation_id}`);
-              } catch (error) {
-                console.error(error);
-                alert("Failed to proceed to prescription");
-              } finally {
-                setIsSubmitting(false);
-              }
-            }}
-          >
-            {isSubmitting ? "Saving..." : "Next"}
-          </button>
-        </div>
-      </main>
-    </div>
+        </main>
+      </div>
+    </>
   );
 }

@@ -7,15 +7,16 @@ export default function InvoiceDrugTable({
 }: Props) {
 
   return (
-    <div className="rounded-2xl border border-slate-800 bg-slate-900/95 p-4 text-slate-100 shadow-xl shadow-black/20">
+    <div className="text-slate-100">
 
       <h2 className="mb-4 text-lg font-semibold text-slate-50">
         Prescription Medicines
       </h2>
 
-      <table className="w-full border-collapse overflow-hidden rounded-xl border border-slate-800 text-sm">
+      <div className="overflow-x-auto rounded-xl border border-slate-800">
+      <table className="w-full border-collapse text-sm">
 
-        <thead className="bg-slate-800/80 text-slate-200">
+        <thead className="bg-slate-900/80 text-slate-200">
 
           <tr>
             <th className="border border-slate-700 p-3 text-left">
@@ -45,7 +46,7 @@ export default function InvoiceDrugTable({
               key={
                 item.prescription_item_id
               }
-              className="bg-slate-950/40 even:bg-slate-900"
+              className="bg-slate-950/30 even:bg-slate-900/60 hover:bg-slate-900/80 transition-colors"
             >
 
               <td className="border border-slate-800 p-3 text-slate-100">
@@ -71,6 +72,7 @@ export default function InvoiceDrugTable({
         </tbody>
 
       </table>
+      </div>
 
     </div>
   );

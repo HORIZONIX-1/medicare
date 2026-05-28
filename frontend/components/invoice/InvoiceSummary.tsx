@@ -30,7 +30,7 @@ export default function InvoiceSummary({
 }: Props) {
 
   return (
-    <div className="mt-6 rounded-2xl border border-slate-800 bg-slate-900/95 p-4 text-slate-100 shadow-xl shadow-black/20">
+    <div className="text-slate-100">
 
       <h2 className="mb-4 text-lg font-semibold text-slate-50">
         Invoice Summary
@@ -63,7 +63,7 @@ export default function InvoiceSummary({
               )
             }
 
-            className="w-32 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none placeholder-slate-500 focus:border-sky-500"
+            className="w-32 rounded-lg border border-slate-700 bg-transparent px-3 py-2 text-slate-100 outline-none placeholder-slate-500 focus:border-sky-500"
           />
 
         </div>
@@ -83,7 +83,7 @@ export default function InvoiceSummary({
               )
             }
 
-            className="w-32 rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-slate-100 outline-none placeholder-slate-500 focus:border-sky-500"
+            className="w-32 rounded-lg border border-slate-700 bg-transparent px-3 py-2 text-slate-100 outline-none placeholder-slate-500 focus:border-sky-500"
           />
 
         </div>
@@ -104,7 +104,7 @@ export default function InvoiceSummary({
                 e.target.checked
               )
             }
-            className="h-4 w-4 rounded border-slate-600 bg-slate-950 text-sky-500"
+            className="h-4 w-4 rounded border-slate-600 bg-transparent text-sky-500"
           />
 
         </div>

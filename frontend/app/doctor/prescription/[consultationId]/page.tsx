@@ -192,18 +192,17 @@ export default function PrescriptionPage({ params }: Props) {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen bg-slate-950 px-3 py-4 sm:px-5 lg:px-6">
-        <div className="mx-auto flex max-w-[1280px] items-center justify-center rounded-2xl border border-slate-800 bg-slate-900 p-10 text-slate-200 shadow-sm">
-          Loading prescription...
-        </div>
+      <div className="opd-loading-container">
+        <div className="spinner" />
+        <p className="opd-loading-text">Loading prescription...</p>
       </div>
     );
   }
 
   if (loadError) {
     return (
-      <div className="min-h-screen bg-slate-950 px-3 py-4 sm:px-5 lg:px-6">
-        <div className="mx-auto max-w-[1280px] rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-amber-200 shadow-sm">
+      <div className="opd-loading-container">
+        <div className="mx-auto max-w-[900px] rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-amber-200 shadow-sm">
           {loadError}
         </div>
       </div>
@@ -211,117 +210,91 @@ export default function PrescriptionPage({ params }: Props) {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 px-3 py-4 sm:px-5 lg:px-6">
-      <div className="mx-auto flex max-w-[1280px] flex-col gap-4 rounded-2xl border border-slate-800 bg-slate-900 p-4 text-slate-100 shadow-2xl shadow-black/30">
-        <div className="flex items-center justify-between border-b border-slate-800 pb-3">
-          <div className="flex items-center gap-3">
+    <div className="opd-page">
+      <div className="opd-orb opd-orb-1" />
+      <div className="opd-orb opd-orb-2" />
+      <div className="opd-orb opd-orb-3" />
+      <div className="opd-grid-lines" />
+
+      <header className="opd-header">
+        <div className="opd-header-content">
+          <div className="opd-header-left">
             <button
               type="button"
               onClick={() => router.push(`/doctor/opd/${resolvedParams.consultationId}`)}
-              className="rounded-lg border border-slate-700 bg-slate-950 px-3 py-2 text-sm font-medium text-slate-100 hover:bg-slate-800"
+              className="opd-back-btn"
+              title="Back to OPD"
             >
-              ☰
+              ←
             </button>
-            <h1 className="text-xl font-semibold text-slate-50">Prescription</h1>
-          </div>
-
-          <div className="flex items-center gap-4 text-slate-300">
-            <span>📅</span>
-            <span>🔔</span>
-            <div className="flex items-center gap-2">
-              <div className="h-10 w-10 rounded-full bg-slate-700" />
-              <div className="text-right leading-tight">
-                <p className="text-sm font-semibold text-slate-50">
-                  {doctor?.name || "Doctor Profile"}
-                </p>
-                <p className="text-xs text-slate-400">
-                  {doctor?.role || "DOCTOR"}
-                </p>
-              </div>
+            <div>
+              <h1 className="opd-header-title">Prescription</h1>
+              <p className="opd-header-subtitle">Prescription & Invoice</p>
             </div>
-            <span>⌄</span>
+          </div>
+          <div className="opd-header-right">
+            <div className="opd-header-badge">
+              <span className="opd-header-badge-dot" />
+              {patient.name || 'Patient'}
+            </div>
           </div>
         </div>
+      </header>
 
-        <div className="rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-            <div className="flex items-center gap-4">
-              <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-800 text-2xl text-slate-200">👤</div>
-              <div>
-                <div className="mt-2 grid grid-cols-1 gap-3 text-sm text-slate-300 sm:grid-cols-3">
-                  <div>
-                    <div className="text-xs">Name</div>
-                    <div className="font-medium text-slate-100">{patient.name || "-"}</div>
-                  </div>
+      <main className="opd-main">
+        <div className="mx-auto max-w-[1280px] flex flex-col gap-4">
+          <div className="card-modern">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+              <div className="flex items-center gap-4">
+                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-800 text-2xl text-slate-200">👤</div>
+                <div>
+                  <div className="mt-2 grid grid-cols-1 gap-3 text-sm text-slate-300 sm:grid-cols-3">
+                    <div>
+                      <div className="text-xs">Name</div>
+                      <div className="font-medium text-slate-100">{patient.name || "-"}</div>
+                    </div>
 
-                  <div>
-                    <div className="text-xs">Patient Code</div>
-                    <div className="font-medium text-slate-100">{patient.patient_code || "-"}</div>
-                  </div>
+                    <div>
+                      <div className="text-xs">Patient Code</div>
+                      <div className="font-medium text-slate-100">{patient.patient_code || "-"}</div>
+                    </div>
 
-                  <div>
-                    <div className="text-xs">Date of Birth</div>
-                    <div className="font-medium text-slate-100">{patient.date_of_birth ? String(patient.date_of_birth).slice(0,10) : "-"}</div>
+                    <div>
+                      <div className="text-xs">Date of Birth</div>
+                      <div className="font-medium text-slate-100">{patient.date_of_birth ? String(patient.date_of_birth).slice(0,10) : "-"}</div>
+                    </div>
                   </div>
                 </div>
               </div>
-            </div>
 
-            <div className="grid gap-3 sm:grid-cols-3">
-              <div className="rounded-lg border border-slate-800 bg-slate-900 px-4 py-3">
-                <p className="text-xs text-slate-400">Visit Date</p>
-                <p className="mt-1 text-sm font-medium text-slate-100">{String(visitDate).slice(0, 10)}</p>
+              <div className="grid gap-3 sm:grid-cols-3">
+                <div className="rounded-lg px-4 py-3">
+                  <p className="text-xs text-slate-400">Visit Date</p>
+                  <p className="mt-1 text-sm font-medium text-slate-100">{String(visitDate).slice(0, 10)}</p>
+                </div>
+                <div className="rounded-lg px-4 py-3">
+                  <p className="text-xs text-slate-400">Diagnosis</p>
+                  <p className="mt-1 text-sm font-medium text-slate-100">{diagnoses[0] || "Viral Fever"}</p>
+                </div>
+                <div className="rounded-lg px-4 py-3">
+                  <p className="text-xs text-slate-400">Allergies</p>
+                  <p className="mt-1 text-sm font-medium text-slate-100">
+                    {allergies.length > 0 ? allergies.join(", ") : "No allergies recorded"}
+                  </p>
+                </div>
               </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900 px-4 py-3">
-                <p className="text-xs text-slate-400">Diagnosis</p>
-                <p className="mt-1 text-sm font-medium text-slate-100">{diagnoses[0] || "Viral Fever"}</p>
-              </div>
-              <div className="rounded-lg border border-slate-800 bg-slate-900 px-4 py-3">
-                <p className="text-xs text-slate-400">Allergies</p>
-                <p className="mt-1 text-sm font-medium text-slate-100">
-                  {allergies.length > 0 ? allergies.join(", ") : "No allergies recorded"}
-                </p>
-              </div>
-            </div>
 
-            <button
-              type="button"
-              onClick={() => router.push(`/doctor/opd/${resolvedParams.consultationId}`)}
-              className="rounded-lg border border-slate-700 bg-slate-950 px-4 py-2 text-sm font-medium text-slate-100 hover:bg-slate-800"
-            >
-              ← Back to OPD
-            </button>
-          </div>
-        </div>
-
-        {lowStockItem && (
-          <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 px-4 py-3 text-sm text-amber-100">
-            <span className="font-medium">⚠ Stock Alert:</span> {lowStockItem.drug_name} has only {lowStockItem.available_quantity ?? lowStockItem.quantity} tablets remaining in stock.
-          </div>
-        )}
-
-        <div className="rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
-          <div className="mb-3 flex items-center justify-between gap-3">
-            <h2 className="text-base font-semibold text-slate-50">Enter Prescription Medicines</h2>
-            <div className="flex gap-2">
               <button
                 type="button"
-                onClick={addMedicineRow}
-                className="rounded-lg border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 hover:bg-slate-800"
+                onClick={() => router.push(`/doctor/opd/${resolvedParams.consultationId}`)}
+                className="btn-cyan"
               >
-                + Add Medicine
-              </button>
-              <button
-                type="button"
-                onClick={addOutsideDrug}
-                className="rounded-lg border border-blue-500/30 bg-blue-500/10 px-3 py-2 text-sm text-blue-100 hover:bg-blue-500/20"
-              >
-                + Add Outside Drug
+                ← Back to OPD
               </button>
             </div>
           </div>
-
-          <div className="overflow-x-auto rounded-lg border border-slate-800">
+          <div className="card-modern">
+            <div className="overflow-x-auto rounded-lg">
             <table className="min-w-full border-collapse text-sm">
               <thead className="bg-slate-900 text-slate-200">
                 <tr>
@@ -471,13 +444,14 @@ export default function PrescriptionPage({ params }: Props) {
 
           <div className="mt-3 text-xs text-slate-400">* Quantity is auto-calculated based on Duration (D) x Frequency (F) x Dosage (D).</div>
 
-          <div className="mt-4 flex items-center justify-end gap-6 rounded-lg border border-slate-800 bg-slate-900 px-4 py-3 text-sm">
+          <div className="mt-4 flex items-center justify-end gap-6 px-4 py-3 text-sm">
             <div className="font-semibold text-slate-100">Total Items: {totalItems}</div>
             <div className="font-semibold text-slate-100">Total Amount: Rs. {totalAmount.toFixed(2)}</div>
           </div>
+
         </div>
 
-        <div className="rounded-xl border border-slate-800 bg-slate-950 p-4 shadow-sm">
+        <div className="card-modern">
           <h2 className="mb-4 text-base font-semibold text-slate-50">Outside Drug (Not in System)</h2>
           <div className="grid gap-3 lg:grid-cols-[1.1fr_1.4fr_0.8fr_auto]">
             <div>
@@ -486,7 +460,7 @@ export default function PrescriptionPage({ params }: Props) {
                 value={outsideDrug.drug_name}
                 onChange={(e) => setOutsideDrug((current) => ({ ...current, drug_name: e.target.value }))}
                 placeholder="Enter drug name"
-                className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
+                className="w-full rounded-md border border-slate-700 bg-transparent px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
               />
             </div>
             <div>
@@ -495,7 +469,7 @@ export default function PrescriptionPage({ params }: Props) {
                 value={outsideDrug.instructions}
                 onChange={(e) => setOutsideDrug((current) => ({ ...current, instructions: e.target.value }))}
                 placeholder="Enter instructions"
-                className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
+                className="w-full rounded-md border border-slate-700 bg-transparent px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
               />
             </div>
             <div>
@@ -504,14 +478,14 @@ export default function PrescriptionPage({ params }: Props) {
                 value={outsideDrug.quantity}
                 onChange={(e) => setOutsideDrug((current) => ({ ...current, quantity: e.target.value }))}
                 placeholder="Enter quantity"
-                className="w-full rounded-md border border-slate-700 bg-slate-900 px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
+                className="w-full rounded-md border border-slate-700 bg-transparent px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
               />
             </div>
             <div className="flex items-end">
               <button
                 type="button"
                 onClick={addOutsideDrug}
-                className="rounded-lg border border-slate-700 bg-slate-900 px-4 py-2 text-sm text-slate-100 hover:bg-slate-800"
+                className="btn-cyan"
               >
                 + Add Outside Drug
               </button>
@@ -523,7 +497,7 @@ export default function PrescriptionPage({ params }: Props) {
           <button
             type="button"
             onClick={() => router.push(`/doctor/opd/${resolvedParams.consultationId}`)}
-            className="rounded-lg border border-slate-700 bg-slate-950 px-5 py-3 text-sm font-medium text-slate-100 hover:bg-slate-800 sm:self-start"
+            className="btn-cyan sm:self-start"
           >
             ← Back to OPD
           </button>
@@ -531,12 +505,14 @@ export default function PrescriptionPage({ params }: Props) {
           <button
             type="button"
             onClick={savePrescription}
-            className="rounded-lg bg-slate-200 px-6 py-3 text-sm font-semibold text-slate-950 hover:bg-white sm:self-end"
+            className="opd-submit-btn sm:self-end"
           >
             Proceed to Invoice →
           </button>
         </div>
+
       </div>
+    </main>
     </div>
   );
 }

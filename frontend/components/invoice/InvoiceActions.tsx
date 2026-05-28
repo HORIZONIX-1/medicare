@@ -100,18 +100,18 @@ export default function InvoiceActions({
   };
 
   return (
-    <div className="mt-6 flex justify-end gap-4">
+    <div className="flex justify-end gap-4">
 
       <button
         onClick={printInvoice}
-        className="rounded-lg border border-slate-700 bg-slate-900 px-6 py-3 text-slate-100 transition hover:bg-slate-800"
+        className="btn-cyan"
       >
         Print Invoice
       </button>
 
       <button
         onClick={createInvoice}
-        className="rounded-lg bg-sky-500 px-6 py-3 font-semibold text-slate-950 transition hover:bg-sky-400"
+        className="opd-submit-btn"
       >
         Finish Visit
       </button>

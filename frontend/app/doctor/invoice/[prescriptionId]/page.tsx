@@ -57,8 +57,9 @@ export default function InvoicePage({
 
   if (!prescription) {
     return (
-      <div className="min-h-screen bg-slate-950 px-6 py-8 text-slate-100">
-        Loading...
+      <div className="opd-loading-container">
+        <div className="spinner" />
+        <p className="opd-loading-text">Loading invoice...</p>
       </div>
     );
   }
@@ -77,46 +78,89 @@ export default function InvoicePage({
     discount;
 
   return (
-    <div className="min-h-screen bg-slate-950 px-4 py-6 text-slate-100 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-6xl flex-col gap-6">
+    <div className="opd-page">
+      <div className="opd-orb opd-orb-1" />
+      <div className="opd-orb opd-orb-2" />
+      <div className="opd-orb opd-orb-3" />
+      <div className="opd-grid-lines" />
 
-        <h1 className="text-2xl font-bold text-slate-50">
-          Invoice & Print
-        </h1>
+      <header className="opd-header">
+        <div className="opd-header-content">
+          <div className="opd-header-left">
+            <button
+              type="button"
+              onClick={() => window.history.back()}
+              className="opd-back-btn"
+              title="Go back"
+            >
+              ←
+            </button>
+            <div>
+              <h1 className="opd-header-title">Invoice</h1>
+              <p className="opd-header-subtitle">Billing & Print</p>
+            </div>
+          </div>
+          <div className="opd-header-right">
+            <div className="opd-header-badge">
+              <span className="opd-header-badge-dot" />
+              {prescription?.prescription_id || 'Invoice'}
+            </div>
+          </div>
+        </div>
+      </header>
 
-        <InvoiceDrugTable
-          items={prescription.items}
-        />
+      <main className="opd-main">
+        <div className="mx-auto flex max-w-6xl flex-col gap-6">
 
-        <InvoiceSummary
-          drugTotal={drugTotal}
+          <div className="card-modern">
+            <div className="flex items-center justify-between gap-3">
+              <div>
+                <h2 className="card-title mb-2">Invoice & Print</h2>
+                <p className="text-sm text-slate-400">Review medication costs, doctor fee, discounts, and finalize the visit.</p>
+              </div>
+            </div>
+          </div>
 
-          doctorFee={doctorFee}
-          setDoctorFee={setDoctorFee}
+          <div className="card-modern">
+            <InvoiceDrugTable
+              items={prescription.items}
+            />
+          </div>
 
-          discount={discount}
-          setDiscount={setDiscount}
+          <div className="card-modern">
+            <InvoiceSummary
+              drugTotal={drugTotal}
 
-          patientDenied={patientDenied}
-          setPatientDenied={
-            setPatientDenied
-          }
+              doctorFee={doctorFee}
+              setDoctorFee={setDoctorFee}
 
-          finalTotal={finalTotal}
-        />
+              discount={discount}
+              setDiscount={setDiscount}
 
-        <InvoiceActions
-          prescription={prescription}
+              patientDenied={patientDenied}
+              setPatientDenied={
+                setPatientDenied
+              }
 
-          doctorFee={doctorFee}
+              finalTotal={finalTotal}
+            />
+          </div>
 
-          discount={discount}
+          <div className="card-modern">
+            <InvoiceActions
+              prescription={prescription}
 
-          finalTotal={finalTotal}
+              doctorFee={doctorFee}
 
-          patientDenied={patientDenied}
-        />
-      </div>
+              discount={discount}
+
+              finalTotal={finalTotal}
+
+              patientDenied={patientDenied}
+            />
+          </div>
+        </div>
+      </main>
 
     </div>
   );
