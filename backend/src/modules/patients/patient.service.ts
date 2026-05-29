@@ -91,3 +91,30 @@ export const getPatientProfile = async (
     },
   });
 };
+
+export const addPatientAllergy = async (
+  patientId: number,
+  allergyName: string
+) => {
+
+  const normalizedAllergyName = allergyName.trim();
+
+  const existingAllergy =
+    await prisma.patientAllergy.findFirst({
+      where: {
+        patient_id: patientId,
+        allergy_name: normalizedAllergyName,
+      },
+    });
+
+  if (existingAllergy) {
+    return existingAllergy;
+  }
+
+  return prisma.patientAllergy.create({
+    data: {
+      patient_id: patientId,
+      allergy_name: normalizedAllergyName,
+    },
+  });
+};

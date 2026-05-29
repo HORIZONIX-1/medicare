@@ -27,6 +27,9 @@ import InvestigationCard
 import InstructionCard
   from "@/components/opd/InstructionCard";
 
+import AllergyCard
+  from "@/components/opd/AllergyCard";
+
 import DiagnosisCard
   from "@/components/opd/DiagnosisCard";
 
@@ -252,6 +255,12 @@ export default function OPDPage({
                 instructions={
                   consultation.instructions
                 }
+                onDataAdded={handleDataAdded}
+              />
+
+              <AllergyCard
+                patientId={consultation.patient.patient_id}
+                allergies={consultation.patient.allergies}
                 onDataAdded={handleDataAdded}
               />
             </div>

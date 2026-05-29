@@ -53,3 +53,28 @@ export const getPatientProfile = async (req: any, res: any) => {
     res.status(500).json({ message: "Failed to fetch patient profile" });
   }
 };
+
+export const addPatientAllergy = async (req: any, res: any) => {
+  try {
+    const patientId = Number(req.params.id);
+
+    if (Number.isNaN(patientId)) {
+      return res.status(400).json({ message: "Invalid patient id" });
+    }
+
+    const { allergy_name } = req.body;
+
+    if (!allergy_name || !String(allergy_name).trim()) {
+      return res.status(400).json({ message: "Allergy name is required" });
+    }
+
+    const allergy = await patientService.addPatientAllergy(
+      patientId,
+      String(allergy_name)
+    );
+
+    res.status(201).json(allergy);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to add patient allergy" });
+  }
+};
