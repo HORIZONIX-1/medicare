@@ -236,7 +236,7 @@ export default function InvoicePreviewPage({
                 </p>
               </div>
 
-              <div className="text-sm text-slate-400">
+              <div className="text-sm text-slate-400 lg:text-right">
                 <p>Doctor fee: Rs. {doctorFee}</p>
                 <p>Discount: Rs. {discount}</p>
                 <p>
@@ -271,6 +271,16 @@ export default function InvoicePreviewPage({
                 }}
               />
             </PreviewPanel>
+          </div>
+
+          <div className="flex justify-end">
+            <button
+              type="button"
+              onClick={() => router.push("/doctor/patients")}
+              className="opd-submit-btn"
+            >
+              Finish Visit
+            </button>
           </div>
         </div>
       </main>
