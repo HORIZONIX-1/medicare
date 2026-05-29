@@ -13,6 +13,8 @@ interface Props {
   finalTotal: number;
 
   patientDenied: boolean;
+
+  onPreview?: () => void;
 }
 
 export default function InvoiceActions({
@@ -26,6 +28,8 @@ export default function InvoiceActions({
   finalTotal,
 
   patientDenied,
+
+  onPreview,
 }: Props) {
 
   const createInvoice =
@@ -93,21 +97,15 @@ export default function InvoiceActions({
     }
   };
 
-  const printInvoice =
-    () => {
-
-    window.print();
-  };
-
   return (
     <div className="flex justify-end gap-4">
-{/* 
       <button
-        onClick={printInvoice}
+        type="button"
+        onClick={onPreview}
         className="btn-cyan"
       >
-        Print Invoice
-      </button> */}
+        Print
+      </button>
 
       <button
         onClick={createInvoice}

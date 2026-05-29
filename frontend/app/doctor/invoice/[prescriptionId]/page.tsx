@@ -3,6 +3,9 @@
 import { use, useEffect, useState }
   from "react";
 
+import { useRouter }
+  from "next/navigation";
+
 import api from "@/lib/axios";
 
 import InvoiceSummary
@@ -14,15 +17,6 @@ import InvoiceDrugTable
 import InvoiceActions
   from "@/components/invoice/InvoiceActions";
 
-import PrintableInvoice
-  from "@/components/invoice/PrintableInvoice";
-
-import InvoicePDFButtons
-  from "@/components/invoice/InvoicePDFButtons";
-
-import { useRef }
-  from "react";
-
 interface Props {
   params: Promise<{
     prescriptionId: string;
@@ -32,6 +26,9 @@ interface Props {
 export default function InvoicePage({
   params,
 }: Props) {
+
+  const router =
+    useRouter();
 
   const resolvedParams = use(params);
 
@@ -46,9 +43,6 @@ export default function InvoicePage({
 
   const [patientDenied, setPatientDenied] =
     useState(false);
-
-  const printRef =
-    useRef(null);
 
   useEffect(() => {
 
@@ -169,48 +163,17 @@ export default function InvoicePage({
               finalTotal={finalTotal}
 
               patientDenied={patientDenied}
+
+              onPreview={() => {
+                const previewUrl =
+                  `/doctor/invoice/${resolvedParams.prescriptionId}/preview?doctorFee=${doctorFee}&discount=${discount}&patientDenied=${patientDenied ? 1 : 0}`;
+
+                router.push(previewUrl);
+              }}
             />
-            <InvoicePDFButtons
-        printRef={printRef}
-      />
           </div>
         </div>
       </main>
-
-      <div
-        aria-hidden="true"
-        style={{
-          position: "absolute",
-          left: "-10000px",
-          top: 0,
-          pointerEvents: "none",
-          opacity: 0,
-        }}
-      >
-
-        <PrintableInvoice
-          ref={printRef}
-
-          invoice={{
-            consultation:
-              prescription.consultation,
-
-            prescription,
-
-            total_drug_cost:
-              drugTotal,
-
-            doctor_fee:
-              doctorFee,
-
-            discount,
-
-            total_amount:
-              finalTotal,
-          }}
-        />
-
-      </div>
 
     </div>
   );
