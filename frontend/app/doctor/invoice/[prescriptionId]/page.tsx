@@ -14,6 +14,15 @@ import InvoiceDrugTable
 import InvoiceActions
   from "@/components/invoice/InvoiceActions";
 
+import PrintableInvoice
+  from "@/components/invoice/PrintableInvoice";
+
+import InvoicePDFButtons
+  from "@/components/invoice/InvoicePDFButtons";
+
+import { useRef }
+  from "react";
+
 interface Props {
   params: Promise<{
     prescriptionId: string;
@@ -38,6 +47,9 @@ export default function InvoicePage({
   const [patientDenied, setPatientDenied] =
     useState(false);
 
+  const printRef =
+    useRef(null);
+
   useEffect(() => {
 
     fetchPrescription();
@@ -47,13 +59,13 @@ export default function InvoicePage({
   const fetchPrescription =
     async () => {
 
-    const response =
-      await api.get(
-        `/prescriptions/${resolvedParams.prescriptionId}`
-      );
+      const response =
+        await api.get(
+          `/prescriptions/${resolvedParams.prescriptionId}`
+        );
 
-    setPrescription(response.data);
-  };
+      setPrescription(response.data);
+    };
 
   if (!prescription) {
     return (
@@ -158,9 +170,47 @@ export default function InvoicePage({
 
               patientDenied={patientDenied}
             />
+            <InvoicePDFButtons
+        printRef={printRef}
+      />
           </div>
         </div>
       </main>
+
+      <div
+        aria-hidden="true"
+        style={{
+          position: "absolute",
+          left: "-10000px",
+          top: 0,
+          pointerEvents: "none",
+          opacity: 0,
+        }}
+      >
+
+        <PrintableInvoice
+          ref={printRef}
+
+          invoice={{
+            consultation:
+              prescription.consultation,
+
+            prescription,
+
+            total_drug_cost:
+              drugTotal,
+
+            doctor_fee:
+              doctorFee,
+
+            discount,
+
+            total_amount:
+              finalTotal,
+          }}
+        />
+
+      </div>
 
     </div>
   );

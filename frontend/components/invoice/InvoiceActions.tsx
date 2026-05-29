@@ -101,13 +101,13 @@ export default function InvoiceActions({
 
   return (
     <div className="flex justify-end gap-4">
-
+{/* 
       <button
         onClick={printInvoice}
         className="btn-cyan"
       >
         Print Invoice
-      </button>
+      </button> */}
 
       <button
         onClick={createInvoice}
