@@ -190,6 +190,32 @@ export default function InvoicePreviewPage({
   const finalTotal =
     drugTotal + doctorFee - discount;
 
+  const handleFinishVisit =
+    async () => {
+      try {
+        const response = await api.post("/invoices", {
+          consultation_id: prescription.consultation_id,
+          prescription_id: prescription.prescription_id,
+          total_drug_cost: drugTotal,
+          doctor_fee: doctorFee,
+          discount,
+          total_amount: finalTotal,
+          is_patient_denied: patientDenied,
+        });
+
+        const invoiceId = response.data.invoice_id;
+
+        await api.post(`/invoices/${invoiceId}/finalize`);
+
+        window.alert("Visit successful.");
+
+        router.push("/doctor/patients");
+      } catch (error: any) {
+        console.error(error);
+        alert(error.response?.data?.message || "Failed to finish visit");
+      }
+    };
+
   return (
     <div className="opd-page">
       <div className="opd-orb opd-orb-1" />
@@ -276,7 +302,7 @@ export default function InvoicePreviewPage({
           <div className="flex justify-end">
             <button
               type="button"
-              onClick={() => router.push("/doctor/patients")}
+              onClick={handleFinishVisit}
               className="opd-submit-btn"
             >
               Finish Visit

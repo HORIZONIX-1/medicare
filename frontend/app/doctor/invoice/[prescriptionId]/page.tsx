@@ -154,16 +154,6 @@ export default function InvoicePage({
 
           <div className="card-modern">
             <InvoiceActions
-              prescription={prescription}
-
-              doctorFee={doctorFee}
-
-              discount={discount}
-
-              finalTotal={finalTotal}
-
-              patientDenied={patientDenied}
-
               onPreview={() => {
                 const previewUrl =
                   `/doctor/invoice/${resolvedParams.prescriptionId}/preview?doctorFee=${doctorFee}&discount=${discount}&patientDenied=${patientDenied ? 1 : 0}`;
