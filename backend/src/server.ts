@@ -13,6 +13,7 @@ import drugRoutes from "./modules/drugs/drug.routes";
 import stockRoutes from "./modules/stock/stock.routes";
 import { authMiddleware } from "./middleware/auth.middleware";
 import { roleMiddleware } from "./middleware/role.middleware";
+import invoiceRoutes from "./modules/invoices/invoice.routes";
 
 const app = express();
 
@@ -42,6 +43,8 @@ app.use("/diagnoses", diagnoseRoutes);
 app.use("/prescriptions", prescriptionRoutes);
 app.use("/drugs", drugRoutes);
 app.use("/stock", stockRoutes);
+app.use("/invoices", invoiceRoutes);
+
 
 // Example protected routes for each role
 app.get(

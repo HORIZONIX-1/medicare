@@ -285,6 +285,20 @@ exports.Prisma.OutsideDrugScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.InvoiceScalarFieldEnum = {
+  invoice_id: 'invoice_id',
+  consultation_id: 'consultation_id',
+  prescription_id: 'prescription_id',
+  total_drug_cost: 'total_drug_cost',
+  doctor_fee: 'doctor_fee',
+  discount: 'discount',
+  total_amount: 'total_amount',
+  is_patient_denied: 'is_patient_denied',
+  is_finalized: 'is_finalized',
+  finalized_at: 'finalized_at',
+  created_at: 'created_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -427,7 +441,8 @@ exports.Prisma.ModelName = {
   PrescriptionItem: 'PrescriptionItem',
   Drug: 'Drug',
   StockBatch: 'StockBatch',
-  OutsideDrug: 'OutsideDrug'
+  OutsideDrug: 'OutsideDrug',
+  Invoice: 'Invoice'
 };
 
 /**

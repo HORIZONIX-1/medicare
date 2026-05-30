@@ -57,36 +57,37 @@ export default function PatientsPage() {
   }
 
   return (
-    <div className="min-h-screen bg-slate-950 text-slate-100 font-sans pb-12">
-      {/* Premium Header */}
-      <header className="bg-slate-900/60 backdrop-blur-xl border-b border-slate-800/80 sticky top-0 z-50 px-6 py-4 flex items-center justify-between">
-        <div className="flex items-center gap-3">
-          <span className="text-2xl">🏥</span>
-          <div>
-            <h1 className="text-lg font-bold tracking-tight text-white">MediCare</h1>
-            <p className="text-[10px] text-indigo-400 font-semibold uppercase tracking-wider">Clinical Hub</p>
-          </div>
-        </div>
+    <div className="opd-page">
+      <div className="opd-orb opd-orb-1" />
+      <div className="opd-orb opd-orb-2" />
+      <div className="opd-orb opd-orb-3" />
+      <div className="opd-grid-lines" />
 
-        <div className="flex items-center gap-4">
-          <div className="text-right hidden sm:block">
-            <p className="text-sm font-semibold text-white">{currentUser?.name}</p>
-            <p className="text-[10px] text-slate-400 font-medium uppercase tracking-wider">{currentUser?.role}</p>
+      <header className="opd-header">
+        <div className="opd-header-content">
+          <div className="opd-header-left">
+            <span className="opd-header-icon">🏥</span>
+            <div>
+              <h1 className="opd-header-title">MediCare</h1>
+              <p className="opd-header-subtitle">Clinical Hub</p>
+            </div>
           </div>
-          <span className="h-8 w-8 bg-indigo-600/30 text-indigo-300 font-bold border border-indigo-500/20 rounded-full flex items-center justify-center text-sm shadow-inner uppercase">
-            {currentUser?.name?.charAt(0) || "U"}
-          </span>
-          <button
-            onClick={handleLogout}
-            className="bg-slate-800 hover:bg-rose-950/20 border border-slate-700/50 hover:border-rose-500/30 text-slate-300 hover:text-rose-400 px-3.5 py-1.5 rounded-xl text-xs font-semibold transition-all duration-200"
-          >
-            Logout
-          </button>
+          <div className="opd-header-right">
+            <div className="opd-header-badge">
+              <span className="opd-header-badge-dot" />
+              {currentUser?.name || 'User'}
+            </div>
+            <button
+              onClick={handleLogout}
+              className="btn-cyan"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </header>
 
-      {/* Main Body container */}
-      <main className="max-w-6xl mx-auto px-6 mt-8 space-y-8">
+      <main className="opd-main">
         <div>
           <h2 className="text-2xl font-extrabold text-white tracking-tight">Patient Directory</h2>
           <p className="text-slate-400 text-xs mt-1">Search, evaluate patient records, or register new patients in the EHR system.</p>
@@ -95,7 +96,7 @@ export default function PatientsPage() {
         {/* Forms styling and sections wrapper */}
         <div className="grid grid-cols-1 gap-8">
           
-          <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-3xl overflow-hidden shadow-xl">
+          <div className="card-modern">
             <PatientSearchForm
               searchType={searchType}
               setSearchType={setSearchType}
@@ -105,7 +106,7 @@ export default function PatientsPage() {
             />
           </div>
 
-          <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-3xl overflow-hidden shadow-xl">
+          <div className="card-modern">
             <PatientTable patients={patients} />
           </div>
 
@@ -118,7 +119,7 @@ export default function PatientsPage() {
             </span>
           </div>
 
-          <div className="bg-slate-900/40 backdrop-blur-md border border-slate-800/60 rounded-3xl overflow-hidden shadow-xl">
+          <div className="card-modern">
             <RegisterPatientForm />
           </div>
 
