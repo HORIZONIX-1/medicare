@@ -19,11 +19,6 @@ export type PrismaPromise<T> = $Public.PrismaPromise<T>
  */
 export type User = $Result.DefaultSelection<Prisma.$UserPayload>
 /**
- * Model AuditLog
- * 
- */
-export type AuditLog = $Result.DefaultSelection<Prisma.$AuditLogPayload>
-/**
  * Model Patient
  * 
  */
@@ -250,16 +245,6 @@ export class PrismaClient<
     * ```
     */
   get user(): Prisma.UserDelegate<ExtArgs, ClientOptions>;
-
-  /**
-   * `prisma.auditLog`: Exposes CRUD operations for the **AuditLog** model.
-    * Example usage:
-    * ```ts
-    * // Fetch zero or more AuditLogs
-    * const auditLogs = await prisma.auditLog.findMany()
-    * ```
-    */
-  get auditLog(): Prisma.AuditLogDelegate<ExtArgs, ClientOptions>;
 
   /**
    * `prisma.patient`: Exposes CRUD operations for the **Patient** model.
@@ -862,7 +847,6 @@ export namespace Prisma {
 
   export const ModelName: {
     User: 'User',
-    AuditLog: 'AuditLog',
     Patient: 'Patient',
     Symptom: 'Symptom',
     Examination: 'Examination',
@@ -964,72 +948,6 @@ export namespace Prisma {
           count: {
             args: Prisma.UserCountArgs<ExtArgs>
             result: $Utils.Optional<UserCountAggregateOutputType> | number
-          }
-        }
-      }
-      AuditLog: {
-        payload: Prisma.$AuditLogPayload<ExtArgs>
-        fields: Prisma.AuditLogFieldRefs
-        operations: {
-          findUnique: {
-            args: Prisma.AuditLogFindUniqueArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
-          }
-          findUniqueOrThrow: {
-            args: Prisma.AuditLogFindUniqueOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
-          }
-          findFirst: {
-            args: Prisma.AuditLogFindFirstArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload> | null
-          }
-          findFirstOrThrow: {
-            args: Prisma.AuditLogFindFirstOrThrowArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
-          }
-          findMany: {
-            args: Prisma.AuditLogFindManyArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>[]
-          }
-          create: {
-            args: Prisma.AuditLogCreateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
-          }
-          createMany: {
-            args: Prisma.AuditLogCreateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          delete: {
-            args: Prisma.AuditLogDeleteArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
-          }
-          update: {
-            args: Prisma.AuditLogUpdateArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
-          }
-          deleteMany: {
-            args: Prisma.AuditLogDeleteManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          updateMany: {
-            args: Prisma.AuditLogUpdateManyArgs<ExtArgs>
-            result: BatchPayload
-          }
-          upsert: {
-            args: Prisma.AuditLogUpsertArgs<ExtArgs>
-            result: $Utils.PayloadToResult<Prisma.$AuditLogPayload>
-          }
-          aggregate: {
-            args: Prisma.AuditLogAggregateArgs<ExtArgs>
-            result: $Utils.Optional<AggregateAuditLog>
-          }
-          groupBy: {
-            args: Prisma.AuditLogGroupByArgs<ExtArgs>
-            result: $Utils.Optional<AuditLogGroupByOutputType>[]
-          }
-          count: {
-            args: Prisma.AuditLogCountArgs<ExtArgs>
-            result: $Utils.Optional<AuditLogCountAggregateOutputType> | number
           }
         }
       }
@@ -2584,6 +2502,7 @@ export namespace Prisma {
     password: string | null
     role: $Enums.Role | null
     is_first_login: boolean | null
+    is_active: boolean | null
     created_at: Date | null
   }
 
@@ -2594,6 +2513,7 @@ export namespace Prisma {
     password: string | null
     role: $Enums.Role | null
     is_first_login: boolean | null
+    is_active: boolean | null
     created_at: Date | null
   }
 
@@ -2604,6 +2524,7 @@ export namespace Prisma {
     password: number
     role: number
     is_first_login: number
+    is_active: number
     created_at: number
     _all: number
   }
@@ -2624,6 +2545,7 @@ export namespace Prisma {
     password?: true
     role?: true
     is_first_login?: true
+    is_active?: true
     created_at?: true
   }
 
@@ -2634,6 +2556,7 @@ export namespace Prisma {
     password?: true
     role?: true
     is_first_login?: true
+    is_active?: true
     created_at?: true
   }
 
@@ -2644,6 +2567,7 @@ export namespace Prisma {
     password?: true
     role?: true
     is_first_login?: true
+    is_active?: true
     created_at?: true
     _all?: true
   }
@@ -2741,6 +2665,7 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     is_first_login: boolean
+    is_active: boolean
     created_at: Date
     _count: UserCountAggregateOutputType | null
     _avg: UserAvgAggregateOutputType | null
@@ -2770,6 +2695,7 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     is_first_login?: boolean
+    is_active?: boolean
     created_at?: boolean
     consultations?: boolean | User$consultationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -2784,10 +2710,11 @@ export namespace Prisma {
     password?: boolean
     role?: boolean
     is_first_login?: boolean
+    is_active?: boolean
     created_at?: boolean
   }
 
-  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"user_id" | "name" | "email" | "password" | "role" | "is_first_login" | "created_at", ExtArgs["result"]["user"]>
+  export type UserOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"user_id" | "name" | "email" | "password" | "role" | "is_first_login" | "is_active" | "created_at", ExtArgs["result"]["user"]>
   export type UserInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     consultations?: boolean | User$consultationsArgs<ExtArgs>
     _count?: boolean | UserCountOutputTypeDefaultArgs<ExtArgs>
@@ -2805,6 +2732,7 @@ export namespace Prisma {
       password: string
       role: $Enums.Role
       is_first_login: boolean
+      is_active: boolean
       created_at: Date
     }, ExtArgs["result"]["user"]>
     composites: {}
@@ -3182,6 +3110,7 @@ export namespace Prisma {
     readonly password: FieldRef<"User", 'String'>
     readonly role: FieldRef<"User", 'Role'>
     readonly is_first_login: FieldRef<"User", 'Boolean'>
+    readonly is_active: FieldRef<"User", 'Boolean'>
     readonly created_at: FieldRef<"User", 'DateTime'>
   }
     
@@ -16865,8 +16794,6 @@ export namespace Prisma {
     buying_price: number | null
     selling_price: number | null
     created_at: Date | null
-    updated_at: Date | null
-    deleted_at: Date | null
   }
 
   export type StockBatchMaxAggregateOutputType = {
@@ -16878,8 +16805,6 @@ export namespace Prisma {
     buying_price: number | null
     selling_price: number | null
     created_at: Date | null
-    updated_at: Date | null
-    deleted_at: Date | null
   }
 
   export type StockBatchCountAggregateOutputType = {
@@ -16891,8 +16816,6 @@ export namespace Prisma {
     buying_price: number
     selling_price: number
     created_at: number
-    updated_at: number
-    deleted_at: number
     _all: number
   }
 
@@ -16922,8 +16845,6 @@ export namespace Prisma {
     buying_price?: true
     selling_price?: true
     created_at?: true
-    updated_at?: true
-    deleted_at?: true
   }
 
   export type StockBatchMaxAggregateInputType = {
@@ -16935,8 +16856,6 @@ export namespace Prisma {
     buying_price?: true
     selling_price?: true
     created_at?: true
-    updated_at?: true
-    deleted_at?: true
   }
 
   export type StockBatchCountAggregateInputType = {
@@ -16948,8 +16867,6 @@ export namespace Prisma {
     buying_price?: true
     selling_price?: true
     created_at?: true
-    updated_at?: true
-    deleted_at?: true
     _all?: true
   }
 
@@ -17092,8 +17009,6 @@ export namespace Prisma {
     buying_price?: boolean
     selling_price?: boolean
     created_at?: boolean
-    updated_at?: boolean
-    deleted_at?: boolean
   }
 
   export type StockBatchOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"stock_batch_id" | "drug_id" | "batch_number" | "expiry_date" | "quantity" | "buying_price" | "selling_price" | "created_at", ExtArgs["result"]["stockBatch"]>
@@ -20005,6 +19920,7 @@ export namespace Prisma {
     password: 'password',
     role: 'role',
     is_first_login: 'is_first_login',
+    is_active: 'is_active',
     created_at: 'created_at'
   };
 
@@ -20418,6 +20334,7 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
     is_first_login?: BoolFilter<"User"> | boolean
+    is_active?: BoolFilter<"User"> | boolean
     created_at?: DateTimeFilter<"User"> | Date | string
     consultations?: ConsultationListRelationFilter
   }
@@ -20429,6 +20346,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     is_first_login?: SortOrder
+    is_active?: SortOrder
     created_at?: SortOrder
     consultations?: ConsultationOrderByRelationAggregateInput
     _relevance?: UserOrderByRelevanceInput
@@ -20444,6 +20362,7 @@ export namespace Prisma {
     password?: StringFilter<"User"> | string
     role?: EnumRoleFilter<"User"> | $Enums.Role
     is_first_login?: BoolFilter<"User"> | boolean
+    is_active?: BoolFilter<"User"> | boolean
     created_at?: DateTimeFilter<"User"> | Date | string
     consultations?: ConsultationListRelationFilter
   }, "user_id" | "email">
@@ -20455,6 +20374,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     is_first_login?: SortOrder
+    is_active?: SortOrder
     created_at?: SortOrder
     _count?: UserCountOrderByAggregateInput
     _avg?: UserAvgOrderByAggregateInput
@@ -20473,6 +20393,7 @@ export namespace Prisma {
     password?: StringWithAggregatesFilter<"User"> | string
     role?: EnumRoleWithAggregatesFilter<"User"> | $Enums.Role
     is_first_login?: BoolWithAggregatesFilter<"User"> | boolean
+    is_active?: BoolWithAggregatesFilter<"User"> | boolean
     created_at?: DateTimeWithAggregatesFilter<"User"> | Date | string
   }
 
@@ -21590,6 +21511,7 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     is_first_login?: boolean
+    is_active?: boolean
     created_at?: Date | string
     consultations?: ConsultationCreateNestedManyWithoutDoctorInput
   }
@@ -21601,6 +21523,7 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     is_first_login?: boolean
+    is_active?: boolean
     created_at?: Date | string
     consultations?: ConsultationUncheckedCreateNestedManyWithoutDoctorInput
   }
@@ -21611,6 +21534,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_first_login?: BoolFieldUpdateOperationsInput | boolean
+    is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     consultations?: ConsultationUpdateManyWithoutDoctorNestedInput
   }
@@ -21622,6 +21546,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_first_login?: BoolFieldUpdateOperationsInput | boolean
+    is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
     consultations?: ConsultationUncheckedUpdateManyWithoutDoctorNestedInput
   }
@@ -21633,6 +21558,7 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     is_first_login?: boolean
+    is_active?: boolean
     created_at?: Date | string
   }
 
@@ -21642,6 +21568,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_first_login?: BoolFieldUpdateOperationsInput | boolean
+    is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -21652,6 +21579,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_first_login?: BoolFieldUpdateOperationsInput | boolean
+    is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -22800,6 +22728,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     is_first_login?: SortOrder
+    is_active?: SortOrder
     created_at?: SortOrder
   }
 
@@ -22814,6 +22743,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     is_first_login?: SortOrder
+    is_active?: SortOrder
     created_at?: SortOrder
   }
 
@@ -22824,6 +22754,7 @@ export namespace Prisma {
     password?: SortOrder
     role?: SortOrder
     is_first_login?: SortOrder
+    is_active?: SortOrder
     created_at?: SortOrder
   }
 
@@ -25561,144 +25492,6 @@ export namespace Prisma {
     instructions?: PatientInstructionUncheckedCreateNestedManyWithoutConsultationInput
     diagnoses?: DiagnosisUncheckedCreateNestedManyWithoutConsultationInput
   }
-  export type JsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue
-    lte?: InputJsonValue
-    gt?: InputJsonValue
-    gte?: InputJsonValue
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type UserNullableScalarRelationFilter = {
-    is?: UserWhereInput | null
-    isNot?: UserWhereInput | null
-  }
-
-  export type AuditLogOrderByRelevanceInput = {
-    fields: AuditLogOrderByRelevanceFieldEnum | AuditLogOrderByRelevanceFieldEnum[]
-    sort: SortOrder
-    search: string
-  }
-
-  export type AuditLogCountOrderByAggregateInput = {
-    audit_log_id?: SortOrder
-    actor_user_id?: SortOrder
-    action?: SortOrder
-    entity?: SortOrder
-    entity_id?: SortOrder
-    metadata?: SortOrder
-    ip_address?: SortOrder
-    user_agent?: SortOrder
-    created_at?: SortOrder
-  }
-
-  export type AuditLogAvgOrderByAggregateInput = {
-    audit_log_id?: SortOrder
-    actor_user_id?: SortOrder
-  }
-
-  export type AuditLogMaxOrderByAggregateInput = {
-    audit_log_id?: SortOrder
-    actor_user_id?: SortOrder
-    action?: SortOrder
-    entity?: SortOrder
-    entity_id?: SortOrder
-    ip_address?: SortOrder
-    user_agent?: SortOrder
-    created_at?: SortOrder
-  }
-
-  export type AuditLogMinOrderByAggregateInput = {
-    audit_log_id?: SortOrder
-    actor_user_id?: SortOrder
-    action?: SortOrder
-    entity?: SortOrder
-    entity_id?: SortOrder
-    ip_address?: SortOrder
-    user_agent?: SortOrder
-    created_at?: SortOrder
-  }
-
-  export type AuditLogSumOrderByAggregateInput = {
-    audit_log_id?: SortOrder
-    actor_user_id?: SortOrder
-  }
-
-  export type IntNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: number | IntFieldRefInput<$PrismaModel> | null
-    in?: number[] | null
-    notIn?: number[] | null
-    lt?: number | IntFieldRefInput<$PrismaModel>
-    lte?: number | IntFieldRefInput<$PrismaModel>
-    gt?: number | IntFieldRefInput<$PrismaModel>
-    gte?: number | IntFieldRefInput<$PrismaModel>
-    not?: NestedIntNullableWithAggregatesFilter<$PrismaModel> | number | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _avg?: NestedFloatNullableFilter<$PrismaModel>
-    _sum?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedIntNullableFilter<$PrismaModel>
-    _max?: NestedIntNullableFilter<$PrismaModel>
-  }
-
-  export type StringNullableWithAggregatesFilter<$PrismaModel = never> = {
-    equals?: string | StringFieldRefInput<$PrismaModel> | null
-    in?: string[] | null
-    notIn?: string[] | null
-    lt?: string | StringFieldRefInput<$PrismaModel>
-    lte?: string | StringFieldRefInput<$PrismaModel>
-    gt?: string | StringFieldRefInput<$PrismaModel>
-    gte?: string | StringFieldRefInput<$PrismaModel>
-    contains?: string | StringFieldRefInput<$PrismaModel>
-    startsWith?: string | StringFieldRefInput<$PrismaModel>
-    endsWith?: string | StringFieldRefInput<$PrismaModel>
-    search?: string
-    not?: NestedStringNullableWithAggregatesFilter<$PrismaModel> | string | null
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedStringNullableFilter<$PrismaModel>
-    _max?: NestedStringNullableFilter<$PrismaModel>
-  }
-  export type JsonNullableWithAggregatesFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, Exclude<keyof Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>,
-        Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<JsonNullableWithAggregatesFilterBase<$PrismaModel>>, 'path'>>
-
-  export type JsonNullableWithAggregatesFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue
-    lte?: InputJsonValue
-    gt?: InputJsonValue
-    gte?: InputJsonValue
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    _count?: NestedIntNullableFilter<$PrismaModel>
-    _min?: NestedJsonNullableFilter<$PrismaModel>
-    _max?: NestedJsonNullableFilter<$PrismaModel>
-  }
 
   export type ConsultationCreateOrConnectWithoutExaminationsInput = {
     where: ConsultationWhereUniqueInput
@@ -25907,6 +25700,7 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     is_first_login?: boolean
+    is_active?: boolean
     created_at?: Date | string
   }
 
@@ -25917,6 +25711,7 @@ export namespace Prisma {
     password: string
     role: $Enums.Role
     is_first_login?: boolean
+    is_active?: boolean
     created_at?: Date | string
   }
 
@@ -26177,6 +25972,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_first_login?: BoolFieldUpdateOperationsInput | boolean
+    is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -26187,6 +25983,7 @@ export namespace Prisma {
     password?: StringFieldUpdateOperationsInput | string
     role?: EnumRoleFieldUpdateOperationsInput | $Enums.Role
     is_first_login?: BoolFieldUpdateOperationsInput | boolean
+    is_active?: BoolFieldUpdateOperationsInput | boolean
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -26379,39 +26176,6 @@ export namespace Prisma {
     where: DiagnosisWhereUniqueInput
     update: XOR<DiagnosisUpdateWithoutConsultationInput, DiagnosisUncheckedUpdateWithoutConsultationInput>
     create: XOR<DiagnosisCreateWithoutConsultationInput, DiagnosisUncheckedCreateWithoutConsultationInput>
-  }
-  export type NestedJsonNullableFilter<$PrismaModel = never> =
-    | PatchUndefined<
-        Either<Required<NestedJsonNullableFilterBase<$PrismaModel>>, Exclude<keyof Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>,
-        Required<NestedJsonNullableFilterBase<$PrismaModel>>
-      >
-    | OptionalFlat<Omit<Required<NestedJsonNullableFilterBase<$PrismaModel>>, 'path'>>
-
-  export type NestedJsonNullableFilterBase<$PrismaModel = never> = {
-    equals?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-    path?: string
-    mode?: QueryMode | EnumQueryModeFieldRefInput<$PrismaModel>
-    string_contains?: string | StringFieldRefInput<$PrismaModel>
-    string_starts_with?: string | StringFieldRefInput<$PrismaModel>
-    string_ends_with?: string | StringFieldRefInput<$PrismaModel>
-    array_starts_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_ends_with?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    array_contains?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | null
-    lt?: InputJsonValue
-    lte?: InputJsonValue
-    gt?: InputJsonValue
-    gte?: InputJsonValue
-    not?: InputJsonValue | JsonFieldRefInput<$PrismaModel> | JsonNullValueFilter
-  }
-
-  export type AuditLogCreateWithoutActorInput = {
-    action: string
-    entity: string
-    entity_id?: string | null
-    metadata?: NullableJsonNullValueInput | InputJsonValue
-    ip_address?: string | null
-    user_agent?: string | null
-    created_at?: Date | string
   }
 
   export type DiagnosisUpdateWithWhereUniqueWithoutConsultationInput = {
@@ -27716,49 +27480,6 @@ export namespace Prisma {
     visit_date?: DateTimeFieldUpdateOperationsInput | Date | string
     chief_complaint?: NullableStringFieldUpdateOperationsInput | string | null
     notes?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AuditLogCreateManyActorInput = {
-    audit_log_id?: number
-    action: string
-    entity: string
-    entity_id?: string | null
-    metadata?: NullableJsonNullValueInput | InputJsonValue
-    ip_address?: string | null
-    user_agent?: string | null
-    created_at?: Date | string
-  }
-
-  export type AuditLogUpdateWithoutActorInput = {
-    action?: StringFieldUpdateOperationsInput | string
-    entity?: StringFieldUpdateOperationsInput | string
-    entity_id?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableJsonNullValueInput | InputJsonValue
-    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
-    user_agent?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AuditLogUncheckedUpdateWithoutActorInput = {
-    audit_log_id?: IntFieldUpdateOperationsInput | number
-    action?: StringFieldUpdateOperationsInput | string
-    entity?: StringFieldUpdateOperationsInput | string
-    entity_id?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableJsonNullValueInput | InputJsonValue
-    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
-    user_agent?: NullableStringFieldUpdateOperationsInput | string | null
-    created_at?: DateTimeFieldUpdateOperationsInput | Date | string
-  }
-
-  export type AuditLogUncheckedUpdateManyWithoutActorInput = {
-    audit_log_id?: IntFieldUpdateOperationsInput | number
-    action?: StringFieldUpdateOperationsInput | string
-    entity?: StringFieldUpdateOperationsInput | string
-    entity_id?: NullableStringFieldUpdateOperationsInput | string | null
-    metadata?: NullableJsonNullValueInput | InputJsonValue
-    ip_address?: NullableStringFieldUpdateOperationsInput | string | null
-    user_agent?: NullableStringFieldUpdateOperationsInput | string | null
     created_at?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 

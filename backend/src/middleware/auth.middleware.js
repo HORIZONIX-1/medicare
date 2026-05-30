@@ -68,16 +68,11 @@ const authenticate = async (req, _res, next) => {
         is_first_login: true,
         is_active: true,
         created_at: true,
-        deleted_at: true,
       },
     });
 
     if (!user) {
       throw new AuthError("Authenticated user not found");
-    }
-
-    if (user.deleted_at) {
-      throw new AuthError("Authenticated user account has been deleted");
     }
 
     if (!user.is_active) {

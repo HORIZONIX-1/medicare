@@ -33,7 +33,6 @@ const sanitizeUser = (user) => ({
   isFirstLogin: user.is_first_login,
   isActive: user.is_active,
   createdAt: user.created_at,
-  updatedAt: user.updated_at,
 });
 
 const createAccessToken = (user) =>
@@ -70,7 +69,7 @@ const findAdminById = async (userId) => {
     where: { user_id: Number(userId) },
   });
 
-  if (!admin || admin.role !== ADMIN_ROLE || admin.deleted_at) {
+  if (!admin || admin.role !== ADMIN_ROLE) {
     throw new AppError("Admin account not found", 404);
   }
 
@@ -86,7 +85,7 @@ const login = async ({ email, password }) => {
     where: { email },
   });
 
-  if (!admin || admin.role !== ADMIN_ROLE || admin.deleted_at) {
+  if (!admin || admin.role !== ADMIN_ROLE) {
     throw new AppError("Invalid admin credentials", 401);
   }
 

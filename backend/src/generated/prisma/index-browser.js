@@ -129,20 +129,6 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   is_first_login: 'is_first_login',
   is_active: 'is_active',
-  created_at: 'created_at',
-  updated_at: 'updated_at',
-  deleted_at: 'deleted_at'
-};
-
-exports.Prisma.AuditLogScalarFieldEnum = {
-  audit_log_id: 'audit_log_id',
-  actor_user_id: 'actor_user_id',
-  action: 'action',
-  entity: 'entity',
-  entity_id: 'entity_id',
-  metadata: 'metadata',
-  ip_address: 'ip_address',
-  user_agent: 'user_agent',
   created_at: 'created_at'
 };
 
@@ -304,39 +290,15 @@ exports.Prisma.SortOrder = {
   desc: 'desc'
 };
 
-exports.Prisma.NullableJsonNullValueInput = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull
-};
-
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
-};
-
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password'
 };
 
-exports.Prisma.JsonNullValueFilter = {
-  DbNull: Prisma.DbNull,
-  JsonNull: Prisma.JsonNull,
-  AnyNull: Prisma.AnyNull
-};
-
-exports.Prisma.QueryMode = {
-  default: 'default',
-  insensitive: 'insensitive'
-};
-
-exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
-  action: 'action',
-  entity: 'entity',
-  entity_id: 'entity_id',
-  ip_address: 'ip_address',
-  user_agent: 'user_agent'
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
 
 exports.Prisma.PatientOrderByRelevanceFieldEnum = {
@@ -426,7 +388,6 @@ exports.Role = exports.$Enums.Role = {
 
 exports.Prisma.ModelName = {
   User: 'User',
-  AuditLog: 'AuditLog',
   Patient: 'Patient',
   Symptom: 'Symptom',
   Examination: 'Examination',

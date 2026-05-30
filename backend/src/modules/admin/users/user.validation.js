@@ -36,7 +36,7 @@ const listUsersSchema = Joi.object({
   role: Joi.string().valid(...roles),
   isActive: Joi.boolean(),
   includeDeleted: Joi.boolean().default(false),
-  sortBy: Joi.string().valid("name", "email", "role", "created_at", "updated_at").default("created_at"),
+  sortBy: Joi.string().valid("name", "email", "role", "created_at").default("created_at"),
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
 });
 

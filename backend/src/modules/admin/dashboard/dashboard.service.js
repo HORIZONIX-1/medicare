@@ -7,26 +7,22 @@ const getDashboardStats = async () => {
     prisma.user.count({
       where: {
         role: "DOCTOR",
-        deleted_at: null,
       },
     }),
     prisma.user.count({
       where: {
         role: { in: staffRoles },
-        deleted_at: null,
       },
     }),
     prisma.patient.count(),
     prisma.user.count({
       where: {
         is_active: true,
-        deleted_at: null,
       },
     }),
     prisma.user.count({
       where: {
         is_active: false,
-        deleted_at: null,
       },
     }),
   ]);

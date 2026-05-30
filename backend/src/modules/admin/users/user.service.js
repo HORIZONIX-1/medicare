@@ -19,8 +19,6 @@ const userSelect = {
   is_first_login: true,
   is_active: true,
   created_at: true,
-  updated_at: true,
-  deleted_at: true,
 };
 
 const sanitizeUser = (user) => ({
@@ -31,8 +29,6 @@ const sanitizeUser = (user) => ({
   isFirstLogin: user.is_first_login,
   isActive: user.is_active,
   createdAt: user.created_at,
-  updatedAt: user.updated_at,
-  deletedAt: user.deleted_at,
 });
 
 const buildAuditMetadata = (metadata) => {
@@ -67,7 +63,7 @@ const getExistingUser = async (id, options = {}) => {
     select: userSelect,
   });
 
-  if (!user || (!options.includeDeleted && user.deleted_at)) {
+  if (!user) {
     throw new UserManagementError("User not found", 404);
   }
 
@@ -77,15 +73,11 @@ const getExistingUser = async (id, options = {}) => {
 const createUser = async (payload, context = {}) => {
   const existingUser = await prisma.user.findUnique({
     where: { email: payload.email },
-    select: { user_id: true, deleted_at: true },
+    select: { user_id: true },
   });
 
-  if (existingUser && !existingUser.deleted_at) {
+  if (existingUser) {
     throw new UserManagementError("Email is already in use", 409);
-  }
-
-  if (existingUser?.deleted_at) {
-    throw new UserManagementError("A deleted user already exists with this email", 409);
   }
 
   const hashedPassword = await bcrypt.hash(payload.password, PASSWORD_SALT_ROUNDS);
@@ -118,10 +110,6 @@ const getUsers = async (query) => {
   const limit = query.limit;
   const skip = (page - 1) * limit;
   const where = {};
-
-  if (!query.includeDeleted) {
-    where.deleted_at = null;
-  }
 
   if (query.role) {
     where.role = query.role;
@@ -170,7 +158,7 @@ const updateUser = async (id, payload, context = {}) => {
   if (payload.email) {
     const userWithEmail = await prisma.user.findUnique({
       where: { email: payload.email },
-      select: { user_id: true, deleted_at: true },
+      select: { user_id: true },
     });
 
     if (userWithEmail && userWithEmail.user_id !== Number(id)) {
@@ -212,7 +200,6 @@ const softDeleteUser = async (id, context = {}) => {
   const user = await prisma.user.update({
     where: { user_id: Number(id) },
     data: {
-      deleted_at: new Date(),
       is_active: false,
     },
     select: userSelect,

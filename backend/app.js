@@ -73,6 +73,46 @@ const patientRoutes = loadRoute(
   "./src/modules/patients/patient.routes.ts",
   "./dist/src/modules/patients/patient.routes"
 );
+const consultationRoutes = loadRoute(
+  "./src/modules/consultations/consultation.routes.ts",
+  "./dist/src/modules/consultations/consultation.routes"
+);
+const symptomRoutes = loadRoute(
+  "./src/modules/symptoms/symptom.routes.ts",
+  "./dist/src/modules/symptoms/symptom.routes"
+);
+const examinationRoutes = loadRoute(
+  "./src/modules/examinations/examination.routes.ts",
+  "./dist/src/modules/examinations/examination.routes"
+);
+const investigationRoutes = loadRoute(
+  "./src/modules/investigations/investigation.routes.ts",
+  "./dist/src/modules/investigations/investigation.routes"
+);
+const instructionRoutes = loadRoute(
+  "./src/modules/instructions/instruction.routes.ts",
+  "./dist/src/modules/instructions/instruction.routes"
+);
+const diagnoseRoutes = loadRoute(
+  "./src/modules/diagnoses/diagnose.routes.ts",
+  "./dist/src/modules/diagnoses/diagnose.routes"
+);
+const prescriptionRoutes = loadRoute(
+  "./src/modules/prescriptions/prescription.routes.ts",
+  "./dist/src/modules/prescriptions/prescription.routes"
+);
+const drugRoutes = loadRoute(
+  "./src/modules/drugs/drug.routes.ts",
+  "./dist/src/modules/drugs/drug.routes"
+);
+const stockRoutes = loadRoute(
+  "./src/modules/stock/stock.routes.ts",
+  "./dist/src/modules/stock/stock.routes"
+);
+const invoiceRoutes = loadRoute(
+  "./src/modules/invoices/invoice.routes.ts",
+  "./dist/src/modules/invoices/invoice.routes"
+);
 const adminAuthRoutes = loadRoute(
   "./src/modules/admin/auth/auth.routes.js",
   "./src/modules/admin/auth/auth.routes.js"
@@ -150,6 +190,16 @@ app.get("/health", (_req, res) => {
 
 app.use(`${apiPrefix}/auth`, authRoutes);
 app.use(`${apiPrefix}/patients`, patientRoutes);
+app.use(`${apiPrefix}/consultations`, consultationRoutes);
+app.use(`${apiPrefix}/symptoms`, symptomRoutes);
+app.use(`${apiPrefix}/examinations`, examinationRoutes);
+app.use(`${apiPrefix}/investigations`, investigationRoutes);
+app.use(`${apiPrefix}/instructions`, instructionRoutes);
+app.use(`${apiPrefix}/diagnoses`, diagnoseRoutes);
+app.use(`${apiPrefix}/prescriptions`, prescriptionRoutes);
+app.use(`${apiPrefix}/drugs`, drugRoutes);
+app.use(`${apiPrefix}/stock`, stockRoutes);
+app.use(`${apiPrefix}/invoices`, invoiceRoutes);
 app.use("/api/v1/admin/auth", adminAuthRoutes);
 app.use("/api/v1/admin/users", adminUserRoutes);
 app.use("/api/v1/admin/dashboard", adminDashboardRoutes);
