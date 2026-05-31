@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
+import { useEffect, useState } from "react";
 
 type AdminShellProps = {
   children: ReactNode;
@@ -71,37 +72,78 @@ const navGroups: { title?: string; items: NavItem[] }[] = [
     ],
   },
   {
-    title: "Clinic",
-    items: [
-      { label: "Patients", href: "/admin/patients", icon: <><path d="M16 11a4 4 0 1 0-8 0" /><path d="M4 21a8 8 0 0 1 16 0" /><path d="M12 6v4M10 8h4" /></> },
-      { label: "Doctors", href: "/admin/doctors", icon: <><path d="M6 3h12v6a6 6 0 0 1-12 0V3Z" /><path d="M12 15v6M9 18h6" /></> },
-      { label: "Appointments", href: "/admin/appointments", icon: <><rect x="3" y="5" width="18" height="16" rx="2" /><path d="M16 3v4M8 3v4M3 11h18" /></> },
-    ],
-  },
-  {
-    title: "Pharmacy/Stock",
-    items: [
-      { label: "Stock Overview", href: "/admin/stock", icon: <><rect x="5" y="4" width="14" height="16" rx="1" /><path d="M8 8h8M8 12h8M8 16h5" /></> },
-      { label: "Drug Management", href: "/admin/drugs", icon: <><path d="m10 21 9-9a4 4 0 0 0-6-6l-9 9a4 4 0 0 0 6 6Z" /><path d="m8 13 3 3" /></> },
-      { label: "Stock Alerts", href: "/admin/stock-alerts", icon: <><path d="M12 3 2 20h20L12 3Z" /><path d="M12 9v5M12 17h.01" /></> },
-    ],
-  },
-  {
-    items: [
-      { label: "Reports", href: "/admin/reports", icon: <><path d="M4 19V5h16v14H4Z" /><path d="M8 16V9M12 16v-4M16 16V7" /></> },
-    ],
-  },
-  {
     title: "System",
     items: [
-      { label: "Audit Logs", href: "/admin/audit-logs", icon: <><path d="M3 12a9 9 0 1 0 3-6.7" /><path d="M3 3v6h6M12 7v5l3 2" /></> },
-      { label: "Settings", href: "/admin/settings", icon: <><circle cx="12" cy="12" r="3" /><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1-2.1 2.1-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.5V20h-3v-.2a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.9.3l-.1.1L6.6 16.6l.1-.1A1.7 1.7 0 0 0 7 14.6a1.7 1.7 0 0 0-1.5-1H5v-3h.5A1.7 1.7 0 0 0 7 9.6a1.7 1.7 0 0 0-.3-1.9l-.1-.1 2.1-2.1.1.1a1.7 1.7 0 0 0 1.9.3 1.7 1.7 0 0 0 1-1.5V4h3v.4a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.9-.3l.1-.1 2.1 2.1-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.5 1h.1v3h-.1a1.7 1.7 0 0 0-1.5 1.4Z" /></> },
+      {
+        label: "Audit Logs",
+        href: "/admin/audit-logs",
+        icon: (
+          <>
+            <path d="M3 12a9 9 0 1 0 3-6.7" />
+            <path d="M3 3v6h6M12 7v5l3 2" />
+          </>
+        ),
+      },
     ],
   },
 ];
 
 export default function AdminShell({ children, eyebrow, title, description, action }: AdminShellProps) {
   const pathname = usePathname();
+  const router = useRouter();
+  const [adminName, setAdminName] = useState("");
+  const [adminRole, setAdminRole] = useState("");
+  const [initials, setInitials] = useState("");
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    const userStr = localStorage.getItem("user");
+
+    if (!token || !userStr) {
+      router.push("/");
+      return;
+    }
+
+    try {
+      const user = JSON.parse(userStr);
+      if (user.role !== "ADMIN") {
+        router.push("/");
+        return;
+      }
+      setAdminName(user.name || "Administrator");
+      setAdminRole(user.role || "ADMIN");
+
+      // Generate Initials
+      const names = (user.name || "Admin").split(" ");
+      const init = names.map((n: string) => n[0]).join("").toUpperCase().slice(0, 2);
+      setInitials(init || "AD");
+    } catch (_error) {
+      router.push("/");
+      return;
+    }
+
+    setLoading(false);
+  }, [router]);
+
+  const handleLogout = (e: React.MouseEvent) => {
+    e.preventDefault();
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/");
+  };
+
+  if (loading) {
+    return (
+      <div style={{ display: "grid", placeItems: "center", minHeight: "100vh", fontFamily: "sans-serif", background: "#f7f8fa", color: "#111827" }}>
+        <div style={{ textAlign: "center" }}>
+          <div style={{ width: "40px", height: "40px", border: "4px solid #e5e7eb", borderTopColor: "#111827", borderRadius: "50%", animation: "spin 1s linear infinite", margin: "0 auto 16px" }}></div>
+          <div>Loading Admin Portal...</div>
+          <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -145,14 +187,10 @@ export default function AdminShell({ children, eyebrow, title, description, acti
           </nav>
 
           <div className="admin-sidebar-footer">
-            <Link href="/admin/help" className="admin-nav-link">
-              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><circle cx="12" cy="12" r="9" /><path d="M9.5 9a2.5 2.5 0 1 1 4.1 1.9c-.9.7-1.6 1.2-1.6 2.6M12 17h.01" /></svg>
-              <span>Help Center</span>
-            </Link>
-            <Link href="/" className="admin-nav-link danger">
+            <a href="/" onClick={handleLogout} className="admin-nav-link danger" style={{ width: "100%", display: "flex" }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M10 17 15 12l-5-5M15 12H3" /><path d="M13 4h6v16h-6" /></svg>
               <span>Logout</span>
-            </Link>
+            </a>
           </div>
         </aside>
 
@@ -174,10 +212,10 @@ export default function AdminShell({ children, eyebrow, title, description, acti
               </button>
               <div className="admin-profile">
                 <span>
-                  <strong>Dr. Sarah Smith</strong>
-                  <small>Chief Administrator</small>
+                  <strong>{adminName}</strong>
+                  <small>{adminRole}</small>
                 </span>
-                <div className="admin-avatar">SS</div>
+                <div className="admin-avatar">{initials}</div>
               </div>
             </div>
           </header>
