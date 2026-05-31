@@ -129,7 +129,8 @@ exports.Prisma.UserScalarFieldEnum = {
   role: 'role',
   is_first_login: 'is_first_login',
   is_active: 'is_active',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  organization_id: 'organization_id'
 };
 
 exports.Prisma.PatientScalarFieldEnum = {
@@ -143,7 +144,8 @@ exports.Prisma.PatientScalarFieldEnum = {
   phone: 'phone',
   is_profile_completed: 'is_profile_completed',
   created_by: 'created_by',
-  created_at: 'created_at'
+  created_at: 'created_at',
+  organization_id: 'organization_id'
 };
 
 exports.Prisma.SymptomScalarFieldEnum = {
@@ -285,20 +287,50 @@ exports.Prisma.InvoiceScalarFieldEnum = {
   created_at: 'created_at'
 };
 
+exports.Prisma.AuditLogScalarFieldEnum = {
+  audit_log_id: 'audit_log_id',
+  actor_user_id: 'actor_user_id',
+  action: 'action',
+  entity: 'entity',
+  entity_id: 'entity_id',
+  metadata: 'metadata',
+  ip_address: 'ip_address',
+  user_agent: 'user_agent',
+  created_at: 'created_at'
+};
+
+exports.Prisma.OrganizationScalarFieldEnum = {
+  organization_id: 'organization_id',
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  website: 'website',
+  logo_url: 'logo_url',
+  description: 'description',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
+};
+
+exports.Prisma.NullableJsonNullValueInput = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull
+};
+
+exports.Prisma.NullsOrder = {
+  first: 'first',
+  last: 'last'
 };
 
 exports.Prisma.UserOrderByRelevanceFieldEnum = {
   name: 'name',
   email: 'email',
   password: 'password'
-};
-
-exports.Prisma.NullsOrder = {
-  first: 'first',
-  last: 'last'
 };
 
 exports.Prisma.PatientOrderByRelevanceFieldEnum = {
@@ -379,6 +411,35 @@ exports.Prisma.OutsideDrugOrderByRelevanceFieldEnum = {
   drug_name: 'drug_name',
   instructions: 'instructions'
 };
+
+exports.Prisma.JsonNullValueFilter = {
+  DbNull: Prisma.DbNull,
+  JsonNull: Prisma.JsonNull,
+  AnyNull: Prisma.AnyNull
+};
+
+exports.Prisma.QueryMode = {
+  default: 'default',
+  insensitive: 'insensitive'
+};
+
+exports.Prisma.AuditLogOrderByRelevanceFieldEnum = {
+  action: 'action',
+  entity: 'entity',
+  entity_id: 'entity_id',
+  ip_address: 'ip_address',
+  user_agent: 'user_agent'
+};
+
+exports.Prisma.OrganizationOrderByRelevanceFieldEnum = {
+  name: 'name',
+  email: 'email',
+  phone: 'phone',
+  address: 'address',
+  website: 'website',
+  logo_url: 'logo_url',
+  description: 'description'
+};
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   DOCTOR: 'DOCTOR',
@@ -403,7 +464,9 @@ exports.Prisma.ModelName = {
   Drug: 'Drug',
   StockBatch: 'StockBatch',
   OutsideDrug: 'OutsideDrug',
-  Invoice: 'Invoice'
+  Invoice: 'Invoice',
+  AuditLog: 'AuditLog',
+  Organization: 'Organization'
 };
 
 /**
