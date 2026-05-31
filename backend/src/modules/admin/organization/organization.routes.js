@@ -5,7 +5,11 @@ const multer = require("multer");
 const organizationController = require("./organization.controller");
 const { authenticate } = require("../../../middleware/auth.middleware");
 const { requireRoles } = require("../../../middleware/role.middleware");
-const { validate, updateOrganizationSchema } = require("./organization.validation");
+const { 
+  validate, 
+  createOrganizationSchema, 
+  updateOrganizationSchema 
+} = require("./organization.validation");
 
 const router = Router();
 const uploadDirectory = path.join(process.cwd(), "uploads", "organization");
@@ -46,8 +50,14 @@ router.use(authenticate, requireRoles("ADMIN"));
 router
   .route("/")
   .get(organizationController.getOrganization)
-  .patch(validate(updateOrganizationSchema), organizationController.updateOrganization);
+  .post(validate(createOrganizationSchema), organizationController.createOrganization);
 
-router.patch("/logo", upload.single("logo"), organizationController.uploadLogo);
+router
+  .route("/:id")
+  .get(organizationController.getOrganizationById)
+  .patch(validate(updateOrganizationSchema), organizationController.updateOrganization)
+  .delete(organizationController.deleteOrganization);
+
+router.patch("/:id/logo", upload.single("logo"), organizationController.uploadLogo);
 
 module.exports = router;

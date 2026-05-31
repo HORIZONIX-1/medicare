@@ -62,9 +62,10 @@ const sanitizeAuditLog = (log) => ({
 });
 
 const getAuditLogs = async (query) => {
-  const page = query.page;
-  const limit = query.limit;
+  const page = Number.parseInt(query.page || "1", 10);
+  const limit = Number.parseInt(query.limit || "20", 10);
   const skip = (page - 1) * limit;
+  const sortOrder = query.sortOrder === "asc" ? "asc" : "desc";
   const where = {};
 
   if (query.action) {
@@ -112,7 +113,7 @@ const getAuditLogs = async (query) => {
       where,
       skip,
       take: limit,
-      orderBy: { created_at: query.sortOrder },
+      orderBy: { created_at: sortOrder },
       select: {
         audit_log_id: true,
         action: true,
