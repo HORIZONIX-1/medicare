@@ -13,6 +13,7 @@ export interface Consultation {
     gender: string;
 
     phone?: string;
+    allergies: any[];
   };
 
   symptoms: ConsultationSymptom[];
