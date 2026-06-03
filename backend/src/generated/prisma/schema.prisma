@@ -28,7 +28,10 @@ model User {
 
   created_at DateTime @default(now())
 
-  consultations Consultation[]
+  consultations   Consultation[]
+  audit_logs      AuditLog[]
+  organization_id Int?
+  organization    Organization?  @relation(fields: [organization_id], references: [organization_id], onDelete: SetNull)
 }
 
 enum Role {
@@ -52,9 +55,11 @@ model Patient {
   created_by Int
   created_at DateTime @default(now())
 
-  consultations Consultation[]
-  guardians     PatientGuardian[]
-  allergies     PatientAllergy[]
+  consultations   Consultation[]
+  guardians       PatientGuardian[]
+  allergies       PatientAllergy[]
+  organization_id Int?
+  organization    Organization?     @relation(fields: [organization_id], references: [organization_id], onDelete: SetNull)
 }
 
 model Symptom {
@@ -306,4 +311,36 @@ model Invoice {
   finalized_at DateTime?
 
   created_at DateTime @default(now())
+}
+
+model AuditLog {
+  audit_log_id  Int      @id @default(autoincrement())
+  actor_user_id Int?
+  action        String
+  entity        String
+  entity_id     String?
+  metadata      Json?
+  ip_address    String?
+  user_agent    String?
+  created_at    DateTime @default(now())
+
+  actor User? @relation(fields: [actor_user_id], references: [user_id])
+
+  @@index([actor_user_id])
+  @@index([entity, entity_id])
+}
+
+model Organization {
+  organization_id Int       @id @default(autoincrement())
+  name            String
+  email           String?
+  phone           String?
+  address         String?
+  website         String?
+  logo_url        String?
+  description     String?
+  created_at      DateTime  @default(now())
+  updated_at      DateTime  @default(now()) @updatedAt
+  users           User[]
+  patients        Patient[]
 }

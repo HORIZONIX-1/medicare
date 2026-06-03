@@ -22,6 +22,15 @@ const validate = (schema, property = "body") => (req, _res, next) => {
   next();
 };
 
+const createOrganizationSchema = Joi.object({
+  name: Joi.string().trim().min(2).max(150).required(),
+  email: Joi.string().trim().lowercase().email().allow(null, ""),
+  phone: Joi.string().trim().max(30).allow(null, ""),
+  address: Joi.string().trim().max(255).allow(null, ""),
+  website: Joi.string().trim().uri({ scheme: ["http", "https"] }).allow(null, ""),
+  description: Joi.string().trim().max(500).allow(null, ""),
+});
+
 const updateOrganizationSchema = Joi.object({
   name: Joi.string().trim().min(2).max(150),
   email: Joi.string().trim().lowercase().email().allow(null, ""),
@@ -33,5 +42,6 @@ const updateOrganizationSchema = Joi.object({
 
 module.exports = {
   validate,
+  createOrganizationSchema,
   updateOrganizationSchema,
 };
