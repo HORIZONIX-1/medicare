@@ -15,6 +15,5 @@ yarn-error.log*
 *.swp
 *.swo
 
-/generated/prisma
-src/generated/
+/src/generated/
 
