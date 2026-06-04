@@ -6,6 +6,14 @@ import { roleMiddleware } from "../../middleware/role.middleware";
 import {
   createStockBatch,
   getAvailableStock,
+  listStock,
+  getStockBatch,
+  updateStock,
+  removeStock,
+  adjustStock,
+  transferStock,
+  bulkUpdatePrices,
+  getStockValue,
 } from "./stock.controller";
 
 const router = express.Router();
