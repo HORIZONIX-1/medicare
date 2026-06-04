@@ -253,6 +253,8 @@ model Drug {
   stockBatches StockBatch[]
 
   prescriptionItems PrescriptionItem[]
+
+  @@index([is_active, created_at])
 }
 
 model StockBatch {
@@ -280,6 +282,10 @@ model StockBatch {
   selling_price Float
 
   created_at DateTime @default(now())
+
+  @@index([drug_id, quantity])
+  @@index([expiry_date])
+  @@index([created_at])
 }
 
 model Supplier {
@@ -294,6 +300,33 @@ model Supplier {
   created_at DateTime @default(now())
 
   stockBatches StockBatch[]
+}
+
+model DashboardMetric {
+  metric_id   Int      @id @default(autoincrement())
+  metric_key  String   @unique
+  metric_value String
+  calculated_at DateTime @default(now())
+  expires_at   DateTime?
+}
+
+model AuditLog {
+  audit_log_id Int @id @default(autoincrement())
+
+  action String
+  entity String
+  entity_id Int?
+  metadata Json?
+
+  ip_address String?
+  user_agent String?
+
+  actor_id Int?
+  actor User? @relation(fields: [actor_id], references: [user_id])
+
+  created_at DateTime @default(now())
+
+  @@index([created_at])
 }
 
 model OutsideDrug {
