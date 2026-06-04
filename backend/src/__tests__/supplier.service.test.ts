@@ -1,10 +1,26 @@
+jest.mock('../config/prisma', () => ({
+  __esModule: true,
+  default: {
+    supplier: {
+      create: jest.fn(),
+      findMany: jest.fn(),
+      count: jest.fn(),
+      findUnique: jest.fn(),
+      update: jest.fn(),
+    },
+    $transaction: jest.fn((queries: any[]) => Promise.all(queries)),
+  },
+}));
+
 import prisma from '../config/prisma';
-jest.mock('../config/prisma');
 
 import * as supplierService from '../modules/dispenser/supplier.service';
 
 describe('supplier.service', () => {
-  beforeEach(() => jest.resetAllMocks());
+  beforeEach(() => {
+    jest.resetAllMocks();
+    (prisma.$transaction as jest.Mock).mockImplementation((queries: any[]) => Promise.all(queries));
+  });
 
   test('createSupplier delegates to prisma', async () => {
     const supplier = { supplier_id: 1, name: 'Acme' };

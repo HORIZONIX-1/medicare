@@ -1,5 +1,22 @@
+jest.mock('../config/prisma', () => ({
+  __esModule: true,
+  default: {
+    $transaction: jest.fn(),
+    $queryRaw: jest.fn(),
+    auditLog: {
+      findMany: jest.fn(),
+      count: jest.fn(),
+    },
+    drug: {
+      count: jest.fn(),
+    },
+    stockBatch: {
+      count: jest.fn(),
+    },
+  },
+}));
+
 import prisma from '../config/prisma';
-jest.mock('../config/prisma');
 
 import * as reportsService from '../modules/dispenser/reports.service';
 

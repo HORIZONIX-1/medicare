@@ -1,5 +1,17 @@
+jest.mock('../config/prisma', () => ({
+  __esModule: true,
+  default: {
+    stockBatch: {
+      findMany: jest.fn(),
+      create: jest.fn(),
+    },
+    drug: {
+      findUnique: jest.fn(),
+    },
+  },
+}));
+
 import prisma from '../config/prisma';
-jest.mock('../config/prisma');
 
 import * as stockService from '../modules/stock/stock.service';
 

@@ -1,5 +1,14 @@
+jest.mock('../config/prisma', () => ({
+  __esModule: true,
+  default: {
+    $queryRaw: jest.fn(),
+    stockBatch: {
+      findMany: jest.fn(),
+    },
+  },
+}));
+
 import prisma from '../config/prisma';
-jest.mock('../config/prisma');
 
 import * as alertsService from '../modules/dispenser/alerts.service';
 
