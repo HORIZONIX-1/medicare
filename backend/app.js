@@ -125,6 +125,10 @@ const adminDashboardRoutes = loadRoute(
   "./src/modules/admin/dashboard/dashboard.routes.js",
   "./src/modules/admin/dashboard/dashboard.routes.js"
 );
+const dispenserDashboardRoutes = loadRoute(
+  "./src/modules/dispenser/dashboard.routes.ts",
+  "./dist/src/modules/dispenser/dashboard.routes"
+);
 const adminOrganizationRoutes = loadRoute(
   "./src/modules/admin/organization/organization.routes.js",
   "./src/modules/admin/organization/organization.routes.js"
@@ -205,6 +209,7 @@ app.use("/api/v1/admin/users", adminUserRoutes);
 app.use("/api/v1/admin/dashboard", adminDashboardRoutes);
 app.use("/api/v1/admin/organization", adminOrganizationRoutes);
 app.use("/api/v1/admin/audit-logs", adminAuditRoutes);
+app.use("/api/v1/dispenser/dashboard", dispenserDashboardRoutes);
 
 app.get(`${apiPrefix}/protected/admin`, authMiddleware, roleMiddleware("ADMIN"), (_req, res) => {
   res.json({ message: "Admin access granted" });
