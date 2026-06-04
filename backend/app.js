@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
+const { setupSwagger } = require("./src/docs/swagger");
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -207,6 +208,8 @@ app.get("/", (_req, res) => {
 app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
+
+setupSwagger(app);
 
 app.use(`${apiPrefix}/auth`, authRoutes);
 app.use(`${apiPrefix}/patients`, patientRoutes);

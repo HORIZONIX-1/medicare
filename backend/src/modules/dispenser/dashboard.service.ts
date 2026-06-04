@@ -1,4 +1,5 @@
 import prisma from "../../config/prisma";
+import { getCache, setCache } from "../../config/cache";
 
 const parseCount = (row: any) => {
   if (!row) return 0;
@@ -72,6 +73,14 @@ export const getInventoryValue = async () => {
 };
 
 export const getAllMetrics = async () => {
+  const cacheKey = "dispenser:dashboard:stats";
+  const cacheTtl = Number(process.env.DASHBOARD_CACHE_TTL_SECONDS || 60);
+
+  const cached = await getCache<any>(cacheKey);
+  if (cached) {
+    return cached;
+  }
+
   // Run queries in a single transaction for consistency
   const [totalTypes, inStock, lowStock, outOfStock, inventoryValue] = await prisma.$transaction([
     prisma.drug.count({ where: { is_active: true } }),
@@ -117,13 +126,16 @@ export const getAllMetrics = async () => {
     `,
   ] as any);
 
-  return {
+  const result = {
     totalTypes,
     inStock: parseCount(Array.isArray(inStock) ? inStock[0] : inStock),
     lowStock: parseCount(Array.isArray(lowStock) ? lowStock[0] : lowStock),
     outOfStock: parseCount(Array.isArray(outOfStock) ? outOfStock[0] : outOfStock),
     inventoryValue: Number((Array.isArray(inventoryValue) ? inventoryValue[0] : inventoryValue)?.total_value ?? 0),
   };
+
+  await setCache(cacheKey, result, cacheTtl);
+  return result;
 };
 
 export default {
