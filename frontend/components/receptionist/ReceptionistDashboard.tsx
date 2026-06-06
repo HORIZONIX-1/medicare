@@ -35,14 +35,6 @@ export default function ReceptionistDashboard() {
           <h1 className="text-4xl font-bold">Receptionist Dashboard</h1>
           <p className="muted mt-1">Overview of today's patient activity</p>
         </div>
-        <div className="flex gap-3">
-          <Link href="/receptionist/patients/register" className="btn btn-primary">
-            Register Patient
-          </Link>
-          <Link href="/receptionist/patients" className="btn btn-ghost">
-            Search Patient
-          </Link>
-        </div>
       </div>
 
       <div className="grid grid-cols-3 gap-4 mb-6">
@@ -58,6 +50,35 @@ export default function ReceptionistDashboard() {
           <div className="card-title">Total Patients in System</div>
           <div className="card-number text-3xl font-bold mt-2">{totalPatients.toLocaleString()}</div>
         </div>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <Link href="/receptionist/patients/register" className="card p-6 flex items-center gap-4 hover:shadow-lg">
+          <div className="w-16 h-16 rounded-full bg-slate-100/10 flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              <path d="M15 14c2.761 0 5 2.239 5 5v1H4v-1c0-2.761 2.239-5 5-5h6z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M12 11a3 3 0 100-6 3 3 0 000 6z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M5 6h4" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round"/>
+            </svg>
+          </div>
+          <div>
+            <div className="text-lg font-semibold">Register Patient</div>
+            <div className="muted">Add a new patient</div>
+          </div>
+        </Link>
+
+        <Link href="/receptionist/patients" className="card p-6 flex items-center gap-4 hover:shadow-lg">
+          <div className="w-16 h-16 rounded-full bg-slate-100/10 flex items-center justify-center">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
+              <path d="M21 21l-4.35-4.35" stroke="currentColor" strokeWidth="1.4" strokeLinecap="round" strokeLinejoin="round"/>
+              <path d="M11 19a8 8 0 100-16 8 8 0 000 16z" stroke="currentColor" strokeWidth="1.2" strokeLinecap="round" strokeLinejoin="round"/>
+            </svg>
+          </div>
+          <div>
+            <div className="text-lg font-semibold">Search Patient</div>
+            <div className="muted">Find existing patient</div>
+          </div>
+        </Link>
       </div>
 
       <div className="card card-dark p-6 mb-6">
