@@ -1,3 +1,17 @@
+import React from "react";
+import PatientSearch from "../../../components/receptionist/PatientSearch";
+
+export const metadata = {
+  title: "Patient Search",
+};
+
+export default function PatientsPage() {
+  return (
+    <main>
+      <PatientSearch />
+    </main>
+  );
+}
 export default function Page() {
 	return (
 		<div className="p-6">
