@@ -388,7 +388,7 @@ const config = {
       "value": "prisma-client-js"
     },
     "output": {
-      "value": "D:\\OFFICIAL\\Programming\\Web\\Community Project\\Project_Hope\\medicare\\backend\\src\\generated\\prisma",
+      "value": "C:\\Users\\HP\\Desktop\\medicare\\backend\\src\\generated\\prisma",
       "fromEnvVar": null
     },
     "config": {
@@ -402,11 +402,12 @@ const config = {
       }
     ],
     "previewFeatures": [],
-    "sourceFilePath": "D:\\OFFICIAL\\Programming\\Web\\Community Project\\Project_Hope\\medicare\\backend\\src\\prisma\\schema.prisma",
+    "sourceFilePath": "C:\\Users\\HP\\Desktop\\medicare\\backend\\src\\prisma\\schema.prisma",
     "isCustomOutput": true
   },
   "relativeEnvPaths": {
-    "rootEnvPath": null
+    "rootEnvPath": null,
+    "schemaEnvPath": "../../../.env"
   },
   "relativePath": "../../prisma",
   "clientVersion": "6.19.3",
