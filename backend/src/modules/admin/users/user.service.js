@@ -19,6 +19,12 @@ const userSelect = {
   is_first_login: true,
   is_active: true,
   created_at: true,
+  organization_id: true,
+  organization: {
+    select: {
+      name: true,
+    },
+  },
 };
 
 const sanitizeUser = (user) => ({
@@ -29,6 +35,8 @@ const sanitizeUser = (user) => ({
   isFirstLogin: user.is_first_login,
   isActive: user.is_active,
   createdAt: user.created_at,
+  organizationId: user.organization_id,
+  organizationName: user.organization ? user.organization.name : null,
 });
 
 const buildAuditMetadata = (metadata) => {
@@ -90,6 +98,7 @@ const createUser = async (payload, context = {}) => {
       role: payload.role,
       is_active: payload.isActive,
       is_first_login: true,
+      organization_id: payload.organizationId ? Number(payload.organizationId) : null,
     },
     select: userSelect,
   });
@@ -98,7 +107,7 @@ const createUser = async (payload, context = {}) => {
     actorId: context.actorId,
     action: "USER_CREATED",
     entityId: user.user_id,
-    metadata: { role: user.role, email: user.email },
+    metadata: { role: user.role, email: user.email, organizationId: user.organization_id },
     req: context.req,
   });
 
@@ -106,17 +115,23 @@ const createUser = async (payload, context = {}) => {
 };
 
 const getUsers = async (query) => {
-  const page = query.page;
-  const limit = query.limit;
+  const page = Number.parseInt(query.page || "1", 10);
+  const limit = Number.parseInt(query.limit || "10", 10);
   const skip = (page - 1) * limit;
+  const sortBy = query.sortBy || "created_at";
+  const sortOrder = query.sortOrder || "desc";
   const where = {};
 
   if (query.role) {
     where.role = query.role;
   }
 
-  if (typeof query.isActive === "boolean") {
-    where.is_active = query.isActive;
+  if (query.isActive !== undefined) {
+    where.is_active = query.isActive === "true" || query.isActive === true;
+  }
+
+  if (query.organizationId) {
+    where.organization_id = Number(query.organizationId);
   }
 
   if (query.search) {
@@ -132,7 +147,7 @@ const getUsers = async (query) => {
       select: userSelect,
       skip,
       take: limit,
-      orderBy: { [query.sortBy]: query.sortOrder },
+      orderBy: { [sortBy]: sortOrder },
     }),
     prisma.user.count({ where }),
   ]);
@@ -172,6 +187,9 @@ const updateUser = async (id, payload, context = {}) => {
   if (payload.email !== undefined) data.email = payload.email;
   if (payload.role !== undefined) data.role = payload.role;
   if (payload.isActive !== undefined) data.is_active = payload.isActive;
+  if (payload.organizationId !== undefined) {
+    data.organization_id = payload.organizationId ? Number(payload.organizationId) : null;
+  }
 
   const user = await prisma.user.update({
     where: { user_id: Number(id) },

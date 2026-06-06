@@ -88,17 +88,20 @@ export default function LoginPage() {
       localStorage.setItem("token", token);
       localStorage.setItem("user", JSON.stringify(user));
 
-      if (user.role === "DOCTOR") {
+      if (user.role === "ADMIN") {
+        router.push("/admin");
+      } else if (user.role === "DOCTOR") {
         router.push("/doctor/patients");
       } else if (user.role === "RECEPTIONIST") {
         router.push("/doctor/patients");
       } else {
         router.push("/doctor/patients");
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       console.error(error);
+      const apiError = error as { response?: { data?: { message?: string } } };
       setErrorMessage(
-        error.response?.data?.message ||
+        apiError.response?.data?.message ||
           "Invalid credentials or connection issue."
       );
     } finally {
