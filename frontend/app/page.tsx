@@ -93,7 +93,7 @@ export default function LoginPage() {
       } else if (user.role === "DOCTOR") {
         router.push("/doctor/patients");
       } else if (user.role === "RECEPTIONIST") {
-        router.push("/doctor/patients");
+        router.push("/receptionist/dashboard");
       } else {
         router.push("/doctor/patients");
       }
