@@ -94,6 +94,8 @@ export const getPatientProfile = async (
     },
 
     include: {
+      guardians: true,
+
       allergies: true,
 
       consultations: {
@@ -102,6 +104,12 @@ export const getPatientProfile = async (
         },
 
         include: {
+          doctor: {
+            select: {
+              name: true,
+            },
+          },
+
           prescriptions: true,
         },
       },
