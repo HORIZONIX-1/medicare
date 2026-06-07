@@ -160,11 +160,9 @@ model PatientGuardian {
   patient_id Int
   patient    Patient @relation(fields: [patient_id], references: [patient_id])
 
-  guardian_name    String
-  guardian_nic     String?
-  guardian_phone   String?
-  guardian_address String?
-  relationship     String
+  guardian_name  String
+  guardian_phone String?
+  relationship   String
 }
 
 model PatientAllergy {

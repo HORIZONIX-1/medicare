@@ -11938,9 +11938,7 @@ export namespace Prisma {
     guardian_id: number | null
     patient_id: number | null
     guardian_name: string | null
-    guardian_nic: string | null
     guardian_phone: string | null
-    guardian_address: string | null
     relationship: string | null
   }
 
@@ -11948,9 +11946,7 @@ export namespace Prisma {
     guardian_id: number | null
     patient_id: number | null
     guardian_name: string | null
-    guardian_nic: string | null
     guardian_phone: string | null
-    guardian_address: string | null
     relationship: string | null
   }
 
@@ -11958,9 +11954,7 @@ export namespace Prisma {
     guardian_id: number
     patient_id: number
     guardian_name: number
-    guardian_nic: number
     guardian_phone: number
-    guardian_address: number
     relationship: number
     _all: number
   }
@@ -11980,9 +11974,7 @@ export namespace Prisma {
     guardian_id?: true
     patient_id?: true
     guardian_name?: true
-    guardian_nic?: true
     guardian_phone?: true
-    guardian_address?: true
     relationship?: true
   }
 
@@ -11990,9 +11982,7 @@ export namespace Prisma {
     guardian_id?: true
     patient_id?: true
     guardian_name?: true
-    guardian_nic?: true
     guardian_phone?: true
-    guardian_address?: true
     relationship?: true
   }
 
@@ -12000,9 +11990,7 @@ export namespace Prisma {
     guardian_id?: true
     patient_id?: true
     guardian_name?: true
-    guardian_nic?: true
     guardian_phone?: true
-    guardian_address?: true
     relationship?: true
     _all?: true
   }
@@ -12097,9 +12085,7 @@ export namespace Prisma {
     guardian_id: number
     patient_id: number
     guardian_name: string
-    guardian_nic: string | null
     guardian_phone: string | null
-    guardian_address: string | null
     relationship: string
     _count: PatientGuardianCountAggregateOutputType | null
     _avg: PatientGuardianAvgAggregateOutputType | null
@@ -12126,9 +12112,7 @@ export namespace Prisma {
     guardian_id?: boolean
     patient_id?: boolean
     guardian_name?: boolean
-    guardian_nic?: boolean
     guardian_phone?: boolean
-    guardian_address?: boolean
     relationship?: boolean
     patient?: boolean | PatientDefaultArgs<ExtArgs>
   }, ExtArgs["result"]["patientGuardian"]>
@@ -12139,13 +12123,11 @@ export namespace Prisma {
     guardian_id?: boolean
     patient_id?: boolean
     guardian_name?: boolean
-    guardian_nic?: boolean
     guardian_phone?: boolean
-    guardian_address?: boolean
     relationship?: boolean
   }
 
-  export type PatientGuardianOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"guardian_id" | "patient_id" | "guardian_name" | "guardian_nic" | "guardian_phone" | "guardian_address" | "relationship", ExtArgs["result"]["patientGuardian"]>
+  export type PatientGuardianOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"guardian_id" | "patient_id" | "guardian_name" | "guardian_phone" | "relationship", ExtArgs["result"]["patientGuardian"]>
   export type PatientGuardianInclude<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     patient?: boolean | PatientDefaultArgs<ExtArgs>
   }
@@ -12159,9 +12141,7 @@ export namespace Prisma {
       guardian_id: number
       patient_id: number
       guardian_name: string
-      guardian_nic: string | null
       guardian_phone: string | null
-      guardian_address: string | null
       relationship: string
     }, ExtArgs["result"]["patientGuardian"]>
     composites: {}
@@ -12536,9 +12516,7 @@ export namespace Prisma {
     readonly guardian_id: FieldRef<"PatientGuardian", 'Int'>
     readonly patient_id: FieldRef<"PatientGuardian", 'Int'>
     readonly guardian_name: FieldRef<"PatientGuardian", 'String'>
-    readonly guardian_nic: FieldRef<"PatientGuardian", 'String'>
     readonly guardian_phone: FieldRef<"PatientGuardian", 'String'>
-    readonly guardian_address: FieldRef<"PatientGuardian", 'String'>
     readonly relationship: FieldRef<"PatientGuardian", 'String'>
   }
     
@@ -22439,9 +22417,7 @@ export namespace Prisma {
     guardian_id: 'guardian_id',
     patient_id: 'patient_id',
     guardian_name: 'guardian_name',
-    guardian_nic: 'guardian_nic',
     guardian_phone: 'guardian_phone',
-    guardian_address: 'guardian_address',
     relationship: 'relationship'
   };
 
@@ -22678,9 +22654,7 @@ export namespace Prisma {
 
   export const PatientGuardianOrderByRelevanceFieldEnum: {
     guardian_name: 'guardian_name',
-    guardian_nic: 'guardian_nic',
     guardian_phone: 'guardian_phone',
-    guardian_address: 'guardian_address',
     relationship: 'relationship'
   };
 
@@ -23441,9 +23415,7 @@ export namespace Prisma {
     guardian_id?: IntFilter<"PatientGuardian"> | number
     patient_id?: IntFilter<"PatientGuardian"> | number
     guardian_name?: StringFilter<"PatientGuardian"> | string
-    guardian_nic?: StringNullableFilter<"PatientGuardian"> | string | null
     guardian_phone?: StringNullableFilter<"PatientGuardian"> | string | null
-    guardian_address?: StringNullableFilter<"PatientGuardian"> | string | null
     relationship?: StringFilter<"PatientGuardian"> | string
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput>
   }
@@ -23452,9 +23424,7 @@ export namespace Prisma {
     guardian_id?: SortOrder
     patient_id?: SortOrder
     guardian_name?: SortOrder
-    guardian_nic?: SortOrderInput | SortOrder
     guardian_phone?: SortOrderInput | SortOrder
-    guardian_address?: SortOrderInput | SortOrder
     relationship?: SortOrder
     patient?: PatientOrderByWithRelationInput
     _relevance?: PatientGuardianOrderByRelevanceInput
@@ -23467,9 +23437,7 @@ export namespace Prisma {
     NOT?: PatientGuardianWhereInput | PatientGuardianWhereInput[]
     patient_id?: IntFilter<"PatientGuardian"> | number
     guardian_name?: StringFilter<"PatientGuardian"> | string
-    guardian_nic?: StringNullableFilter<"PatientGuardian"> | string | null
     guardian_phone?: StringNullableFilter<"PatientGuardian"> | string | null
-    guardian_address?: StringNullableFilter<"PatientGuardian"> | string | null
     relationship?: StringFilter<"PatientGuardian"> | string
     patient?: XOR<PatientScalarRelationFilter, PatientWhereInput>
   }, "guardian_id">
@@ -23478,9 +23446,7 @@ export namespace Prisma {
     guardian_id?: SortOrder
     patient_id?: SortOrder
     guardian_name?: SortOrder
-    guardian_nic?: SortOrderInput | SortOrder
     guardian_phone?: SortOrderInput | SortOrder
-    guardian_address?: SortOrderInput | SortOrder
     relationship?: SortOrder
     _count?: PatientGuardianCountOrderByAggregateInput
     _avg?: PatientGuardianAvgOrderByAggregateInput
@@ -23496,9 +23462,7 @@ export namespace Prisma {
     guardian_id?: IntWithAggregatesFilter<"PatientGuardian"> | number
     patient_id?: IntWithAggregatesFilter<"PatientGuardian"> | number
     guardian_name?: StringWithAggregatesFilter<"PatientGuardian"> | string
-    guardian_nic?: StringNullableWithAggregatesFilter<"PatientGuardian"> | string | null
     guardian_phone?: StringNullableWithAggregatesFilter<"PatientGuardian"> | string | null
-    guardian_address?: StringNullableWithAggregatesFilter<"PatientGuardian"> | string | null
     relationship?: StringWithAggregatesFilter<"PatientGuardian"> | string
   }
 
@@ -24768,9 +24732,7 @@ export namespace Prisma {
 
   export type PatientGuardianCreateInput = {
     guardian_name: string
-    guardian_nic?: string | null
     guardian_phone?: string | null
-    guardian_address?: string | null
     relationship: string
     patient: PatientCreateNestedOneWithoutGuardiansInput
   }
@@ -24779,17 +24741,13 @@ export namespace Prisma {
     guardian_id?: number
     patient_id: number
     guardian_name: string
-    guardian_nic?: string | null
     guardian_phone?: string | null
-    guardian_address?: string | null
     relationship: string
   }
 
   export type PatientGuardianUpdateInput = {
     guardian_name?: StringFieldUpdateOperationsInput | string
-    guardian_nic?: NullableStringFieldUpdateOperationsInput | string | null
     guardian_phone?: NullableStringFieldUpdateOperationsInput | string | null
-    guardian_address?: NullableStringFieldUpdateOperationsInput | string | null
     relationship?: StringFieldUpdateOperationsInput | string
     patient?: PatientUpdateOneRequiredWithoutGuardiansNestedInput
   }
@@ -24798,9 +24756,7 @@ export namespace Prisma {
     guardian_id?: IntFieldUpdateOperationsInput | number
     patient_id?: IntFieldUpdateOperationsInput | number
     guardian_name?: StringFieldUpdateOperationsInput | string
-    guardian_nic?: NullableStringFieldUpdateOperationsInput | string | null
     guardian_phone?: NullableStringFieldUpdateOperationsInput | string | null
-    guardian_address?: NullableStringFieldUpdateOperationsInput | string | null
     relationship?: StringFieldUpdateOperationsInput | string
   }
 
@@ -24808,17 +24764,13 @@ export namespace Prisma {
     guardian_id?: number
     patient_id: number
     guardian_name: string
-    guardian_nic?: string | null
     guardian_phone?: string | null
-    guardian_address?: string | null
     relationship: string
   }
 
   export type PatientGuardianUpdateManyMutationInput = {
     guardian_name?: StringFieldUpdateOperationsInput | string
-    guardian_nic?: NullableStringFieldUpdateOperationsInput | string | null
     guardian_phone?: NullableStringFieldUpdateOperationsInput | string | null
-    guardian_address?: NullableStringFieldUpdateOperationsInput | string | null
     relationship?: StringFieldUpdateOperationsInput | string
   }
 
@@ -24826,9 +24778,7 @@ export namespace Prisma {
     guardian_id?: IntFieldUpdateOperationsInput | number
     patient_id?: IntFieldUpdateOperationsInput | number
     guardian_name?: StringFieldUpdateOperationsInput | string
-    guardian_nic?: NullableStringFieldUpdateOperationsInput | string | null
     guardian_phone?: NullableStringFieldUpdateOperationsInput | string | null
-    guardian_address?: NullableStringFieldUpdateOperationsInput | string | null
     relationship?: StringFieldUpdateOperationsInput | string
   }
 
@@ -26287,9 +26237,7 @@ export namespace Prisma {
     guardian_id?: SortOrder
     patient_id?: SortOrder
     guardian_name?: SortOrder
-    guardian_nic?: SortOrder
     guardian_phone?: SortOrder
-    guardian_address?: SortOrder
     relationship?: SortOrder
   }
 
@@ -26302,9 +26250,7 @@ export namespace Prisma {
     guardian_id?: SortOrder
     patient_id?: SortOrder
     guardian_name?: SortOrder
-    guardian_nic?: SortOrder
     guardian_phone?: SortOrder
-    guardian_address?: SortOrder
     relationship?: SortOrder
   }
 
@@ -26312,9 +26258,7 @@ export namespace Prisma {
     guardian_id?: SortOrder
     patient_id?: SortOrder
     guardian_name?: SortOrder
-    guardian_nic?: SortOrder
     guardian_phone?: SortOrder
-    guardian_address?: SortOrder
     relationship?: SortOrder
   }
 
@@ -28712,18 +28656,14 @@ export namespace Prisma {
 
   export type PatientGuardianCreateWithoutPatientInput = {
     guardian_name: string
-    guardian_nic?: string | null
     guardian_phone?: string | null
-    guardian_address?: string | null
     relationship: string
   }
 
   export type PatientGuardianUncheckedCreateWithoutPatientInput = {
     guardian_id?: number
     guardian_name: string
-    guardian_nic?: string | null
     guardian_phone?: string | null
-    guardian_address?: string | null
     relationship: string
   }
 
@@ -28827,9 +28767,7 @@ export namespace Prisma {
     guardian_id?: IntFilter<"PatientGuardian"> | number
     patient_id?: IntFilter<"PatientGuardian"> | number
     guardian_name?: StringFilter<"PatientGuardian"> | string
-    guardian_nic?: StringNullableFilter<"PatientGuardian"> | string | null
     guardian_phone?: StringNullableFilter<"PatientGuardian"> | string | null
-    guardian_address?: StringNullableFilter<"PatientGuardian"> | string | null
     relationship?: StringFilter<"PatientGuardian"> | string
   }
 
@@ -31256,9 +31194,7 @@ export namespace Prisma {
   export type PatientGuardianCreateManyPatientInput = {
     guardian_id?: number
     guardian_name: string
-    guardian_nic?: string | null
     guardian_phone?: string | null
-    guardian_address?: string | null
     relationship: string
   }
 
@@ -31311,27 +31247,21 @@ export namespace Prisma {
 
   export type PatientGuardianUpdateWithoutPatientInput = {
     guardian_name?: StringFieldUpdateOperationsInput | string
-    guardian_nic?: NullableStringFieldUpdateOperationsInput | string | null
     guardian_phone?: NullableStringFieldUpdateOperationsInput | string | null
-    guardian_address?: NullableStringFieldUpdateOperationsInput | string | null
     relationship?: StringFieldUpdateOperationsInput | string
   }
 
   export type PatientGuardianUncheckedUpdateWithoutPatientInput = {
     guardian_id?: IntFieldUpdateOperationsInput | number
     guardian_name?: StringFieldUpdateOperationsInput | string
-    guardian_nic?: NullableStringFieldUpdateOperationsInput | string | null
     guardian_phone?: NullableStringFieldUpdateOperationsInput | string | null
-    guardian_address?: NullableStringFieldUpdateOperationsInput | string | null
     relationship?: StringFieldUpdateOperationsInput | string
   }
 
   export type PatientGuardianUncheckedUpdateManyWithoutPatientInput = {
     guardian_id?: IntFieldUpdateOperationsInput | number
     guardian_name?: StringFieldUpdateOperationsInput | string
-    guardian_nic?: NullableStringFieldUpdateOperationsInput | string | null
     guardian_phone?: NullableStringFieldUpdateOperationsInput | string | null
-    guardian_address?: NullableStringFieldUpdateOperationsInput | string | null
     relationship?: StringFieldUpdateOperationsInput | string
   }
 

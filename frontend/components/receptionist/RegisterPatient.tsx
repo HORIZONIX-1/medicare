@@ -50,6 +50,9 @@ export default function RegisterPatient() {
         date_of_birth: form.date_of_birth,
         gender: form.gender,
         address: undefined,
+        guardian_name: form.guardian_name.trim() || undefined,
+        guardian_phone: form.guardian_phone.trim() || undefined,
+        relationship: form.relationship.trim() || undefined,
       };
 
       const response = await api.post("/patients", payload);
@@ -144,10 +147,11 @@ export default function RegisterPatient() {
               value={form.guardian_name}
               onChange={(value) => updateField("guardian_name", value)}
             />
-            <SelectField
-              label="Relationship"
-              value={form.relationship}
-              onChange={(value) => updateField("relationship", value)}
+            <Field
+                label="Relationship"
+                placeholder="Enter relationship (e.g. Father, Mother, Guardian)"
+                value={form.relationship}
+                onChange={(value) => updateField("relationship", value)}
             />
             <Field
               label="Guardian Phone"

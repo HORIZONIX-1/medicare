@@ -203,9 +203,7 @@ exports.Prisma.PatientGuardianScalarFieldEnum = {
   guardian_id: 'guardian_id',
   patient_id: 'patient_id',
   guardian_name: 'guardian_name',
-  guardian_nic: 'guardian_nic',
   guardian_phone: 'guardian_phone',
-  guardian_address: 'guardian_address',
   relationship: 'relationship'
 };
 
@@ -376,9 +374,7 @@ exports.Prisma.DiagnosisOrderByRelevanceFieldEnum = {
 
 exports.Prisma.PatientGuardianOrderByRelevanceFieldEnum = {
   guardian_name: 'guardian_name',
-  guardian_nic: 'guardian_nic',
   guardian_phone: 'guardian_phone',
-  guardian_address: 'guardian_address',
   relationship: 'relationship'
 };
 

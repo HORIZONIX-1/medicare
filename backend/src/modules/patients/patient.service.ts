@@ -39,32 +39,49 @@ export const searchPatients = async (
 };
 
 export const createPatient = async (
-  data: { name: any; gender: any; date_of_birth: string | number | Date; nic: any; phone: any; address: any; },
+  data: any,
   createdBy: any
 ) => {
 
-  const patientCount =
-    await prisma.patient.count();
+  const {
+    guardian_name,
+    guardian_phone,
+    relationship,
+    ...patientData
+  } = data;
 
-  const patientCode =
-    `P${String(patientCount + 1).padStart(5, "0")}`;
+  const patientCount = await prisma.patient.count();
 
-  return prisma.patient.create({
+  const patientCode = `P${String(patientCount + 1).padStart(5, "0")}`;
+
+  const patient = await prisma.patient.create({
     data: {
       patient_code: patientCode,
 
-      name: data.name,
-      gender: data.gender,
+      name: patientData.name,
+      gender: patientData.gender,
+      date_of_birth: new Date(patientData.date_of_birth),
 
-      date_of_birth: new Date(data.date_of_birth),
-
-      nic: data.nic,
-      phone: data.phone,
-      address: data.address,
+      nic: patientData.nic,
+      phone: patientData.phone,
+      address: patientData.address,
 
       created_by: createdBy,
     },
   });
+
+  if (guardian_name?.trim()) {
+    await prisma.patientGuardian.create({
+      data: {
+        patient_id: patient.patient_id,
+        guardian_name: guardian_name.trim(),
+        guardian_phone: guardian_phone?.trim(),
+        relationship: relationship?.trim(),
+      },
+    });
+  }
+
+  return patient;
 };
 
 export const getPatientProfile = async (

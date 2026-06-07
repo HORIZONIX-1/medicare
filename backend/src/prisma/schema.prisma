@@ -161,9 +161,7 @@ model PatientGuardian {
   patient    Patient @relation(fields: [patient_id], references: [patient_id])
 
   guardian_name    String
-  guardian_nic     String?
   guardian_phone   String?
-  guardian_address String?
   relationship     String
 }
 
