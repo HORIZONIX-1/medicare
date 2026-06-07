@@ -25,6 +25,12 @@ export default function DispenserLayout({
 }) {
   const pathname = usePathname();
 
+  const isPrescriptionsActive = pathname?.startsWith('/dispenser/prescriptions');
+  const isStockActive = pathname?.startsWith('/dispenser/stock-management');
+
+  const [prescriptionsOpen, setPrescriptionsOpen] = React.useState(true);
+  const [stockManagementOpen, setStockManagementOpen] = React.useState(true);
+
   const isActive = (href: string) => {
     if (href === '/dispenser') {
       return pathname === '/dispenser';
@@ -35,7 +41,7 @@ export default function DispenserLayout({
   return (
     <div className="flex h-screen bg-gray-50 font-sans text-gray-800">
       {/* Sidebar */}
-      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
+      <aside className="w-64 bg-white border-r border-gray-200 flex flex-col flex-shrink-0">
         {/* Logo Area */}
         <div className="h-16 flex items-center px-6 border-b border-gray-200">
           <div className="flex items-center gap-3">
@@ -53,12 +59,82 @@ export default function DispenserLayout({
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
           <NavItem href="/dispenser" icon={<LayoutDashboard size={18} />} label="Dashboard" active={isActive('/dispenser')} />
           
-          <div className="pt-2 pb-1">
-            <NavItem href="/dispenser/prescriptions" icon={<FileText size={18} />} label="Prescriptions" active={isActive('/dispenser/prescriptions')} hasSubmenu />
+          {/* Prescriptions Collapsible */}
+          <div className="pt-1">
+            <button
+              onClick={() => setPrescriptionsOpen(!prescriptionsOpen)}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-md transition-colors text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${
+                isPrescriptionsActive ? 'text-gray-900 font-medium' : ''
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <FileText size={18} className={isPrescriptionsActive ? 'text-gray-800' : 'text-gray-400'} />
+                <span className="text-sm">Prescriptions</span>
+              </div>
+              <ChevronDown 
+                size={14} 
+                className={`text-gray-400 transition-transform duration-200 ${prescriptionsOpen ? 'rotate-180' : ''}`} 
+              />
+            </button>
+            
+            {prescriptionsOpen && (
+              <div className="pl-4 mt-1 space-y-1">
+                <SubNavItem 
+                  href="/dispenser/prescriptions/dispensing-queue" 
+                  label="Dispensing Queue" 
+                  active={pathname === '/dispenser/prescriptions/dispensing-queue'} 
+                  showDot={true}
+                />
+                <SubNavItem 
+                  href="/dispenser/prescriptions/dispensing-history" 
+                  label="Dispensing History" 
+                  active={pathname === '/dispenser/prescriptions/dispensing-history'} 
+                  showDot={true}
+                />
+              </div>
+            )}
           </div>
 
-          <div className="pt-2 pb-1">
-            <NavItem href="/dispenser/stock-management" icon={<Package size={18} />} label="Stock Management" active={isActive('/dispenser/stock-management')} hasSubmenu />
+          {/* Stock Management Collapsible */}
+          <div className="pt-1">
+            <button
+              onClick={() => setStockManagementOpen(!stockManagementOpen)}
+              className={`w-full flex items-center justify-between px-3 py-2 rounded-md transition-colors text-gray-600 hover:bg-gray-50 hover:text-gray-900 ${
+                isStockActive ? 'text-gray-900 font-medium' : ''
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <Package size={18} className={isStockActive ? 'text-gray-800' : 'text-gray-400'} />
+                <span className="text-sm">Stock Management</span>
+              </div>
+              <ChevronDown 
+                size={14} 
+                className={`text-gray-400 transition-transform duration-200 ${stockManagementOpen ? 'rotate-180' : ''}`} 
+              />
+            </button>
+            
+            {stockManagementOpen && (
+              <div className="pl-4 mt-1 space-y-1">
+                <SubNavItem 
+                  href="/dispenser/stock-management/add" 
+                  label="Add Drug Stock" 
+                  active={pathname === '/dispenser/stock-management/add'} 
+                  showDot={false}
+                />
+                <SubNavItem 
+                  href="/dispenser/stock-management/table" 
+                  label="Stock Table" 
+                  active={pathname === '/dispenser/stock-management/table'} 
+                  showDot={false}
+                />
+                <SubNavItem 
+                  href="/dispenser/stock-management/log" 
+                  label="Stock Update Log" 
+                  active={pathname === '/dispenser/stock-management/log'} 
+                  showDot={false}
+                />
+              </div>
+            )}
           </div>
 
           <NavItem href="/dispenser/drug-list" icon={<List size={18} />} label="Drug List" active={isActive('/dispenser/drug-list')} />
@@ -141,6 +217,34 @@ function NavItem({
       {hasSubmenu && (
         <ChevronDown size={14} className="text-gray-400" />
       )}
+    </Link>
+  );
+}
+
+function SubNavItem({ 
+  href, 
+  label, 
+  active = false,
+  showDot = false
+}: { 
+  href: string; 
+  label: string; 
+  active?: boolean;
+  showDot?: boolean;
+}) {
+  return (
+    <Link 
+      href={href} 
+      className={`flex items-center gap-2 px-3 py-2 rounded-md text-sm transition-colors ${
+        active 
+          ? 'bg-gray-100/80 text-gray-950 font-medium' 
+          : 'text-gray-500 hover:bg-gray-50 hover:text-gray-900'
+      }`}
+    >
+      {showDot && (
+        <span className={`w-1.5 h-1.5 rounded-full shrink-0 transition-colors ${active ? 'bg-blue-600' : 'bg-gray-300'}`} />
+      )}
+      <span className={showDot ? '' : 'pl-3.5'}>{label}</span>
     </Link>
   );
 }
