@@ -47,7 +47,7 @@ export default function ReceptionistShell({ children, title }: Props) {
 
             <nav className="rec-nav" aria-label="Receptionist navigation">
               {navItems.map((item) => {
-                const active = item.kind === "route" && (pathname === item.href || pathname?.startsWith(item.href + "/"));
+                const active = item.kind === "route" && pathname === item.href;
                 return (
                   <Link key={item.href} href={item.href} className={`rec-nav-link ${active ? "active" : ""}`}>
                     <span className="rec-nav-icon">{item.icon}</span>
@@ -90,8 +90,8 @@ export default function ReceptionistShell({ children, title }: Props) {
 }
 
 const shellStyles = `
-.rec-frame{position:fixed;inset:0;background:#050608;padding:12px;box-sizing:border-box}
-.rec-root{display:flex;min-height:100%;width:100%;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:#0b0d10;border:1px solid #3a3f46;border-radius:8px;overflow:hidden;color:#e5e7eb}
+.rec-frame{position:relative;left:50%;right:50%;margin-left:-50vw;margin-right:-50vw;width:100vw;min-height:100vh;background:#050608;padding:12px;box-sizing:border-box;overflow-x:hidden}
+.rec-root{display:flex;min-height:calc(100vh - 24px);width:100%;font-family:Inter,system-ui,Segoe UI,Roboto,Helvetica,Arial;background:#0b0d10;border:1px solid #3a3f46;border-radius:8px;overflow:hidden;color:#e5e7eb}
 .rec-sidebar{width:210px;background:#0c0f14;border-right:1px solid #353b43;display:flex;flex-direction:column}
 .rec-brand{height:58px;display:flex;align-items:center;padding:0 16px;border-bottom:1px solid #353b43;background:#101318}
 .rec-brand-title{font-weight:800;color:#f3f4f6;font-size:14px}
@@ -123,5 +123,5 @@ const shellStyles = `
 .rec-content th,.rec-content td{border-color:#353b43 !important}
 .rec-content thead tr{background:#11151b}
 .rec-content tbody tr:hover{background:#11151b}
-@media (max-width:800px){.rec-frame{padding:0}.rec-root{border-radius:0}.rec-sidebar{display:none}.rec-top-left .rec-menu-btn{display:block}}
+@media (max-width:800px){.rec-frame{left:0;right:0;margin:0;padding:0;width:100%}.rec-root{min-height:100vh;border-radius:0}.rec-sidebar{display:none}.rec-top-left .rec-menu-btn{display:block}}
 `;
