@@ -1,43 +1,169 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
+import api from "@/lib/axios";
+
+type FormState = {
+  name: string;
+  phone: string;
+  nic: string;
+  date_of_birth: string;
+  gender: string;
+  guardian_name: string;
+  relationship: string;
+  guardian_phone: string;
+};
+
+const initialState: FormState = {
+  name: "",
+  phone: "",
+  nic: "",
+  date_of_birth: "",
+  gender: "Female",
+  guardian_name: "",
+  relationship: "",
+  guardian_phone: "",
+};
 
 export default function RegisterPatient() {
+  const [form, setForm] = useState<FormState>(initialState);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
+  const [savedPatientCode, setSavedPatientCode] = useState<string | null>(null);
+
+  const updateField = (field: keyof FormState, value: string) => {
+    setForm((current) => ({ ...current, [field]: value }));
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    setMessage(null);
+    setSavedPatientCode(null);
+
+    try {
+      const payload = {
+        name: form.name.trim(),
+        phone: form.phone.trim() || undefined,
+        nic: form.nic.trim() || undefined,
+        date_of_birth: form.date_of_birth,
+        gender: form.gender,
+        address: undefined,
+      };
+
+      const response = await api.post("/patients", payload);
+
+      setSavedPatientCode(response.data?.patient_code || null);
+      setMessage({
+        type: "success",
+        text: `Patient saved successfully${response.data?.patient_code ? ` as ${response.data.patient_code}` : ""}.`,
+      });
+      setForm(initialState);
+    } catch (error: any) {
+      console.error(error);
+      setMessage({
+        type: "error",
+        text: error.response?.data?.message || "Registration failed. Please verify the patient details.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_320px] gap-4 items-start">
       <section className="card card-dark p-6">
-        <div className="mb-5">
+        <div className="mb-5 flex items-center justify-between gap-4">
           <h1 className="text-2xl font-bold">Patient Registration</h1>
+          {message?.type === "success" && savedPatientCode ? (
+            <div className="text-sm muted">Saved as {savedPatientCode}</div>
+          ) : null}
         </div>
 
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Name *" placeholder="Enter full name" />
-          <Field label="Phone *" placeholder="Enter phone number" />
-          <Field label="NIC (Optional)" placeholder="Enter NIC" />
-          <Field
-            label="Date of Birth"
-            placeholder="dd/mm/yyyy"
-            type="date"
-            inputClassName="pr-3"
-          />
-        </div>
+        {message ? (
+          <div
+            className={`mb-5 rounded-sm border px-4 py-3 text-sm ${
+              message.type === "success"
+                ? "border-emerald-500/30 bg-emerald-500/10 text-emerald-300"
+                : "border-rose-500/30 bg-rose-500/10 text-rose-300"
+            }`}
+          >
+            {message.text}
+          </div>
+        ) : null}
 
-        <div className="my-6 border-t border-white/10" />
+        <form onSubmit={handleSubmit}>
+          <div className="grid grid-cols-2 gap-4">
+            <Field
+              label="Name *"
+              placeholder="Enter full name"
+              value={form.name}
+              onChange={(value) => updateField("name", value)}
+              required
+            />
+            <Field
+              label="Phone *"
+              placeholder="Enter phone number"
+              value={form.phone}
+              onChange={(value) => updateField("phone", value)}
+              required
+            />
+            <Field
+              label="NIC (Optional)"
+              placeholder="Enter NIC"
+              value={form.nic}
+              onChange={(value) => updateField("nic", value)}
+            />
+            <Field
+              label="Date of Birth *"
+              placeholder="dd/mm/yyyy"
+              type="date"
+              value={form.date_of_birth}
+              onChange={(value) => updateField("date_of_birth", value)}
+              required
+            />
+            <SelectField
+              label="Gender *"
+              value={form.gender}
+              onChange={(value) => updateField("gender", value)}
+              required
+            />
+          </div>
 
-        <div className="mb-4">
-          <h2 className="text-base font-semibold">Guardian Details (Optional)</h2>
-        </div>
+          <div className="my-6 border-t border-white/10" />
 
-        <div className="grid grid-cols-2 gap-4">
-          <Field label="Guardian Name" placeholder="Enter guardian name" />
-          <SelectField label="Relationship" placeholder="Select relationship" />
-          <Field label="Guardian Phone" placeholder="Enter guardian phone" />
-        </div>
+          <div className="mb-4">
+            <h2 className="text-base font-semibold">Guardian Details (Optional)</h2>
+          </div>
 
-        <div className="mt-6 flex items-center justify-between gap-4">
-          <p className="text-sm muted">* Required fields</p>
-          <button className="btn btn-cyan min-w-40">Save &amp; Continue</button>
-        </div>
+          <div className="grid grid-cols-2 gap-4">
+            <Field
+              label="Guardian Name"
+              placeholder="Enter guardian name"
+              value={form.guardian_name}
+              onChange={(value) => updateField("guardian_name", value)}
+            />
+            <SelectField
+              label="Relationship"
+              value={form.relationship}
+              onChange={(value) => updateField("relationship", value)}
+            />
+            <Field
+              label="Guardian Phone"
+              placeholder="Enter guardian phone"
+              value={form.guardian_phone}
+              onChange={(value) => updateField("guardian_phone", value)}
+            />
+          </div>
+
+          <div className="mt-6 flex items-center justify-between gap-4">
+            <p className="text-sm muted">* Required fields</p>
+            <button className="btn btn-cyan min-w-40" type="submit" disabled={isSubmitting}>
+              {isSubmitting ? "Saving..." : "Save & Continue"}
+            </button>
+          </div>
+        </form>
       </section>
 
       <aside className="card card-dark p-4 h-full">
@@ -68,7 +194,9 @@ export default function RegisterPatient() {
             <Link href="/receptionist/patients" className="btn btn-ghost w-full">
               View Existing
             </Link>
-            <button className="btn w-full">Continue Anyway</button>
+            <button className="btn w-full" type="button">
+              Continue Anyway
+            </button>
           </div>
 
           <p className="text-sm muted mt-auto pt-4 leading-6">
@@ -84,31 +212,56 @@ function Field({
   label,
   placeholder,
   type = "text",
-  inputClassName = "",
+  value,
+  onChange,
+  required = false,
 }: {
   label: string;
   placeholder: string;
   type?: string;
-  inputClassName?: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
 }) {
   return (
     <label className="grid gap-2 text-sm">
       <span className="font-semibold text-slate-100">{label}</span>
-      <input type={type} placeholder={placeholder} className={`input input-bordered w-full ${inputClassName}`} />
+      <input
+        type={type}
+        placeholder={placeholder}
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        required={required}
+        className="input input-bordered w-full"
+      />
     </label>
   );
 }
 
-function SelectField({ label, placeholder }: { label: string; placeholder: string }) {
+function SelectField({
+  label,
+  value,
+  onChange,
+  required = false,
+}: {
+  label: string;
+  value: string;
+  onChange: (value: string) => void;
+  required?: boolean;
+}) {
   return (
     <label className="grid gap-2 text-sm">
       <span className="font-semibold text-slate-100">{label}</span>
-      <select className="input input-bordered w-full">
-        <option value="">{placeholder}</option>
-        <option value="parent">Parent</option>
-        <option value="guardian">Guardian</option>
-        <option value="spouse">Spouse</option>
-        <option value="other">Other</option>
+      <select
+        value={value}
+        onChange={(event) => onChange(event.target.value)}
+        required={required}
+        className="input input-bordered w-full"
+      >
+        <option value="">Select option</option>
+        <option value="Male">Male</option>
+        <option value="Female">Female</option>
+        <option value="Other">Other</option>
       </select>
     </label>
   );
