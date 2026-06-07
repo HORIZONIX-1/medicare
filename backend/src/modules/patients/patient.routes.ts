@@ -4,6 +4,7 @@ import {
   createPatient,
   searchPatients,
   getPatientProfile,
+  getAllPatients,
   addPatientAllergy,
 } from "./patient.controller";
 
@@ -14,6 +15,8 @@ const router = express.Router();
 router.post("/", authMiddleware, createPatient as any);
 
 router.get("/search", authMiddleware, searchPatients as any);
+
+router.get("/", authMiddleware, getAllPatients as any);
 
 router.post("/:id/allergies", authMiddleware, addPatientAllergy as any);
 

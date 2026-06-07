@@ -109,6 +109,14 @@ export const getPatientProfile = async (
   });
 };
 
+export const getAllPatients = async () => {
+  return prisma.patient.findMany({
+    orderBy: {
+      created_at: "desc",
+    },
+  });
+};
+
 export const addPatientAllergy = async (
   patientId: number,
   allergyName: string

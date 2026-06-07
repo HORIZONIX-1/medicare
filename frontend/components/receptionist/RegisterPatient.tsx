@@ -26,53 +26,72 @@ const initialState: FormState = {
   guardian_phone: "",
 };
 
+
 export default function RegisterPatient() {
   const [form, setForm] = useState<FormState>(initialState);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [message, setMessage] = useState<{ type: "success" | "error"; text: string } | null>(null);
   const [savedPatientCode, setSavedPatientCode] = useState<string | null>(null);
 
+  const [duplicate, setDuplicate] = useState<any>(null);
+
   const updateField = (field: keyof FormState, value: string) => {
     setForm((current) => ({ ...current, [field]: value }));
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setIsSubmitting(true);
-    setMessage(null);
-    setSavedPatientCode(null);
+  e.preventDefault();
+  setIsSubmitting(true);
+  setMessage(null);
+  setSavedPatientCode(null);
+  setDuplicate(null);
 
-    try {
-      const payload = {
-        name: form.name.trim(),
-        phone: form.phone.trim() || undefined,
-        nic: form.nic.trim() || undefined,
-        date_of_birth: form.date_of_birth,
-        gender: form.gender,
-        address: undefined,
-        guardian_name: form.guardian_name.trim() || undefined,
-        guardian_phone: form.guardian_phone.trim() || undefined,
-        relationship: form.relationship.trim() || undefined,
-      };
+  try {
+    // 1. CHECK DUPLICATES FIRST
+    const check = await api.get("/patients/search", {
+      params: {
+        type: "nic",
+        value: form.nic || form.phone,
+      },
+    });
 
-      const response = await api.post("/patients", payload);
-
-      setSavedPatientCode(response.data?.patient_code || null);
-      setMessage({
-        type: "success",
-        text: `Patient saved successfully${response.data?.patient_code ? ` as ${response.data.patient_code}` : ""}.`,
-      });
-      setForm(initialState);
-    } catch (error: any) {
-      console.error(error);
-      setMessage({
-        type: "error",
-        text: error.response?.data?.message || "Registration failed. Please verify the patient details.",
-      });
-    } finally {
+    if (check.data?.length > 0) {
+      setDuplicate(check.data[0]);
       setIsSubmitting(false);
+      return; // STOP SAVE
     }
-  };
+
+    // 2. IF NO DUPLICATE → SAVE PATIENT
+    const payload = {
+      name: form.name.trim(),
+      phone: form.phone.trim() || undefined,
+      nic: form.nic.trim() || undefined,
+      date_of_birth: form.date_of_birth,
+      gender: form.gender,
+      address: undefined,
+      guardian_name: form.guardian_name.trim(),
+      guardian_phone: form.guardian_phone.trim(),
+      relationship: form.relationship.trim(),
+    };
+
+    const response = await api.post("/patients", payload);
+
+    setSavedPatientCode(response.data?.patient_code || null);
+    setMessage({
+      type: "success",
+      text: `Patient saved successfully${response.data?.patient_code ? ` as ${response.data.patient_code}` : ""}.`,
+    });
+
+    setForm(initialState);
+  } catch (error: any) {
+    setMessage({
+      type: "error",
+      text: error.response?.data?.message || "Registration failed.",
+    });
+  } finally {
+    setIsSubmitting(false);
+  }
+};
 
   return (
     <div className="grid grid-cols-[minmax(0,1fr)_320px] gap-4 items-start">
@@ -172,41 +191,56 @@ export default function RegisterPatient() {
 
       <aside className="card card-dark p-4 h-full">
         <div className="border border-white/10 rounded-sm p-4 h-full flex flex-col">
-          <div className="text-center mb-4">
-            <h2 className="text-lg font-bold">Possible Duplicate Found</h2>
-          </div>
 
-          <div className="flex items-start gap-3 mb-4">
-            <div className="w-10 h-10 rounded-full border border-white/20 flex items-center justify-center flex-none">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-                <path d="M12 9v4" stroke="currentColor" strokeWidth="1.6" strokeLinecap="round" />
-                <path d="M12 17h.01" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" />
-                <path d="M10.3 4.5 2.6 18a1.6 1.6 0 0 0 1.4 2.4h16a1.6 1.6 0 0 0 1.4-2.4l-7.7-13.5a1.6 1.6 0 0 0-2.8 0Z" stroke="currentColor" strokeWidth="1.2" strokeLinejoin="round" />
-              </svg>
-            </div>
-            <p className="text-sm muted leading-6">A patient with similar information already exists.</p>
-          </div>
+  {duplicate ? (
+    <>
+      <div className="text-center mb-4">
+        <h2 className="text-lg font-bold text-amber-300">
+          Possible Duplicate Found
+        </h2>
+      </div>
 
-          <div className="border border-white/10 rounded-sm p-3 mb-4 text-sm">
-            <InfoRow label="Name" value="Saman Perera" />
-            <InfoRow label="Patient ID" value="P10045" />
-            <InfoRow label="Phone" value="077 123 4567" />
-            <InfoRow label="NIC" value="123456789V" />
-          </div>
+      <div className="flex items-start gap-3 mb-4">
+        <p className="text-sm text-amber-200">
+          A patient with similar information already exists.
+        </p>
+      </div>
 
-          <div className="grid gap-3 mt-1">
-            <Link href="/receptionist/patients" className="btn btn-ghost w-full">
-              View Existing
-            </Link>
-            <button className="btn w-full" type="button">
-              Continue Anyway
-            </button>
-          </div>
+      <div className="border border-white/10 rounded-sm p-3 mb-4 text-sm">
+        <InfoRow label="Name" value={duplicate.name} />
+        <InfoRow label="Patient ID" value={duplicate.patient_code} />
+        <InfoRow label="Phone" value={duplicate.phone || "-"} />
+        <InfoRow label="NIC" value={duplicate.nic || "-"} />
+      </div>
 
-          <p className="text-sm muted mt-auto pt-4 leading-6">
-            Please confirm if you want to continue with new registration.
-          </p>
-        </div>
+      <div className="grid gap-3 mt-1">
+        <Link
+          href={`/receptionist/patients/${duplicate.patient_id}`}
+          className="btn btn-ghost w-full"
+        >
+          View Existing
+        </Link>
+
+        <button
+          className="btn w-full"
+          type="button"
+          onClick={() => setDuplicate(null)}
+        >
+          Continue Anyway
+        </button>
+      </div>
+
+      <p className="text-sm muted mt-auto pt-4 leading-6">
+        Please confirm if you want to continue with new registration.
+      </p>
+    </>
+  ) : (
+    <p className="text-sm muted">
+      No duplicate detected.
+    </p>
+  )}
+
+</div>
       </aside>
     </div>
   );

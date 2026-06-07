@@ -54,6 +54,16 @@ export const getPatientProfile = async (req: any, res: any) => {
   }
 };
 
+export const getAllPatients = async (req: any, res: any) => {
+  try {
+    const patients = await patientService.getAllPatients();
+    res.json(patients);
+  } catch (error) {
+    res.status(500).json({ message: "Failed to fetch patients" });
+  }
+};
+
+
 export const addPatientAllergy = async (req: any, res: any) => {
   try {
     const patientId = Number(req.params.id);
