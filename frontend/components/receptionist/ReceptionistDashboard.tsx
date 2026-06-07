@@ -81,7 +81,7 @@ export default function ReceptionistDashboard() {
         </Link>
       </div>
 
-      <div className="card card-dark p-6 mb-6">
+      <div id="recent-patients" className="card card-dark p-6 mb-6 scroll-mt-6">
         <div className="flex justify-between items-center mb-4">
           <div className="card-title">Recent Patients</div>
           <Link href="/receptionist/patients" className="btn btn-cyan">View All</Link>

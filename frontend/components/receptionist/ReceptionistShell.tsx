@@ -7,10 +7,10 @@ import React, { ReactNode, useEffect, useState } from "react";
 type Props = { children: ReactNode; title?: string };
 
 const navItems = [
-  { label: "Dashboard", href: "/receptionist/dashboard", icon: "🏠" },
-  { label: "Patient Search", href: "/receptionist/patients", icon: "🔎" },
-  { label: "Register Patient", href: "/receptionist/patients/register", icon: "➕" },
-  { label: "Recent Patients", href: "/receptionist/dashboard", icon: "📋" },
+  { label: "Dashboard", href: "/receptionist/dashboard", icon: "🏠", kind: "route" as const },
+  { label: "Patient Search", href: "/receptionist/patients", icon: "🔎", kind: "route" as const },
+  { label: "Register Patient", href: "/receptionist/patients/register", icon: "➕", kind: "route" as const },
+  { label: "Recent Patients", href: "/receptionist/recent-patients", icon: "📋", kind: "route" as const },
 ];
 
 export default function ReceptionistShell({ children, title }: Props) {
@@ -47,7 +47,7 @@ export default function ReceptionistShell({ children, title }: Props) {
 
             <nav className="rec-nav" aria-label="Receptionist navigation">
               {navItems.map((item) => {
-                const active = pathname === item.href || pathname?.startsWith(item.href + "/");
+                const active = item.kind === "route" && (pathname === item.href || pathname?.startsWith(item.href + "/"));
                 return (
                   <Link key={item.href} href={item.href} className={`rec-nav-link ${active ? "active" : ""}`}>
                     <span className="rec-nav-icon">{item.icon}</span>
