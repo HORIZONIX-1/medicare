@@ -1,5 +1,6 @@
 import React from 'react';
 import { Pill, CheckCircle, AlertCircle, HelpCircle, Plus, Edit, Table, Users } from 'lucide-react';
+import Link from 'next/link';
 
 export default function DispenserDashboard() {
   return (
@@ -86,21 +87,25 @@ export default function DispenserDashboard() {
             icon={<Plus className="text-gray-600" />} 
             title="ADD DRUG STOCK" 
             desc="Add new stock to inventory" 
+            href="/dispenser/stock-management/add"
           />
           <QuickActionCard 
             icon={<Edit className="text-gray-600" />} 
             title="MANAGE DRUG LIST" 
             desc="Edit / Delete drug details" 
+            href="/dispenser/drug-list"
           />
           <QuickActionCard 
             icon={<Table className="text-gray-600" />} 
             title="VIEW STOCK TABLE" 
             desc="View all stock & details" 
+            href="/dispenser/stock-management/table"
           />
           <QuickActionCard 
             icon={<Users className="text-gray-600" />} 
             title="DEALERS" 
             desc="View dealer details & contact" 
+            href="/dispenser/deals"
           />
         </div>
       </div>
@@ -163,9 +168,9 @@ function AlertItem({ name, details }: { name: string, details: string }) {
   );
 }
 
-function QuickActionCard({ icon, title, desc }: any) {
+function QuickActionCard({ icon, title, desc, href }: any) {
   return (
-    <button className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-sm transition-all text-left">
+    <Link href={href || "#"} className="flex items-center gap-4 p-4 bg-white border border-gray-200 rounded-lg hover:border-blue-300 hover:shadow-sm transition-all text-left">
       <div className="w-10 h-10 rounded-md bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0">
         {icon}
       </div>
@@ -173,7 +178,7 @@ function QuickActionCard({ icon, title, desc }: any) {
         <p className="text-xs font-bold text-gray-800 uppercase">{title}</p>
         <p className="text-[10px] text-gray-500">{desc}</p>
       </div>
-    </button>
+    </Link>
   );
 }
 

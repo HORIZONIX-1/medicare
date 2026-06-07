@@ -1,5 +1,8 @@
+"use client";
+
 import React from 'react';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { 
   LayoutDashboard, 
   FileText, 
@@ -12,9 +15,7 @@ import {
   LogOut,
   Bell,
   Menu,
-  ChevronDown,
-  PlusSquare,
-  Activity
+  ChevronDown
 } from 'lucide-react';
 
 export default function DispenserLayout({
@@ -22,6 +23,15 @@ export default function DispenserLayout({
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+
+  const isActive = (href: string) => {
+    if (href === '/dispenser') {
+      return pathname === '/dispenser';
+    }
+    return pathname?.startsWith(href);
+  };
+
   return (
     <div className="flex h-screen bg-gray-50 font-sans text-gray-800">
       {/* Sidebar */}
@@ -41,21 +51,21 @@ export default function DispenserLayout({
 
         {/* Navigation */}
         <nav className="flex-1 overflow-y-auto py-4 px-3 space-y-1">
-          <NavItem href="/dispenser" icon={<LayoutDashboard size={18} />} label="Dashboard" active />
+          <NavItem href="/dispenser" icon={<LayoutDashboard size={18} />} label="Dashboard" active={isActive('/dispenser')} />
           
           <div className="pt-2 pb-1">
-            <NavItem href="/dispenser/prescriptions" icon={<FileText size={18} />} label="Prescriptions" hasSubmenu />
+            <NavItem href="/dispenser/prescriptions" icon={<FileText size={18} />} label="Prescriptions" active={isActive('/dispenser/prescriptions')} hasSubmenu />
           </div>
 
           <div className="pt-2 pb-1">
-            <NavItem href="/dispenser/stock-management" icon={<Package size={18} />} label="Stock Management" hasSubmenu />
+            <NavItem href="/dispenser/stock-management" icon={<Package size={18} />} label="Stock Management" active={isActive('/dispenser/stock-management')} hasSubmenu />
           </div>
 
-          <NavItem href="/dispenser/drug-list" icon={<List size={18} />} label="Drug List" />
-          <NavItem href="/dispenser/deals" icon={<Users size={18} />} label="Deals / Dealers" />
-          <NavItem href="/dispenser/reports" icon={<BarChart2 size={18} />} label="Reports" />
-          <NavItem href="/dispenser/expiry-alerts" icon={<AlertTriangle size={18} />} label="Expiry Alerts" />
-          <NavItem href="/dispenser/settings" icon={<Settings size={18} />} label="Settings" />
+          <NavItem href="/dispenser/drug-list" icon={<List size={18} />} label="Drug List" active={isActive('/dispenser/drug-list')} />
+          <NavItem href="/dispenser/deals" icon={<Users size={18} />} label="Deals / Dealers" active={isActive('/dispenser/deals')} />
+          <NavItem href="/dispenser/reports" icon={<BarChart2 size={18} />} label="Reports" active={isActive('/dispenser/reports')} />
+          <NavItem href="/dispenser/expiry-alerts" icon={<AlertTriangle size={18} />} label="Expiry Alerts" active={isActive('/dispenser/expiry-alerts')} />
+          <NavItem href="/dispenser/settings" icon={<Settings size={18} />} label="Settings" active={isActive('/dispenser/settings')} />
         </nav>
 
         {/* Logout */}

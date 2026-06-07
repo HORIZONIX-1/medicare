@@ -95,3 +95,33 @@ export const getDrugAvailability =
     });
   }
 };
+
+export const listDrugs = async (req: Request, res: Response) => {
+  try {
+    const result = await drugService.listDrugs(req.query);
+    res.json({ success: true, ...result });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, message: "Failed to list drugs" });
+  }
+};
+
+export const updateDrug = async (req: Request, res: Response) => {
+  try {
+    const drug = await drugService.updateDrug(Number(req.params.id), req.body);
+    res.json({ success: true, data: drug });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ success: false, message: "Failed to update drug" });
+  }
+};
+
+export const deleteDrug = async (req: Request, res: Response) => {
+  try {
+    const result = await drugService.deleteDrug(Number(req.params.id));
+    res.json({ success: true, data: result });
+  } catch (error) {
+    console.error(error);
+    res.status(400).json({ success: false, message: "Failed to delete drug" });
+  }
+};
