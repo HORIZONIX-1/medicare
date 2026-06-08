@@ -315,24 +315,6 @@ model DashboardMetric {
   expires_at    DateTime?
 }
 
-model AuditLog {
-  audit_log_id Int @id @default(autoincrement())
-
-  action    String
-  entity    String
-  entity_id Int?
-  metadata  Json?
-
-  ip_address String?
-  user_agent String?
-
-  actor_id Int?
-  actor    User? @relation(fields: [actor_id], references: [user_id])
-
-  created_at DateTime @default(now())
-
-  @@index([created_at])
-}
 
 model OutsideDrug {
   outside_drug_id Int @id @default(autoincrement())
