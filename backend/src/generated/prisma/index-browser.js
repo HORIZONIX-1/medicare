@@ -310,6 +310,18 @@ exports.Prisma.OrganizationScalarFieldEnum = {
   updated_at: 'updated_at'
 };
 
+exports.Prisma.VisitScalarFieldEnum = {
+  visit_id: 'visit_id',
+  patient_id: 'patient_id',
+  doctor_id: 'doctor_id',
+  visit_date: 'visit_date',
+  preferred_time: 'preferred_time',
+  reason_notes: 'reason_notes',
+  status: 'status',
+  created_at: 'created_at',
+  updated_at: 'updated_at'
+};
+
 exports.Prisma.SortOrder = {
   asc: 'asc',
   desc: 'desc'
@@ -436,11 +448,23 @@ exports.Prisma.OrganizationOrderByRelevanceFieldEnum = {
   logo_url: 'logo_url',
   description: 'description'
 };
+
+exports.Prisma.VisitOrderByRelevanceFieldEnum = {
+  preferred_time: 'preferred_time',
+  reason_notes: 'reason_notes'
+};
 exports.Role = exports.$Enums.Role = {
   ADMIN: 'ADMIN',
   DOCTOR: 'DOCTOR',
   RECEPTIONIST: 'RECEPTIONIST',
   DISPENSER: 'DISPENSER'
+};
+
+exports.VisitStatus = exports.$Enums.VisitStatus = {
+  SCHEDULED: 'SCHEDULED',
+  COMPLETED: 'COMPLETED',
+  CANCELLED: 'CANCELLED',
+  NO_SHOW: 'NO_SHOW'
 };
 
 exports.Prisma.ModelName = {
@@ -462,7 +486,8 @@ exports.Prisma.ModelName = {
   OutsideDrug: 'OutsideDrug',
   Invoice: 'Invoice',
   AuditLog: 'AuditLog',
-  Organization: 'Organization'
+  Organization: 'Organization',
+  Visit: 'Visit'
 };
 
 /**

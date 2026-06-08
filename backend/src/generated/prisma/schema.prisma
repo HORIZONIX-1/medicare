@@ -29,6 +29,7 @@ model User {
   created_at DateTime @default(now())
 
   consultations   Consultation[]
+  scheduledVisits Visit[]
   audit_logs      AuditLog[]
   organization_id Int?
   organization    Organization?  @relation(fields: [organization_id], references: [organization_id], onDelete: SetNull)
@@ -39,6 +40,13 @@ enum Role {
   DOCTOR
   RECEPTIONIST
   DISPENSER
+}
+
+enum VisitStatus {
+  SCHEDULED
+  COMPLETED
+  CANCELLED
+  NO_SHOW
 }
 
 model Patient {
@@ -56,6 +64,7 @@ model Patient {
   created_at DateTime @default(now())
 
   consultations   Consultation[]
+  visits          Visit[]
   guardians       PatientGuardian[]
   allergies       PatientAllergy[]
   organization_id Int?
@@ -341,4 +350,25 @@ model Organization {
   updated_at      DateTime  @default(now()) @updatedAt
   users           User[]
   patients        Patient[]
+}
+
+model Visit {
+  visit_id Int @id @default(autoincrement())
+
+  patient_id Int
+  patient    Patient @relation(fields: [patient_id], references: [patient_id], onDelete: Cascade)
+
+  doctor_id Int
+  doctor    User @relation(fields: [doctor_id], references: [user_id], onDelete: Cascade)
+
+  visit_date DateTime
+
+  preferred_time String
+
+  reason_notes String?
+
+  status VisitStatus @default(SCHEDULED)
+
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
 }
