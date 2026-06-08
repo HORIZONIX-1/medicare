@@ -38,6 +38,7 @@ const listUsersSchema = Joi.object({
   includeDeleted: Joi.boolean().default(false),
   sortBy: Joi.string().valid("name", "email", "role", "created_at").default("created_at"),
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
+  organizationId: Joi.number().integer().positive().allow(null, ""),
 });
 
 const passwordSchema = Joi.string()
@@ -57,6 +58,7 @@ const createUserSchema = Joi.object({
   password: passwordSchema,
   role: Joi.string().valid(...roles).required(),
   isActive: Joi.boolean().default(true),
+  organizationId: Joi.number().integer().positive().allow(null),
 });
 
 const updateUserSchema = Joi.object({
@@ -64,6 +66,7 @@ const updateUserSchema = Joi.object({
   email: Joi.string().trim().lowercase().email(),
   role: Joi.string().valid(...roles),
   isActive: Joi.boolean(),
+  organizationId: Joi.number().integer().positive().allow(null),
 }).min(1);
 
 const activationSchema = Joi.object({

@@ -10,35 +10,6 @@ class OrganizationError extends Error {
   }
 }
 
-const sanitizeOrganization = (organization) => ({
-  id: organization.organization_id,
-  name: organization.name,
-  email: organization.email,
-  phone: organization.phone,
-  address: organization.address,
-  website: organization.website,
-  logoUrl: organization.logo_url,
-  description: organization.description,
-  createdAt: organization.created_at,
-  updatedAt: organization.updated_at,
-});
-
-const getOrganizationRecord = async () => {
-  const organization = await prisma.organization.findFirst({
-    orderBy: { organization_id: "asc" },
-  });
-
-  if (organization) {
-    return organization;
-  }
-
-  return prisma.organization.create({
-    data: {
-      name: DEFAULT_ORGANIZATION_NAME,
-    },
-  });
-};
-
 const writeAuditLog = async ({ actorId, action, organizationId, metadata, req }) => {
   try {
     await prisma.auditLog.create({
@@ -57,10 +28,125 @@ const writeAuditLog = async ({ actorId, action, organizationId, metadata, req })
   }
 };
 
-const getOrganization = async () => sanitizeOrganization(await getOrganizationRecord());
+const getOrganization = async () => {
+  let organizations = await prisma.organization.findMany({
+    orderBy: { organization_id: "asc" },
+    include: {
+      _count: {
+        select: {
+          users: true,
+          patients: true,
+        },
+      },
+    },
+  });
 
-const updateOrganization = async (payload, context = {}) => {
-  const organization = await getOrganizationRecord();
+  if (organizations.length === 0) {
+    await prisma.organization.create({
+      data: {
+        name: DEFAULT_ORGANIZATION_NAME,
+      },
+    });
+    
+    organizations = await prisma.organization.findMany({
+      orderBy: { organization_id: "asc" },
+      include: {
+        _count: {
+          select: {
+            users: true,
+            patients: true,
+          },
+        },
+      },
+    });
+  }
+
+  return organizations.map(org => ({
+    id: org.organization_id,
+    name: org.name,
+    email: org.email,
+    phone: org.phone,
+    address: org.address,
+    website: org.website,
+    logoUrl: org.logo_url,
+    description: org.description,
+    createdAt: org.created_at,
+    updatedAt: org.updated_at,
+    usersCount: org._count.users,
+    patientsCount: org._count.patients,
+  }));
+};
+
+const getOrganizationById = async (organizationId) => {
+  const org = await prisma.organization.findUnique({
+    where: { organization_id: Number(organizationId) },
+    include: {
+      _count: {
+        select: {
+          users: true,
+          patients: true,
+        },
+      },
+    },
+  });
+
+  if (!org) {
+    throw new OrganizationError("Organization not found", 404);
+  }
+
+  return {
+    id: org.organization_id,
+    name: org.name,
+    email: org.email,
+    phone: org.phone,
+    address: org.address,
+    website: org.website,
+    logoUrl: org.logo_url,
+    description: org.description,
+    createdAt: org.created_at,
+    updatedAt: org.updated_at,
+    usersCount: org._count.users,
+    patientsCount: org._count.patients,
+  };
+};
+
+const createOrganization = async (payload, context = {}) => {
+  const org = await prisma.organization.create({
+    data: {
+      name: payload.name,
+      email: payload.email || null,
+      phone: payload.phone || null,
+      address: payload.address || null,
+      website: payload.website || null,
+      description: payload.description || null,
+    },
+  });
+
+  await writeAuditLog({
+    actorId: context.actorId,
+    action: "ORGANIZATION_CREATED",
+    organizationId: org.organization_id,
+    metadata: { name: org.name },
+    req: context.req,
+  });
+
+  return {
+    id: org.organization_id,
+    name: org.name,
+    email: org.email,
+    phone: org.phone,
+    address: org.address,
+    website: org.website,
+    logoUrl: org.logo_url,
+    description: org.description,
+    createdAt: org.created_at,
+    updatedAt: org.updated_at,
+    usersCount: 0,
+    patientsCount: 0,
+  };
+};
+
+const updateOrganization = async (organizationId, payload, context = {}) => {
   const data = {};
 
   if (payload.name !== undefined) data.name = payload.name;
@@ -71,7 +157,7 @@ const updateOrganization = async (payload, context = {}) => {
   if (payload.description !== undefined) data.description = payload.description || null;
 
   const updated = await prisma.organization.update({
-    where: { organization_id: organization.organization_id },
+    where: { organization_id: Number(organizationId) },
     data,
   });
 
@@ -83,19 +169,18 @@ const updateOrganization = async (payload, context = {}) => {
     req: context.req,
   });
 
-  return sanitizeOrganization(updated);
+  return getOrganizationById(updated.organization_id);
 };
 
-const updateOrganizationLogo = async (file, context = {}) => {
+const updateOrganizationLogo = async (organizationId, file, context = {}) => {
   if (!file) {
     throw new OrganizationError("Organization logo is required", 400);
   }
 
-  const organization = await getOrganizationRecord();
   const logoUrl = `/uploads/organization/${file.filename}`;
 
   const updated = await prisma.organization.update({
-    where: { organization_id: organization.organization_id },
+    where: { organization_id: Number(organizationId) },
     data: { logo_url: logoUrl },
   });
 
@@ -107,12 +192,43 @@ const updateOrganizationLogo = async (file, context = {}) => {
     req: context.req,
   });
 
-  return sanitizeOrganization(updated);
+  return getOrganizationById(updated.organization_id);
+};
+
+const deleteOrganization = async (organizationId, context = {}) => {
+  const org = await prisma.organization.findUnique({
+    where: { organization_id: Number(organizationId) },
+  });
+
+  if (!org) {
+    throw new OrganizationError("Organization not found", 404);
+  }
+
+  await prisma.organization.delete({
+    where: { organization_id: org.organization_id },
+  });
+
+  await writeAuditLog({
+    actorId: context.actorId,
+    action: "ORGANIZATION_DELETED",
+    organizationId: org.organization_id,
+    metadata: { name: org.name },
+    req: context.req,
+  });
+
+  return {
+    id: org.organization_id,
+    name: org.name,
+    message: "Organization deleted successfully",
+  };
 };
 
 module.exports = {
   OrganizationError,
   getOrganization,
+  getOrganizationById,
+  createOrganization,
   updateOrganization,
   updateOrganizationLogo,
+  deleteOrganization,
 };
