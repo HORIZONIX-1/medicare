@@ -4,7 +4,7 @@
 // Get a free hosted Postgres database in seconds: `npx create-db`
 
 generator client {
-  provider = "prisma-client-js"
+  provider = "prisma-client"
   output   = "../generated/prisma"
 }
 
@@ -18,21 +18,15 @@ model User {
 
   name String
 
-  email    String @unique
+  email String @unique
   password String
 
   role Role
 
   is_first_login Boolean @default(true)
-  is_active      Boolean @default(true)
 
   created_at DateTime @default(now())
-
-  consultations Consultation[]
-  scheduledVisits Visit[]
-  audit_logs    AuditLog[]
-  organization_id Int?
-  organization    Organization? @relation(fields: [organization_id], references: [organization_id], onDelete: SetNull)
+  visits Visit[]
 }
 
 enum Role {
@@ -50,135 +44,57 @@ enum VisitStatus {
 }
 
 model Patient {
-  patient_id           Int      @id @default(autoincrement())
-  patient_code         String   @unique
-  name                 String
-  gender               String
-  date_of_birth        DateTime
-  address              String?
-  nic                  String?
-  phone                String?
-  is_profile_completed Boolean  @default(false)
+  patient_id            Int      @id @default(autoincrement())
+  patient_code          String   @unique
+  name                  String
+  gender                String
+  date_of_birth         DateTime
+  address               String?
+  nic                   String?
+  phone                 String?
+  is_profile_completed  Boolean  @default(false)
 
-  created_by Int
-  created_at DateTime @default(now())
+  created_by            Int
+  created_at            DateTime @default(now())
 
-  consultations Consultation[]
-  visits Visit[]
-  guardians     PatientGuardian[]
-  allergies     PatientAllergy[]
-  organization_id Int?
-  organization    Organization? @relation(fields: [organization_id], references: [organization_id], onDelete: SetNull)
-}
-
-model Symptom {
-  symptom_id Int @id @default(autoincrement())
-
-  name String @unique
-
-  consultationSymptoms ConsultationSymptom[]
-}
-
-model Examination {
-  examination_id Int @id @default(autoincrement())
-
-  consultation_id Int
-
-  title  String
-  result String
-
-  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
-}
-
-model ConsultationSymptom {
-  consultation_symptom_id Int @id @default(autoincrement())
-
-  consultation_id Int
-  symptom_id      Int
-
-  severity Float?
-
-  duration_value Float?
-  duration_unit  String?
-
-  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
-
-  symptom Symptom @relation(fields: [symptom_id], references: [symptom_id], onDelete: Cascade)
+  consultations         Consultation[]
+  visits                Visit[]
+  guardians             PatientGuardian[]
+  allergies             PatientAllergy[]
 }
 
 model Consultation {
   consultation_id Int @id @default(autoincrement())
 
   patient_id Int
-  patient    Patient @relation(fields: [patient_id], references: [patient_id])
+  patient Patient @relation(fields: [patient_id], references: [patient_id])
 
   doctor_id Int
-  doctor    User @relation(fields: [doctor_id], references: [user_id])
 
-  visit_date      DateTime
-  chief_complaint String?
-  notes           String?
-  created_at      DateTime @default(now())
-
-  prescriptions        Prescription[]
-  outsideDrugs         OutsideDrug[]
-  invoice              Invoice?
-  examinations         Examination[]
-  consultationSymptoms ConsultationSymptom[]
-  investigations       Investigation[]
-  instructions         PatientInstruction[]
-  diagnoses            Diagnosis[]
-}
-
-model Investigation {
-  investigation_id Int @id @default(autoincrement())
-
-  consultation_id Int
-
-  title       String
-  description String?
-
-  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
-}
-
-model PatientInstruction {
-  instruction_id Int @id @default(autoincrement())
-
-  consultation_id Int
-
-  instruction String
-
-  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
-}
-
-model Diagnosis {
-  diagnosis_id Int @id @default(autoincrement())
-
-  consultation_id Int
-
-  diagnosis_name String
-
+  visit_date DateTime
   notes String?
 
-  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id], onDelete: Cascade)
+  prescriptions Prescription[]
 }
 
 model PatientGuardian {
   guardian_id Int @id @default(autoincrement())
 
   patient_id Int
-  patient    Patient @relation(fields: [patient_id], references: [patient_id])
+  patient Patient @relation(fields: [patient_id], references: [patient_id])
 
-  guardian_name    String
-  guardian_phone   String?
-  relationship     String
+  guardian_name String
+  guardian_nic String?
+  guardian_phone String?
+  guardian_address String?
+  relationship String
 }
 
 model PatientAllergy {
   allergy_id Int @id @default(autoincrement())
 
   patient_id Int
-  patient    Patient @relation(fields: [patient_id], references: [patient_id])
+  patient Patient @relation(fields: [patient_id], references: [patient_id])
 
   allergy_name String
 }
@@ -187,169 +103,9 @@ model Prescription {
   prescription_id Int @id @default(autoincrement())
 
   consultation_id Int
-
   consultation Consultation @relation(fields: [consultation_id], references: [consultation_id])
 
-  total_amount Float @default(0)
-
   created_at DateTime @default(now())
-
-  items        PrescriptionItem[]
-  outsideDrugs OutsideDrug[]
-  invoice      Invoice?
-}
-
-model PrescriptionItem {
-  prescription_item_id Int @id @default(autoincrement())
-
-  prescription_id Int
-
-  prescription Prescription? @relation(fields: [prescription_id], references: [prescription_id])
-
-  drug_id Int?
-
-  drug Drug? @relation(fields: [drug_id], references: [drug_id])
-
-  drug_name String
-
-  dosage String?
-
-  instruction_1 String?
-  instruction_2 String?
-  instruction_3 String?
-
-  frequency String?
-
-  duration String?
-
-  quantity Int
-
-  price Float
-
-  is_outside_drug Boolean @default(false)
-
-  is_patient_denied Boolean @default(false)
-}
-
-model Drug {
-  drug_id Int @id @default(autoincrement())
-
-  name String @unique
-
-  category String
-
-  unit_type String
-
-  dosage_type String?
-
-  selling_price Float
-
-  reorder_level Int @default(10)
-
-  is_active Boolean @default(true)
-
-  created_at DateTime @default(now())
-
-  stockBatches StockBatch[]
-
-  prescriptionItems PrescriptionItem[]
-}
-
-model StockBatch {
-  stock_batch_id Int @id @default(autoincrement())
-
-  drug_id Int
-
-  drug Drug @relation(fields: [drug_id], references: [drug_id])
-
-  batch_number String?
-
-  expiry_date DateTime?
-
-  quantity Int
-
-  buying_price Float
-
-  selling_price Float
-
-  created_at DateTime @default(now())
-}
-
-model OutsideDrug {
-  outside_drug_id Int @id @default(autoincrement())
-
-  consultation_id Int?
-  consultation    Consultation? @relation(fields: [consultation_id], references: [consultation_id])
-
-  prescription_id Int?
-  prescription    Prescription? @relation(fields: [prescription_id], references: [prescription_id])
-
-  drug_name    String
-  instructions String?
-  quantity     Int
-  price        Float?
-
-  created_at DateTime @default(now())
-}
-
-model Invoice {
-  invoice_id Int @id @default(autoincrement())
-
-  consultation_id Int @unique
-
-  consultation Consultation @relation(fields: [consultation_id], references: [consultation_id])
-
-  prescription_id Int? @unique
-
-  prescription Prescription? @relation(fields: [prescription_id], references: [prescription_id])
-
-  total_drug_cost Float
-
-  doctor_fee Float
-
-  discount Float @default(0)
-
-  total_amount Float
-
-  is_patient_denied Boolean @default(false)
-
-  is_finalized Boolean @default(false)
-
-  finalized_at DateTime?
-
-  created_at DateTime @default(now())
-}
-
-model AuditLog {
-  audit_log_id  Int      @id @default(autoincrement())
-  actor_user_id Int?
-  action        String
-  entity        String
-  entity_id     String?
-  metadata      Json?
-  ip_address    String?
-  user_agent    String?
-  created_at    DateTime @default(now())
-
-  actor User? @relation(fields: [actor_user_id], references: [user_id])
-
-  @@index([actor_user_id])
-  @@index([entity, entity_id])
-}
-
-model Organization {
-  organization_id Int      @id @default(autoincrement())
-  name            String
-  email           String?
-  phone           String?
-  address         String?
-  website         String?
-  logo_url        String?
-  description     String?
-  created_at      DateTime @default(now())
-  updated_at      DateTime @default(now()) @updatedAt
-  users           User[]
-  patients        Patient[]
 }
 
 model Visit {
