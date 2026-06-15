@@ -93,9 +93,11 @@ export default function LoginPage() {
       } else if (user.role === "DOCTOR") {
         router.push("/doctor/patients");
       } else if (user.role === "RECEPTIONIST") {
-        router.push("/doctor/patients");
+        router.push("/receptionist/patients");
+      } else if (user.role === "DISPENSER" || user.role === "PHARMACIST") {
+        router.push("/dispenser");
       } else {
-        router.push("/doctor/patients");
+        router.push("/admin/dashboard"); // Assuming admin, else fallback
       }
     } catch (error: unknown) {
       console.error(error);

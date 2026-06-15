@@ -41,6 +41,13 @@ enum Role {
   DISPENSER
 }
 
+enum StockStatus {
+  ACTIVE
+  EXPIRED
+  DAMAGED
+  RECALLED
+}
+
 model Patient {
   patient_id           Int      @id @default(autoincrement())
   patient_code         String   @unique
@@ -237,6 +244,11 @@ model Drug {
 
   selling_price Float
 
+  manufacturer       String?
+  description        String?
+  gst_percentage     Float   @default(0)
+  min_order_quantity Int?
+
   reorder_level Int @default(10)
 
   is_active Boolean @default(true)
@@ -246,6 +258,8 @@ model Drug {
   stockBatches StockBatch[]
 
   prescriptionItems PrescriptionItem[]
+
+  @@index([is_active, created_at])
 }
 
 model StockBatch {
@@ -261,12 +275,46 @@ model StockBatch {
 
   quantity Int
 
+  status StockStatus @default(ACTIVE)
+
+  warehouse_location String?
+
+  supplier_id Int?
+  supplier    Supplier? @relation(fields: [supplier_id], references: [supplier_id])
+
   buying_price Float
 
   selling_price Float
 
   created_at DateTime @default(now())
+
+  @@index([drug_id, quantity])
+  @@index([expiry_date])
+  @@index([created_at])
 }
+
+model Supplier {
+  supplier_id Int @id @default(autoincrement())
+
+  name           String
+  email          String?
+  phone          String?
+  address        String?
+  contact_person String?
+  is_active      Boolean  @default(true)
+  created_at     DateTime @default(now())
+
+  stockBatches StockBatch[]
+}
+
+model DashboardMetric {
+  metric_id     Int       @id @default(autoincrement())
+  metric_key    String    @unique
+  metric_value  String
+  calculated_at DateTime  @default(now())
+  expires_at    DateTime?
+}
+
 
 model OutsideDrug {
   outside_drug_id Int @id @default(autoincrement())

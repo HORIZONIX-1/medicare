@@ -260,7 +260,7 @@ export default function OPDPage({
 
               <AllergyCard
                 patientId={consultation.patient.patient_id}
-                allergies={consultation.patient.allergies}
+                allergies={consultation.patient.allergies || []}
                 onDataAdded={handleDataAdded}
               />
             </div>

@@ -6,6 +6,7 @@ const helmet = require("helmet");
 const morgan = require("morgan");
 const compression = require("compression");
 const cookieParser = require("cookie-parser");
+const { setupSwagger } = require("./src/docs/swagger");
 
 const isProduction = process.env.NODE_ENV === "production";
 
@@ -125,6 +126,26 @@ const adminDashboardRoutes = loadRoute(
   "./src/modules/admin/dashboard/dashboard.routes.js",
   "./src/modules/admin/dashboard/dashboard.routes.js"
 );
+const dispenserDashboardRoutes = loadRoute(
+  "./src/modules/dispenser/dashboard.routes.ts",
+  "./dist/src/modules/dispenser/dashboard.routes"
+);
+const dispenserAlertsRoutes = loadRoute(
+  "./src/modules/dispenser/alerts.routes.ts",
+  "./dist/src/modules/dispenser/alerts.routes"
+);
+const dispenserReportsRoutes = loadRoute(
+  "./src/modules/dispenser/reports.routes.ts",
+  "./dist/src/modules/dispenser/reports.routes"
+);
+const dispenserSupplierRoutes = loadRoute(
+  "./src/modules/dispenser/supplier.routes.ts",
+  "./dist/src/modules/dispenser/supplier.routes"
+);
+const dispenserDashboardMetricRoutes = loadRoute(
+  "./src/modules/dispenser/dashboardMetric.routes.ts",
+  "./dist/src/modules/dispenser/dashboardMetric.routes"
+);
 const adminOrganizationRoutes = loadRoute(
   "./src/modules/admin/organization/organization.routes.js",
   "./src/modules/admin/organization/organization.routes.js"
@@ -188,6 +209,8 @@ app.get("/health", (_req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
+setupSwagger(app);
+
 app.use(`${apiPrefix}/auth`, authRoutes);
 app.use(`${apiPrefix}/patients`, patientRoutes);
 app.use(`${apiPrefix}/consultations`, consultationRoutes);
@@ -205,6 +228,11 @@ app.use("/api/v1/admin/users", adminUserRoutes);
 app.use("/api/v1/admin/dashboard", adminDashboardRoutes);
 app.use("/api/v1/admin/organization", adminOrganizationRoutes);
 app.use("/api/v1/admin/audit-logs", adminAuditRoutes);
+app.use("/api/v1/dispenser/dashboard", dispenserDashboardRoutes);
+app.use("/api/v1/dispenser/alerts", dispenserAlertsRoutes);
+app.use("/api/v1/dispenser/reports", dispenserReportsRoutes);
+app.use("/api/v1/dispenser/suppliers", dispenserSupplierRoutes);
+app.use("/api/v1/dispenser/metrics", dispenserDashboardMetricRoutes);
 
 app.get(`${apiPrefix}/protected/admin`, authMiddleware, roleMiddleware("ADMIN"), (_req, res) => {
   res.json({ message: "Admin access granted" });
