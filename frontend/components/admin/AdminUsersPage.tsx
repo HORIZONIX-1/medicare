@@ -9,7 +9,7 @@ export default function AdminUsersPage() {
   const orgIdParam = searchParams.get("orgId");
   const [users, setUsers] = useState<any[]>([]);
   const [organizations, setOrganizations] = useState<any[]>([]);
-  const [organizationId, setOrganizationId] = useState("");
+  const [organizationId, setOrganizationId] = useState(orgIdParam || "");
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState("");
   const [search, setSearch] = useState("");
@@ -143,6 +143,7 @@ export default function AdminUsersPage() {
         />
         <select value={organizationId} onChange={handleOrganizationChange}>
           <option value="">All Organizations</option>
+          <option value="none">Global / System</option>
           {organizations.map((org) => (
             <option key={org.id} value={String(org.id)}>{org.name}</option>
           ))}
