@@ -154,6 +154,14 @@ const adminAuditRoutes = loadRoute(
   "./src/modules/admin/audit/audit.routes.js",
   "./src/modules/admin/audit/audit.routes.js"
 );
+const adminNotificationRoutes = loadRoute(
+  "./src/modules/admin/notifications/notification.routes.js",
+  "./src/modules/admin/notifications/notification.routes.js"
+);
+const adminSupportRoutes = loadRoute(
+  "./src/modules/admin/support/support.routes.js",
+  "./src/modules/admin/support/support.routes.js"
+);
 const { authMiddleware } = loadRoute(
   "./src/middleware/auth.middleware.ts",
   "./dist/src/middleware/auth.middleware"
@@ -228,6 +236,8 @@ app.use("/api/v1/admin/users", adminUserRoutes);
 app.use("/api/v1/admin/dashboard", adminDashboardRoutes);
 app.use("/api/v1/admin/organization", adminOrganizationRoutes);
 app.use("/api/v1/admin/audit-logs", adminAuditRoutes);
+app.use("/api/v1/admin/notifications", adminNotificationRoutes);
+app.use("/api/v1/admin/support", adminSupportRoutes);
 app.use("/api/v1/dispenser/dashboard", dispenserDashboardRoutes);
 app.use("/api/v1/dispenser/alerts", dispenserAlertsRoutes);
 app.use("/api/v1/dispenser/reports", dispenserReportsRoutes);
