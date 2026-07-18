@@ -1,5 +1,7 @@
 "use client";
 
+import { Search } from "lucide-react";
+
 interface Props {
   searchType: string;
   setSearchType: (value: string) => void;
@@ -18,24 +20,33 @@ export default function PatientSearchForm({
   onSearch,
 }: Props) {
   return (
-    <div className="p-6">
-      <h3 className="text-sm font-extrabold text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-        <span>🔍</span> 1. Search Directory
-      </h3>
+    <div style={{ marginBottom: "1.5rem" }}>
+      <h3 className="white-card-section-title">1. Search Existing Patient</h3>
+      <p className="white-card-section-desc">Search using Patient ID, NIC or Phone number.</p>
 
-      <div className="flex flex-col sm:flex-row gap-3">
-        <div className="relative">
+      <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap" }}>
+        <div style={{ position: "relative", minWidth: "150px" }}>
           <select
             value={searchType}
             onChange={(e) => setSearchType(e.target.value)}
-            className="w-full sm:w-48 bg-slate-950/60 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200 cursor-pointer appearance-none pr-10"
+            className="light-select"
+            style={{ appearance: "none", paddingRight: "2.25rem", height: "42px" }}
           >
-            <option value="patient_id" className="bg-slate-950 text-white">Patient ID</option>
-            <option value="nic" className="bg-slate-950 text-white">NIC / National ID</option>
-            <option value="phone" className="bg-slate-950 text-white">Phone Number</option>
+            <option value="patient_id">Patient ID</option>
+            <option value="nic">NIC</option>
+            <option value="phone">Phone number</option>
           </select>
-          <div className="pointer-events-none absolute inset-y-0 right-0 flex items-center px-4 text-slate-400">
-            <svg className="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20">
+          <div 
+            style={{ 
+              pointerEvents: "none", 
+              position: "absolute", 
+              inset: "0 0.75rem 0 auto", 
+              display: "flex", 
+              alignItems: "center", 
+              color: "#94a3b8" 
+            }}
+          >
+            <svg style={{ fill: "currentColor", width: "1rem", height: "1rem" }} viewBox="0 0 20 20">
               <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z" />
             </svg>
           </div>
@@ -43,7 +54,7 @@ export default function PatientSearchForm({
 
         <input
           type="text"
-          placeholder={`Enter ${searchType === "patient_id" ? "patient ID code (e.g. P00001)" : searchType === "nic" ? "NIC number" : "phone number"}...`}
+          placeholder="Enter Patient ID, NIC or Phone number"
           value={searchValue}
           onChange={(e) => setSearchValue(e.target.value)}
           onKeyDown={(e) => {
@@ -51,14 +62,17 @@ export default function PatientSearchForm({
               onSearch();
             }
           }}
-          className="flex-1 bg-slate-950/60 border border-slate-800 rounded-2xl px-4 py-3 text-sm text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500 transition-all duration-200"
+          className="light-input"
+          style={{ flex: 1, minWidth: "200px", height: "42px" }}
         />
 
         <button
           onClick={onSearch}
-          className="bg-indigo-600 hover:bg-indigo-500 active:bg-indigo-700 text-white text-sm font-bold px-6 py-3 rounded-2xl transition-all duration-200 shadow-lg shadow-indigo-600/20 active:scale-[0.99]"
+          className="btn-light-blue"
+          style={{ height: "42px", borderRadius: "0.5rem" }}
         >
-          SEARCH
+          <Search size={16} />
+          <span>Search</span>
         </button>
       </div>
     </div>

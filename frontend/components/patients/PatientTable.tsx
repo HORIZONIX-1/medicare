@@ -29,66 +29,73 @@ export default function PatientTable({ patients }: Props) {
   };
 
   return (
-    <div className="p-6">
-      <h3 className="text-sm font-extrabold text-indigo-400 uppercase tracking-widest mb-4 flex items-center gap-2">
-        <span>📋</span> 2. Search Results
-      </h3>
-
+    <div style={{ marginTop: "1rem" }}>
       {patients.length === 0 ? (
-        <div className="text-center py-10 bg-slate-950/40 border border-slate-800/40 rounded-2xl p-6">
-          <span className="text-3xl block mb-2 opacity-60">📁</span>
-          <p className="text-sm font-semibold text-slate-300">No Patients Displayed</p>
-          <p className="text-xs text-slate-500 mt-1">Submit a search query above to fetch record matches from the clinic base.</p>
+        <div style={{
+          textAlign: "center",
+          padding: "2.5rem 1.5rem",
+          backgroundColor: "#f8fafc",
+          border: "1px dashed #cbd5e1",
+          borderRadius: "0.5rem"
+        }}>
+          <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.5rem", opacity: 0.6 }}>📁</span>
+          <p style={{ fontSize: "0.875rem", fontWeight: 700, color: "#475569" }}>No Patients Displayed</p>
+          <p style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "0.25rem" }}>
+            Submit a search query above to fetch record matches from the clinic base.
+          </p>
         </div>
       ) : (
-        <div className="overflow-x-auto border border-slate-800 rounded-2xl">
-          <table className="w-full text-left text-sm border-collapse">
-            <thead className="bg-slate-900 text-slate-400 text-xs font-semibold uppercase tracking-wider border-b border-slate-800">
+        <div className="light-table-container">
+          <table className="light-table">
+            <thead>
               <tr>
-                <th className="px-6 py-4">Patient Code</th>
-                <th className="px-6 py-4">Name</th>
-                <th className="px-6 py-4">NIC</th>
-                <th className="px-6 py-4">Phone</th>
-                <th className="px-6 py-4 text-right">Actions</th>
+                <th>Patient ID</th>
+                <th>Name</th>
+                <th>NIC</th>
+                <th>Phone</th>
+                <th>Date of Birth</th>
+                <th>Last Visit</th>
+                <th style={{ textAlign: "right" }}>Action</th>
               </tr>
             </thead>
 
-            <tbody className="divide-y divide-slate-800 bg-slate-900/10">
+            <tbody>
               {patients.map((patient) => (
-                <tr
-                  key={patient.patient_id}
-                  className="hover:bg-slate-800/30 transition-colors duration-150"
-                >
-                  <td className="px-6 py-4 font-mono text-xs font-semibold text-indigo-400">
+                <tr key={patient.patient_id}>
+                  <td className="light-table-code">
                     {patient.patient_code}
                   </td>
-                  <td className="px-6 py-4 font-semibold text-white">
+                  <td className="light-table-name">
                     {patient.name}
                   </td>
-                  <td className="px-6 py-4 text-slate-300">
+                  <td>
                     {patient.nic || "—"}
                   </td>
-                  <td className="px-6 py-4 text-slate-300">
+                  <td>
                     {patient.phone || "—"}
                   </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="inline-flex gap-2">
+                  <td>
+                    {patient.date_of_birth ? patient.date_of_birth.split("T")[0] : "—"}
+                  </td>
+                  <td>
+                    {(patient as any).last_visit || "—"}
+                  </td>
+                  <td style={{ textAlign: "right" }}>
+                    <div style={{ display: "inline-flex", gap: "0.5rem" }}>
                       <button
                         onClick={() => router.push(`/doctor/patients/${patient.patient_id}`)}
-                        className="bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-semibold px-3 py-1.5 rounded-xl border border-slate-700/60 transition-all duration-150"
+                        className="btn-light-outline"
                       >
-                        Open Profile
+                        View Profile
                       </button>
 
                       <button
                         onClick={() => handleStartVisit(patient.patient_id)}
                         disabled={startingVisit !== null}
-                        className={`text-xs font-bold px-3 py-1.5 rounded-xl transition-all duration-150 shadow-md ${
-                          startingVisit === String(patient.patient_id)
-                            ? "bg-indigo-700 text-white opacity-75 cursor-wait"
-                            : "bg-indigo-600 hover:bg-indigo-500 text-white shadow-indigo-600/10"
-                        }`}>
-                        {startingVisit === String(patient.patient_id) ? "Starting..." : "Start Visit"}
+                        className="btn-light-select"
+                        style={{ minWidth: "80px" }}
+                      >
+                        {startingVisit === String(patient.patient_id) ? "Starting..." : "Select"}
                       </button>
                     </div>
                   </td>

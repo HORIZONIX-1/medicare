@@ -6,6 +6,22 @@ import PatientSearchForm from "@/components/patients/PatientSearchForm";
 import PatientTable from "@/components/patients/PatientTable";
 import RegisterPatientForm from "@/components/patients/RegisterPatientForm";
 import api from "@/lib/axios";
+import { 
+  LayoutDashboard, 
+  Users, 
+  Stethoscope, 
+  FileText, 
+  Send, 
+  Receipt, 
+  BarChart2, 
+  Calendar as CalendarIcon, 
+  Bell, 
+  Settings as SettingsIcon, 
+  LogOut,
+  ChevronDown,
+  ArrowRight,
+  Plus
+} from "lucide-react";
 
 export default function PatientsPage() {
   const router = useRouter();
@@ -14,6 +30,7 @@ export default function PatientsPage() {
   const [patients, setPatients] = useState([]);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
+  const [formattedDate, setFormattedDate] = useState("Wednesday, June 12, 2024");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -26,6 +43,20 @@ export default function PatientsPage() {
       setIsCheckingAuth(false);
     }
   }, [router]);
+
+  useEffect(() => {
+    try {
+      const options: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      setFormattedDate(new Date().toLocaleDateString('en-US', options));
+    } catch (e) {
+      // fallback
+    }
+  }, []);
 
   const handleSearch = async () => {
     try {
@@ -57,74 +88,228 @@ export default function PatientsPage() {
   }
 
   return (
-    <div className="opd-page">
-      <div className="opd-orb opd-orb-1" />
-      <div className="opd-orb opd-orb-2" />
-      <div className="opd-orb opd-orb-3" />
-      <div className="opd-grid-lines" />
+    <>
+      <style>{`
+        /* Hide default site layout headers and footers for this page */
+        .header-main,
+        .footer {
+          display: none !important;
+        }
+        .main-content {
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+      `}</style>
 
-      <header className="opd-header">
-        <div className="opd-header-content">
-          <div className="opd-header-left">
-            <span className="opd-header-icon">🏥</span>
-            <div>
-              <h1 className="opd-header-title">MediCare</h1>
-              <p className="opd-header-subtitle">Clinical Hub</p>
+      <div className="dr-layout">
+        {/* Left Sidebar */}
+        <aside className="dr-sidebar">
+          {/* Logo Area */}
+          <div className="dr-sidebar-logo">
+            <div className="dr-logo-icon">
+              <Plus size={20} strokeWidth={3} />
+            </div>
+            <div className="dr-logo-text">
+              <span className="dr-logo-title">MediCore</span>
+              <span className="dr-logo-subtitle">Clinic Suite</span>
             </div>
           </div>
-          <div className="opd-header-right">
-            <div className="opd-header-badge">
-              <span className="opd-header-badge-dot" />
-              {currentUser?.name || 'User'}
-            </div>
-            <button
-              onClick={handleLogout}
-              className="btn-cyan"
-            >
-              Logout
+
+          {/* Navigation Items */}
+          <nav className="dr-sidebar-nav">
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Users size={18} />
+                <span>Patients</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item active">
+              <div className="dr-nav-item-left">
+                <Stethoscope size={18} />
+                <span>OPD / Consultation</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <FileText size={18} />
+                <span>Prescriptions</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Send size={18} />
+                <span>Referrals</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Receipt size={18} />
+                <span>Invoices</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <BarChart2 size={18} />
+                <span>Reports</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <CalendarIcon size={18} />
+                <span>Calendar</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Bell size={18} />
+                <span>Notifications</span>
+              </div>
+              <span className="dr-nav-badge">3</span>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <SettingsIcon size={18} />
+                <span>Settings</span>
+              </div>
+            </a>
+          </nav>
+
+          {/* Sidebar Footer Logout */}
+          <div className="dr-sidebar-footer">
+            <button onClick={handleLogout} className="dr-logout-btn">
+              <LogOut size={18} />
+              <span>Logout</span>
             </button>
           </div>
-        </div>
-      </header>
+        </aside>
 
-      <main className="opd-main">
-        <div>
-          <h2 className="text-2xl font-extrabold text-white tracking-tight">Patient Directory</h2>
-          <p className="text-slate-400 text-xs mt-1">Search, evaluate patient records, or register new patients in the EHR system.</p>
-        </div>
-
-        {/* Forms styling and sections wrapper */}
-        <div className="grid grid-cols-1 gap-8">
-          
-          <div className="card-modern">
-            <PatientSearchForm
-              searchType={searchType}
-              setSearchType={setSearchType}
-              searchValue={searchValue}
-              setSearchValue={setSearchValue}
-              onSearch={handleSearch}
-            />
-          </div>
-
-          <div className="card-modern">
-            <PatientTable patients={patients} />
-          </div>
-
-          <div className="relative py-4 flex items-center justify-center">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-slate-800/80"></div>
+        {/* Main Content Area */}
+        <div className="dr-main-content">
+          {/* Header */}
+          <header className="dr-header">
+            <div className="dr-header-date">
+              <CalendarIcon size={16} className="text-blue-600" />
+              <span>{formattedDate}</span>
+              <ChevronDown size={14} className="text-gray-400" />
             </div>
-            <span className="relative px-4 bg-slate-950 text-slate-500 text-xs font-extrabold uppercase tracking-widest">
-              OR
-            </span>
-          </div>
 
-          <div className="card-modern">
-            <RegisterPatientForm />
-          </div>
+            <div className="dr-header-right">
+              {/* Notifications */}
+              <button className="dr-bell-btn">
+                <Bell size={18} />
+                <span className="dr-bell-badge">3</span>
+              </button>
 
+              {/* Doctor Profile */}
+              <div className="dr-profile-badge">
+                <img
+                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100"
+                  alt="Dr. Sarah Bennett"
+                  className="dr-profile-avatar"
+                />
+                <div className="dr-profile-info">
+                  <span className="dr-profile-name">
+                    {currentUser?.name ? `Dr. ${currentUser.name}` : "Dr. Sarah Bennett"}
+                  </span>
+                  <span className="dr-profile-role">Cardiologist</span>
+                </div>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+            </div>
+          </header>
+
+          {/* Page Body Scrollable */}
+          <main className="dr-content-scroll">
+            <div className="dr-page-header">
+              <h1 className="dr-page-title">Consultation</h1>
+            </div>
+
+            {/* Stepper Progress Bar */}
+            <div className="consultation-stepper">
+              {/* Steps */}
+              <div className="stepper-step active">
+                <div className="stepper-circle">1</div>
+                <span className="stepper-label">Select Patient</span>
+              </div>
+              <div className="stepper-step">
+                <div className="stepper-circle">2</div>
+                <span className="stepper-label">Chief Complaint</span>
+              </div>
+              <div className="stepper-step">
+                <div className="stepper-circle">3</div>
+                <span className="stepper-label">Examination</span>
+              </div>
+              <div className="stepper-step">
+                <div className="stepper-circle">4</div>
+                <span className="stepper-label">Diagnosis & Notes</span>
+              </div>
+              <div className="stepper-step">
+                <div className="stepper-circle">5</div>
+                <span className="stepper-label">Prescription</span>
+              </div>
+              <div className="stepper-step">
+                <div className="stepper-circle">6</div>
+                <span className="stepper-label">Review & Invoice</span>
+              </div>
+
+              {/* Connector lines behind */}
+              <div className="stepper-connector">
+                <div className="flex w-full h-full items-center justify-between" style={{ gap: "2px" }}>
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line inactive flex-1" />
+                  <div className="stepper-connector-line inactive flex-1" />
+                  <div className="stepper-connector-line inactive flex-1" />
+                  <div className="stepper-connector-line inactive flex-1" />
+                </div>
+              </div>
+            </div>
+
+            {/* Central White Content Card */}
+            <div className="white-card">
+              <div className="white-card-step-title">Step 1 of 6</div>
+              <h2 className="white-card-title">Select Patient</h2>
+              <p className="white-card-subtitle">
+                Search for an existing patient or register a new patient.
+              </p>
+
+              {/* 1. Search Existing Patient Section */}
+              <PatientSearchForm
+                searchType={searchType}
+                setSearchType={setSearchType}
+                searchValue={searchValue}
+                setSearchValue={setSearchValue}
+                onSearch={handleSearch}
+              />
+
+              <PatientTable patients={patients} />
+
+              {/* OR Divider */}
+              <div className="or-divider-container">
+                <div className="or-divider-line" />
+                <span className="or-divider-badge">OR</span>
+              </div>
+
+              {/* 2. Register New Patient Section */}
+              <RegisterPatientForm />
+            </div>
+
+            {/* Bottom Navigation */}
+            <div className="max-w-[1000px] mx-auto flex justify-end">
+              <button className="btn-light-blue" style={{ padding: "0.75rem 2.25rem", fontSize: "0.95rem", borderRadius: "0.5rem" }}>
+                <span>Next</span>
+                <ArrowRight size={18} />
+              </button>
+            </div>
+          </main>
         </div>
-      </main>
-    </div>
+      </div>
+    </>
   );
 }
