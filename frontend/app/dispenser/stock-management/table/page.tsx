@@ -1,38 +1,35 @@
+"use client";
+
 import React from 'react';
 import { Search, Filter, RefreshCw, Plus, Edit, Trash2 } from 'lucide-react';
 import Link from 'next/link';
 
 export default function StockTable() {
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "2rem" }}>
       {/* Header */}
-      <div className="flex justify-between items-end">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Stock Table</h1>
-          <p className="text-sm text-gray-500 mt-1">View all drugs in inventory with stock status and details.</p>
-        </div>
-        <div className="text-xs text-gray-400">
-          Stock Management &gt; Stock Table
-        </div>
+      <div>
+        <h1 className="dr-page-title" style={{ fontSize: "1.75rem" }}>Stock Table</h1>
+        <p style={{ fontSize: "0.875rem", color: "#64748b", marginTop: "4px" }}>View all drugs in inventory with stock status and details.</p>
       </div>
 
-      <div className="bg-white border border-gray-200 rounded-lg p-5">
+      <div className="white-card" style={{ padding: "2rem", marginBottom: "2rem" }}>
         {/* Filters */}
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-4 mb-6">
-          <div className="md:col-span-1">
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">SEARCH</p>
-            <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1.25rem", marginBottom: "1.5rem" }}>
+          <div>
+            <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, display: "block", marginBottom: "4px" }}>SEARCH</span>
+            <div style={{ display: "flex", border: "1px solid #cbd5e1", borderRadius: "0.5rem", padding: "0 0.75rem", alignItems: "center", backgroundColor: "#ffffff" }}>
+              <Search size={16} className="text-gray-400" style={{ marginRight: "0.5rem" }} />
               <input 
                 type="text" 
-                placeholder="Search by drug name, category..." 
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                placeholder="Search drug name..." 
+                style={{ border: "none", width: "100%", height: "38px", fontSize: "0.8125rem", outline: "none", color: "#0f172a" }}
               />
             </div>
           </div>
           <div>
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">CATEGORY</p>
-            <select className="w-full py-2 px-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, display: "block", marginBottom: "4px" }}>CATEGORY</span>
+            <select className="light-select">
               <option>All Categories</option>
               <option>Tablet</option>
               <option>Capsule</option>
@@ -40,58 +37,58 @@ export default function StockTable() {
             </select>
           </div>
           <div>
-            <p className="text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">STATUS</p>
-            <select className="w-full py-2 px-3 border border-gray-300 rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 bg-white">
+            <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, display: "block", marginBottom: "4px" }}>STATUS</span>
+            <select className="light-select">
               <option>All Status</option>
               <option>In Stock</option>
               <option>Low Stock</option>
               <option>Out of Stock</option>
             </select>
           </div>
-          <div className="flex items-end gap-2">
-            <button className="flex-1 py-2 px-4 border border-gray-300 rounded-md text-sm font-medium hover:bg-gray-50 flex items-center justify-center gap-2">
-              <Filter size={16} /> FILTER
+          <div style={{ display: "flex", gap: "0.75rem", alignItems: "flex-end" }}>
+            <button className="btn-light-outline" style={{ flex: 1, height: "40px", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+              <Filter size={16} /> <span>FILTER</span>
             </button>
-            <button className="flex-1 py-2 px-4 bg-gray-800 text-white rounded-md text-sm font-medium hover:bg-gray-900 flex items-center justify-center gap-2">
-              <RefreshCw size={16} /> REFRESH
+            <button className="btn-light-blue" style={{ flex: 1, height: "40px", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+              <RefreshCw size={16} /> <span>REFRESH</span>
             </button>
           </div>
         </div>
 
         {/* Stats Row */}
-        <div className="flex justify-between items-center py-4 border-t border-b border-gray-100 mb-6">
-          <div className="flex gap-6 text-sm">
-            <span className="font-medium text-gray-800">Total Drugs: <span className="font-bold">120</span></span>
-            <span className="text-gray-300">|</span>
-            <span className="font-medium text-green-600">In Stock: <span className="font-bold">95</span></span>
-            <span className="text-gray-300">|</span>
-            <span className="font-medium text-orange-500">Low Stock: <span className="font-bold">20</span></span>
-            <span className="text-gray-300">|</span>
-            <span className="font-medium text-red-500">Out of Stock: <span className="font-bold">5</span></span>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem", borderTop: "1px solid #f1f5f9", borderBottom: "1px solid #f1f5f9", padding: "1.25rem 0", marginBottom: "1.5rem" }}>
+          <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", fontSize: "0.875rem" }}>
+            <span style={{ fontWeight: 600, color: "#334155" }}>Total Drugs: <b style={{ color: "#0f172a" }}>120</b></span>
+            <span style={{ color: "#e2e8f0" }}>|</span>
+            <span style={{ fontWeight: 600, color: "#16a34a" }}>In Stock: <b>95</b></span>
+            <span style={{ color: "#e2e8f0" }}>|</span>
+            <span style={{ fontWeight: 600, color: "#ea580c" }}>Low Stock: <b>20</b></span>
+            <span style={{ color: "#e2e8f0" }}>|</span>
+            <span style={{ fontWeight: 600, color: "#dc2626" }}>Out of Stock: <b>5</b></span>
           </div>
-          <Link href="/dispenser/stock-management/add" className="bg-gray-800 text-white px-4 py-2 rounded-md text-sm font-medium hover:bg-gray-900 flex items-center gap-2 transition-colors">
-            <Plus size={16} /> ADD DRUG STOCK
+          <Link href="/dispenser/stock-management/add" className="btn-light-blue" style={{ textDecoration: "none" }}>
+            <Plus size={16} /> <span>ADD DRUG STOCK</span>
           </Link>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-[10px] text-gray-500 uppercase bg-gray-50/50 border-b border-gray-200">
+        <div style={{ border: "1px solid #e2e8f0", borderRadius: "0.5rem", overflow: "hidden" }}>
+          <table className="light-table" style={{ border: "none", width: "100%" }}>
+            <thead>
               <tr>
-                <th className="px-4 py-3 font-medium">#</th>
-                <th className="px-4 py-3 font-medium">DRUG NAME</th>
-                <th className="px-4 py-3 font-medium">CATEGORY</th>
-                <th className="px-4 py-3 font-medium">UNIT TYPE</th>
-                <th className="px-4 py-3 font-medium text-center">AVAILABLE QTY</th>
-                <th className="px-4 py-3 font-medium text-center">REORDER LEVEL</th>
-                <th className="px-4 py-3 font-medium">BATCH NO.</th>
-                <th className="px-4 py-3 font-medium">EXPIRY DATE</th>
-                <th className="px-4 py-3 font-medium text-center">STATUS</th>
-                <th className="px-4 py-3 font-medium text-center">ACTIONS</th>
+                <th style={{ width: "40px" }}>#</th>
+                <th>DRUG NAME</th>
+                <th>CATEGORY</th>
+                <th>UNIT TYPE</th>
+                <th style={{ width: "120px", textAlign: "center" }}>AVAILABLE QTY</th>
+                <th style={{ width: "120px", textAlign: "center" }}>REORDER LEVEL</th>
+                <th>BATCH NO.</th>
+                <th>EXPIRY DATE</th>
+                <th style={{ width: "120px", textAlign: "center" }}>STATUS</th>
+                <th style={{ width: "100px", textAlign: "center" }}>ACTIONS</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
               <StockRow 
                 id={1} name="Paracetamol 500mg" cat="Tablet" unit="Tablet" qty={50} reorder={20} batch="B123" expiry="2026-05-30" status="In Stock" 
               />
@@ -112,16 +109,16 @@ export default function StockTable() {
         </div>
 
         {/* Pagination */}
-        <div className="flex items-center justify-between mt-6 text-sm text-gray-500">
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1.5rem", fontSize: "0.8125rem", color: "#64748b" }}>
           <span>Showing 1 to 10 of 120 entries</span>
-          <div className="flex gap-1">
-            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded text-gray-400 hover:bg-gray-50">&lt;</button>
-            <button className="w-8 h-8 flex items-center justify-center bg-gray-800 text-white rounded">1</button>
-            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded hover:bg-gray-50">2</button>
-            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded hover:bg-gray-50">3</button>
-            <span className="w-8 h-8 flex items-center justify-center">...</span>
-            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded hover:bg-gray-50">12</button>
-            <button className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded text-gray-600 hover:bg-gray-50">&gt;</button>
+          <div style={{ display: "flex", gap: "0.25rem" }}>
+            <button className="btn-light-outline" style={{ padding: "0.35rem 0.65rem" }}>&lt;</button>
+            <button className="btn-light-blue" style={{ padding: "0.35rem 0.875rem" }}>1</button>
+            <button className="btn-light-outline" style={{ padding: "0.35rem 0.65rem" }}>2</button>
+            <button className="btn-light-outline" style={{ padding: "0.35rem 0.65rem" }}>3</button>
+            <span style={{ padding: "0.35rem 0.5rem" }}>...</span>
+            <button className="btn-light-outline" style={{ padding: "0.35rem 0.65rem" }}>12</button>
+            <button className="btn-light-outline" style={{ padding: "0.35rem 0.65rem" }}>&gt;</button>
           </div>
         </div>
       </div>
@@ -130,32 +127,53 @@ export default function StockTable() {
 }
 
 function StockRow({ id, name, cat, unit, qty, reorder, batch, expiry, status }: any) {
-  let statusClass = "text-green-600 border-green-200 bg-green-50";
-  if (status === "Low Stock") statusClass = "text-orange-600 border-orange-200 bg-orange-50";
-  if (status === "Out of Stock") statusClass = "text-red-600 border-red-200 bg-red-50";
+  let statusBadgeColor = "#dbeafe";
+  let statusTextColor = "#1e40af";
+  let statusBorderColor = "#bfdbfe";
+
+  if (status === "Low Stock") {
+    statusBadgeColor = "#fffbeb";
+    statusTextColor = "#b45309";
+    statusBorderColor = "#fde68a";
+  } else if (status === "Out of Stock") {
+    statusBadgeColor = "#fef2f2";
+    statusTextColor = "#b91c1c";
+    statusBorderColor = "#fca5a5";
+  }
 
   return (
-    <tr className="hover:bg-gray-50 transition-colors">
-      <td className="px-4 py-4 text-gray-500">{id}</td>
-      <td className="px-4 py-4 font-medium text-gray-900">{name}</td>
-      <td className="px-4 py-4 text-gray-600">{cat}</td>
-      <td className="px-4 py-4 text-gray-600">{unit}</td>
-      <td className="px-4 py-4 text-center font-medium">{qty}</td>
-      <td className="px-4 py-4 text-center text-gray-500">{reorder}</td>
-      <td className="px-4 py-4 text-gray-600">{batch}</td>
-      <td className="px-4 py-4 text-gray-600">{expiry}</td>
-      <td className="px-4 py-4 text-center">
-        <span className={`px-2.5 py-1 text-[10px] font-bold border rounded-full uppercase inline-block whitespace-nowrap ${statusClass}`}>
+    <tr>
+      <td style={{ fontWeight: 700 }}>{id}</td>
+      <td style={{ fontWeight: 700, color: "#0f172a" }}>{name}</td>
+      <td>{cat}</td>
+      <td>{unit}</td>
+      <td style={{ textAlign: "center", fontWeight: 700, color: "#334155" }}>{qty}</td>
+      <td style={{ textAlign: "center", color: "#64748b" }}>{reorder}</td>
+      <td style={{ fontFamily: "monospace", color: "#64748b" }}>{batch}</td>
+      <td>{expiry}</td>
+      <td style={{ textAlign: "center" }}>
+        <span style={{
+          backgroundColor: statusBadgeColor,
+          color: statusTextColor,
+          borderColor: statusBorderColor,
+          borderWidth: "1px",
+          borderStyle: "solid",
+          fontSize: "0.6875rem",
+          fontWeight: 700,
+          padding: "0.2rem 0.6rem",
+          borderRadius: "9999px",
+          textTransform: "uppercase"
+        }}>
           {status}
         </span>
       </td>
-      <td className="px-4 py-4">
-        <div className="flex items-center justify-center gap-2">
-          <button className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded hover:bg-gray-100 text-gray-500 transition-colors">
-            <Edit size={14} />
+      <td>
+        <div style={{ display: "flex", gap: "0.5rem", justifyContent: "center" }}>
+          <button className="btn-light-outline" style={{ padding: "0.35rem 0.5rem" }}>
+            <Edit size={13} />
           </button>
-          <button className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded hover:bg-red-50 hover:text-red-500 hover:border-red-200 text-gray-500 transition-colors">
-            <Trash2 size={14} />
+          <button className="btn-light-outline" style={{ padding: "0.35rem 0.5rem", color: "#ef4444", borderColor: "#fca5a5" }}>
+            <Trash2 size={13} />
           </button>
         </div>
       </td>
