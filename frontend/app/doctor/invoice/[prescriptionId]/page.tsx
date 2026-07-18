@@ -1,21 +1,30 @@
 "use client";
 
-import { use, useEffect, useState }
-  from "react";
-
-import { useRouter }
-  from "next/navigation";
+import { use, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 import api from "@/lib/axios";
+import InvoiceSummary from "@/components/invoice/InvoiceSummary";
+import InvoiceDrugTable from "@/components/invoice/InvoiceDrugTable";
+import InvoiceActions from "@/components/invoice/InvoiceActions";
 
-import InvoiceSummary
-  from "@/components/invoice/InvoiceSummary";
-
-import InvoiceDrugTable
-  from "@/components/invoice/InvoiceDrugTable";
-
-import InvoiceActions
-  from "@/components/invoice/InvoiceActions";
+import { 
+  LayoutDashboard, 
+  Users, 
+  Stethoscope, 
+  FileText, 
+  Send, 
+  Receipt, 
+  BarChart2, 
+  Calendar as CalendarIcon, 
+  Bell, 
+  Settings as SettingsIcon, 
+  LogOut,
+  ChevronDown,
+  ArrowRight,
+  ArrowLeft,
+  Plus
+} from "lucide-react";
 
 interface Props {
   params: Promise<{
@@ -23,148 +32,313 @@ interface Props {
   }>;
 }
 
-export default function InvoicePage({
-  params,
-}: Props) {
-
-  const router =
-    useRouter();
-
+export default function InvoicePage({ params }: Props) {
+  const router = useRouter();
   const resolvedParams = use(params);
 
-  const [prescription, setPrescription] =
-    useState<any>(null);
-
-  const [doctorFee, setDoctorFee] =
-    useState(500);
-
-  const [discount, setDiscount] =
-    useState(0);
-
-  const [patientDenied, setPatientDenied] =
-    useState(false);
+  const [prescription, setPrescription] = useState<any>(null);
+  const [doctorFee, setDoctorFee] = useState(500);
+  const [discount, setDiscount] = useState(0);
+  const [patientDenied, setPatientDenied] = useState(false);
+  const [formattedDate, setFormattedDate] = useState("Wednesday, June 12, 2024");
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
+    try {
+      const userString = localStorage.getItem("user");
+      if (userString) {
+        setCurrentUser(JSON.parse(userString));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
+  useEffect(() => {
+    try {
+      const options: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      setFormattedDate(new Date().toLocaleDateString('en-US', options));
+    } catch (e) {
+      // fallback
+    }
+  }, []);
+
+  useEffect(() => {
     fetchPrescription();
-
   }, [resolvedParams.prescriptionId]);
 
-  const fetchPrescription =
-    async () => {
-
-      const response =
-        await api.get(
-          `/prescriptions/${resolvedParams.prescriptionId}`
-        );
-
+  const fetchPrescription = async () => {
+    try {
+      const response = await api.get(`/prescriptions/${resolvedParams.prescriptionId}`);
       setPrescription(response.data);
-    };
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/");
+  };
 
   if (!prescription) {
     return (
-      <div className="opd-loading-container">
-        <div className="spinner" />
-        <p className="opd-loading-text">Loading invoice...</p>
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+        <p className="text-slate-400 text-sm mt-4">Loading invoice...</p>
       </div>
     );
   }
 
-  const drugTotal =
-    prescription.items.reduce(
-      (sum: number, item: any) =>
-        sum +
-        (item.price * item.quantity),
-      0
-    );
+  const drugTotal = prescription.items.reduce(
+    (sum: number, item: any) => sum + (item.price * item.quantity),
+    0
+  );
 
-  const finalTotal =
-    drugTotal +
-    doctorFee -
-    discount;
+  const finalTotal = drugTotal + doctorFee - discount;
 
   return (
-    <div className="opd-page">
-      <div className="opd-orb opd-orb-1" />
-      <div className="opd-orb opd-orb-2" />
-      <div className="opd-orb opd-orb-3" />
-      <div className="opd-grid-lines" />
+    <>
+      <style>{`
+        /* Hide default site layout headers and footers for this page */
+        .header-main,
+        .footer {
+          display: none !important;
+        }
+        .main-content {
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+      `}</style>
 
-      <header className="opd-header">
-        <div className="opd-header-content">
-          <div className="opd-header-left">
-            <button
-              type="button"
-              onClick={() => window.history.back()}
-              className="opd-back-btn"
-              title="Go back"
-            >
-              ←
+      <div className="dr-layout">
+        {/* Left Sidebar */}
+        <aside className="dr-sidebar">
+          {/* Logo Area */}
+          <div className="dr-sidebar-logo">
+            <div className="dr-logo-icon">
+              <Plus size={20} strokeWidth={3} />
+            </div>
+            <div className="dr-logo-text">
+              <span className="dr-logo-title">MediCore</span>
+              <span className="dr-logo-subtitle">Clinic Suite</span>
+            </div>
+          </div>
+
+          {/* Navigation Items */}
+          <nav className="dr-sidebar-nav">
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Users size={18} />
+                <span>Patients</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item active">
+              <div className="dr-nav-item-left">
+                <Stethoscope size={18} />
+                <span>OPD / Consultation</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <FileText size={18} />
+                <span>Prescriptions</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Send size={18} />
+                <span>Referrals</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Receipt size={18} />
+                <span>Invoices</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <BarChart2 size={18} />
+                <span>Reports</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <CalendarIcon size={18} />
+                <span>Calendar</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Bell size={18} />
+                <span>Notifications</span>
+              </div>
+              <span className="dr-nav-badge">3</span>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <SettingsIcon size={18} />
+                <span>Settings</span>
+              </div>
+            </a>
+          </nav>
+
+          {/* Sidebar Footer Logout */}
+          <div className="dr-sidebar-footer">
+            <button onClick={handleLogout} className="dr-logout-btn">
+              <LogOut size={18} />
+              <span>Logout</span>
             </button>
-            <div>
-              <h1 className="opd-header-title">Invoice</h1>
-              <p className="opd-header-subtitle">Billing & Print</p>
-            </div>
           </div>
-          <div className="opd-header-right">
-            <div className="opd-header-badge">
-              <span className="opd-header-badge-dot" />
-              {prescription?.prescription_id || 'Invoice'}
+        </aside>
+
+        {/* Main Content Area */}
+        <div className="dr-main-content">
+          {/* Header */}
+          <header className="dr-header">
+            <div className="dr-header-date">
+              <CalendarIcon size={16} className="text-blue-600" />
+              <span>{formattedDate}</span>
+              <ChevronDown size={14} className="text-gray-400" />
             </div>
-          </div>
-        </div>
-      </header>
 
-      <main className="opd-main">
-        <div className="mx-auto flex max-w-6xl flex-col gap-6">
+            <div className="dr-header-right">
+              {/* Notifications */}
+              <button className="dr-bell-btn">
+                <Bell size={18} />
+                <span className="dr-bell-badge">3</span>
+              </button>
 
-          <div className="card-modern">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="card-title mb-2">Invoice & Print</h2>
-                <p className="text-sm text-slate-400">Review medication costs, doctor fee, discounts, and finalize the visit.</p>
+              {/* Doctor Profile */}
+              <div className="dr-profile-badge">
+                <img
+                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100"
+                  alt="Dr. Sarah Bennett"
+                  className="dr-profile-avatar"
+                />
+                <div className="dr-profile-info">
+                  <span className="dr-profile-name">
+                    {currentUser?.name ? `Dr. ${currentUser.name}` : "Dr. Sarah Bennett"}
+                  </span>
+                  <span className="dr-profile-role">Cardiologist</span>
+                </div>
+                <ChevronDown size={14} className="text-gray-400" />
               </div>
             </div>
-          </div>
+          </header>
 
-          <div className="card-modern">
-            <InvoiceDrugTable
-              items={prescription.items}
-            />
-          </div>
+          {/* Page Body Scrollable */}
+          <main className="dr-content-scroll">
+            <div className="dr-page-header">
+              <h1 className="dr-page-title">Consultation</h1>
+            </div>
 
-          <div className="card-modern">
-            <InvoiceSummary
-              drugTotal={drugTotal}
+            {/* Stepper Progress Bar */}
+            <div className="consultation-stepper">
+              {/* Steps */}
+              <div className="stepper-step active">
+                <div className="stepper-circle">1</div>
+                <span className="stepper-label">Select Patient</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">2</div>
+                <span className="stepper-label">Chief Complaint</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">3</div>
+                <span className="stepper-label">Examination</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">4</div>
+                <span className="stepper-label">Diagnosis & Notes</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">5</div>
+                <span className="stepper-label">Prescription</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">6</div>
+                <span className="stepper-label">Review & Invoice</span>
+              </div>
 
-              doctorFee={doctorFee}
-              setDoctorFee={setDoctorFee}
+              {/* Connector lines behind */}
+              <div className="stepper-connector">
+                <div className="flex w-full h-full items-center justify-between" style={{ gap: "2px" }}>
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line active flex-1" />
+                </div>
+              </div>
+            </div>
 
-              discount={discount}
-              setDiscount={setDiscount}
+            {/* Main Billing Contents */}
+            <div style={{ maxWidth: "1000px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "2rem" }}>
+              <div className="white-card" style={{ padding: "2rem", marginBottom: 0 }}>
+                <h2 className="white-card-title">Invoice & Finalize</h2>
+                <p className="white-card-subtitle" style={{ marginBottom: 0 }}>
+                  Review medication costs, doctor fees, discounts, and preview printable invoices.
+                </p>
+              </div>
 
-              patientDenied={patientDenied}
-              setPatientDenied={
-                setPatientDenied
-              }
+              <div className="white-card" style={{ marginBottom: 0 }}>
+                <InvoiceDrugTable items={prescription.items} />
+              </div>
 
-              finalTotal={finalTotal}
-            />
-          </div>
+              <div className="white-card" style={{ marginBottom: 0 }}>
+                <InvoiceSummary
+                  drugTotal={drugTotal}
+                  doctorFee={doctorFee}
+                  setDoctorFee={setDoctorFee}
+                  discount={discount}
+                  setDiscount={setDiscount}
+                  patientDenied={patientDenied}
+                  setPatientDenied={setPatientDenied}
+                  finalTotal={finalTotal}
+                />
+              </div>
 
-          <div className="card-modern">
-            <InvoiceActions
-              onPreview={() => {
-                const previewUrl =
-                  `/doctor/invoice/${resolvedParams.prescriptionId}/preview?doctorFee=${doctorFee}&discount=${discount}&patientDenied=${patientDenied ? 1 : 0}`;
+              <div className="white-card" style={{ marginBottom: 0 }}>
+                <InvoiceActions
+                  onPreview={() => {
+                    const previewUrl = `/doctor/invoice/${resolvedParams.prescriptionId}/preview?doctorFee=${doctorFee}&discount=${discount}&patientDenied=${patientDenied ? 1 : 0}`;
+                    router.push(previewUrl);
+                  }}
+                />
+              </div>
+            </div>
 
-                router.push(previewUrl);
-              }}
-            />
-          </div>
+            {/* Bottom Actions Back */}
+            <div className="max-w-[1000px] mx-auto flex justify-between items-center" style={{ marginTop: "2rem", paddingBottom: "2rem" }}>
+              <button
+                type="button"
+                onClick={() => window.history.back()}
+                className="btn-light-outline"
+                style={{ padding: "0.75rem 1.75rem", borderRadius: "0.5rem" }}
+              >
+                <ArrowLeft size={16} />
+                <span>Back</span>
+              </button>
+            </div>
+
+          </main>
         </div>
-      </main>
-
-    </div>
+      </div>
+    </>
   );
 }

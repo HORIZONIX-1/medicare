@@ -36,6 +36,24 @@ import DiagnosisCard
 import DoctorNotesCard
   from "@/components/opd/DoctorNotesCard";
 
+import { 
+  LayoutDashboard, 
+  Users, 
+  Stethoscope, 
+  FileText, 
+  Send, 
+  Receipt, 
+  BarChart2, 
+  Calendar as CalendarIcon, 
+  Bell, 
+  Settings as SettingsIcon, 
+  LogOut,
+  ChevronDown,
+  ArrowRight,
+  ArrowLeft,
+  Plus
+} from "lucide-react";
+
 interface Props {
   params: Promise<{
     consultationId: string;
@@ -57,6 +75,20 @@ export default function OPDPage({
   const [doctorNotes, setDoctorNotes] = useState<string>("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [loadError, setLoadError] = useState<string | null>(null);
+  const [activeStep, setActiveStep] = useState(2); // 2, 3, or 4
+  const [formattedDate, setFormattedDate] = useState("Wednesday, June 12, 2024");
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const userString = localStorage.getItem("user");
+      if (userString) {
+        setCurrentUser(JSON.parse(userString));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
 
   const fetchConsultation =
     async (): Promise<Consultation | null> => {
@@ -109,8 +141,6 @@ export default function OPDPage({
   };
 
   const handleDataAdded = async () => {
-    // After a section saves data on the server, re-fetch the consultation
-    // but keep the user on the OPD page until they submit explicitly.
     try {
       await fetchConsultation();
     } catch (err) {
@@ -124,19 +154,39 @@ export default function OPDPage({
     fetchConsultation();
   }, [resolvedParams.consultationId]);
 
+  useEffect(() => {
+    try {
+      const options: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      setFormattedDate(new Date().toLocaleDateString('en-US', options));
+    } catch (e) {
+      // fallback
+    }
+  }, []);
+
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/");
+  };
+
   if (!consultation) {
     if (loadError) {
       return (
-        <div className="opd-loading-container">
-          <p className="opd-loading-text">{loadError}</p>
+        <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans">
+          <p className="text-slate-400 text-sm mt-4">{loadError}</p>
         </div>
       );
     }
 
     return (
-      <div className="opd-loading-container">
-        <div className="spinner"></div>
-        <p className="opd-loading-text">Loading consultation...</p>
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+        <p className="text-slate-400 text-sm mt-4">Loading consultation...</p>
       </div>
     );
   }
@@ -144,13 +194,11 @@ export default function OPDPage({
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Sora:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
-
+        /* Hide default site layout headers and footers for this page */
         .header-main,
         .footer {
           display: none !important;
         }
-
         .main-content {
           max-width: none !important;
           margin: 0 !important;
@@ -158,187 +206,320 @@ export default function OPDPage({
         }
       `}</style>
 
-      <div className="opd-page">
-        {/* ── Animated gradient orbs (matches login) ── */}
-        <div className="opd-orb opd-orb-1" />
-        <div className="opd-orb opd-orb-2" />
-        <div className="opd-orb opd-orb-3" />
-        <div className="opd-grid-lines" />
-
-        {/* ── Header ── */}
-        <header className="opd-header">
-          <div className="opd-header-content">
-            <div className="opd-header-left">
-              <button
-                type="button"
-                className="opd-back-btn"
-                onClick={() => router.back()}
-                title="Go back"
-              >
-                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M19 12H5" /><polyline points="12 19 5 12 12 5" />
-                </svg>
-              </button>
-              <span className="opd-header-icon">
-                <svg width="18" height="18" viewBox="0 0 40 40" fill="none">
-                  <rect x="16" y="4" width="8" height="32" rx="4" fill="white" />
-                  <rect x="4" y="16" width="32" height="8" rx="4" fill="white" />
-                </svg>
-              </span>
-              <div>
-                <h1 className="opd-header-title">OPD Consultation</h1>
-                <p className="opd-header-subtitle">Patient Clinical Assessment</p>
-              </div>
+      <div className="dr-layout">
+        {/* Left Sidebar */}
+        <aside className="dr-sidebar">
+          {/* Logo Area */}
+          <div className="dr-sidebar-logo">
+            <div className="dr-logo-icon">
+              <Plus size={20} strokeWidth={3} />
             </div>
-            <div className="opd-header-right">
-              <div className="opd-header-badge">
-                <span className="opd-header-badge-dot" />
-                Live Session
-              </div>
+            <div className="dr-logo-text">
+              <span className="dr-logo-title">MediCore</span>
+              <span className="dr-logo-subtitle">Clinic Suite</span>
             </div>
           </div>
-        </header>
 
-        {/* ── Main content ── */}
-        <main className="opd-main">
-          <PatientHeader patient={consultation.patient} />
+          {/* Navigation Items */}
+          <nav className="dr-sidebar-nav">
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Users size={18} />
+                <span>Patients</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item active">
+              <div className="dr-nav-item-left">
+                <Stethoscope size={18} />
+                <span>OPD / Consultation</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <FileText size={18} />
+                <span>Prescriptions</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Send size={18} />
+                <span>Referrals</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Receipt size={18} />
+                <span>Invoices</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <BarChart2 size={18} />
+                <span>Reports</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <CalendarIcon size={18} />
+                <span>Calendar</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Bell size={18} />
+                <span>Notifications</span>
+              </div>
+              <span className="dr-nav-badge">3</span>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <SettingsIcon size={18} />
+                <span>Settings</span>
+              </div>
+            </a>
+          </nav>
 
-          <div className="opd-grid">
-
-            <div className="opd-grid-item col-span-3">
-              <ChiefComplaintCard
-                  consultation={consultation}
-                  value={chiefComplaint}
-                  onChange={(nextValue) => {
-                    chiefComplaintDirtyRef.current = true;
-                    setChiefComplaint(nextValue);
-                  }}
-              />
-            </div>
-
-            <div className="opd-grid-item col-span-5">
-              <SymptomsCard
-                consultationId={
-                  consultation.consultation_id
-                }
-                symptoms={consultation.symptoms}
-                onDataAdded={handleDataAdded}
-              />
-            </div>
-
-            <div className="opd-grid-item col-span-4">
-              <ExaminationCard
-                ref={examinationCardRef}
-                consultationId={
-                  consultation.consultation_id
-                }
-                examinations={
-                  consultation.examinations
-                }
-                onDataAdded={handleDataAdded}
-              />
-            </div>
-
-            <div className="opd-grid-item col-span-5">
-              {/* eslint-disable-next-line @typescript-eslint/ban-ts-comment */}
-              {/* @ts-ignore */}
-              <InvestigationCard
-                consultationId={consultation.consultation_id}
-                investigations={consultation.investigations}
-                onDataAdded={handleDataAdded}
-              />
-
-              <InstructionCard
-                consultationId={
-                  consultation.consultation_id
-                }
-                instructions={
-                  consultation.instructions
-                }
-                onDataAdded={handleDataAdded}
-              />
-
-              <AllergyCard
-                patientId={consultation.patient.patient_id}
-                allergies={consultation.patient.allergies || []}
-                onDataAdded={handleDataAdded}
-              />
-            </div>
-
-            <div className="opd-grid-item col-span-3">
-              <DiagnosisCard
-                consultationId={
-                  consultation.consultation_id
-                }
-                diagnoses={
-                  consultation.diagnoses
-                }
-                onDataAdded={handleDataAdded}
-              />
-            </div>
-
-            <div className="opd-grid-item col-span-4">
-              <DoctorNotesCard
-                consultation={consultation}
-                value={doctorNotes}
-                onChange={(nextValue) => {
-                  doctorNotesDirtyRef.current = true;
-                  setDoctorNotes(nextValue);
-                }}
-              />
-            </div>
-
-          </div>
-          <div className="opd-submit-container">
-            <button
-              className="opd-submit-btn"
-              disabled={isSubmitting}
-              onClick={async () => {
-                if (!consultation) return;
-                setIsSubmitting(true);
-                try {
-                  await examinationCardRef.current?.saveMetrics();
-
-                  await api.put(
-                    `/consultations/${consultation.consultation_id}`,
-                    {
-                      chief_complaint: chiefComplaint,
-                      notes: doctorNotes,
-                    }
-                  );
-                  chiefComplaintDirtyRef.current = false;
-                  doctorNotesDirtyRef.current = false;
-                  router.push(`/doctor/prescription/${consultation.consultation_id}`);
-                } catch (error) {
-                  console.error(error);
-                  alert("Failed to proceed to prescription");
-                } finally {
-                  setIsSubmitting(false);
-                }
-              }}
-            >
-              {isSubmitting ? (
-                <>
-                  <div className="btn-spinner" style={{
-                    width: 18, height: 18,
-                    border: '2px solid rgba(255,255,255,0.3)',
-                    borderTopColor: '#fff',
-                    borderRadius: '50%',
-                    animation: 'spin 0.7s linear infinite',
-                  }} />
-                  Saving...
-                </>
-              ) : (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round">
-                    <path d="M5 12h14" /><polyline points="12 5 19 12 12 19" />
-                  </svg>
-                  Proceed to Prescription
-                </>
-              )}
+          {/* Sidebar Footer Logout */}
+          <div className="dr-sidebar-footer">
+            <button onClick={handleLogout} className="dr-logout-btn">
+              <LogOut size={18} />
+              <span>Logout</span>
             </button>
           </div>
-        </main>
+        </aside>
+
+        {/* Main Content Area */}
+        <div className="dr-main-content">
+          {/* Header */}
+          <header className="dr-header">
+            <div className="dr-header-date">
+              <CalendarIcon size={16} className="text-blue-600" />
+              <span>{formattedDate}</span>
+              <ChevronDown size={14} className="text-gray-400" />
+            </div>
+
+            <div className="dr-header-right">
+              {/* Notifications */}
+              <button className="dr-bell-btn">
+                <Bell size={18} />
+                <span className="dr-bell-badge">3</span>
+              </button>
+
+              {/* Doctor Profile */}
+              <div className="dr-profile-badge">
+                <img
+                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100"
+                  alt="Dr. Sarah Bennett"
+                  className="dr-profile-avatar"
+                />
+                <div className="dr-profile-info">
+                  <span className="dr-profile-name">
+                    {currentUser?.name ? `Dr. ${currentUser.name}` : "Dr. Sarah Bennett"}
+                  </span>
+                  <span className="dr-profile-role">Cardiologist</span>
+                </div>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+            </div>
+          </header>
+
+          {/* Page Body Scrollable */}
+          <main className="dr-content-scroll">
+            <div className="dr-page-header">
+              <h1 className="dr-page-title">Consultation</h1>
+            </div>
+
+            {/* Stepper Progress Bar */}
+            <div className="consultation-stepper">
+              {/* Steps */}
+              <div className="stepper-step active">
+                <div className="stepper-circle">1</div>
+                <span className="stepper-label">Select Patient</span>
+              </div>
+              <div className={`stepper-step ${activeStep >= 2 ? "active" : ""}`}>
+                <div className="stepper-circle">2</div>
+                <span className="stepper-label">Chief Complaint</span>
+              </div>
+              <div className={`stepper-step ${activeStep >= 3 ? "active" : ""}`}>
+                <div className="stepper-circle">3</div>
+                <span className="stepper-label">Examination</span>
+              </div>
+              <div className={`stepper-step ${activeStep >= 4 ? "active" : ""}`}>
+                <div className="stepper-circle">4</div>
+                <span className="stepper-label">Diagnosis & Notes</span>
+              </div>
+              <div className="stepper-step">
+                <div className="stepper-circle">5</div>
+                <span className="stepper-label">Prescription</span>
+              </div>
+              <div className="stepper-step">
+                <div className="stepper-circle">6</div>
+                <span className="stepper-label">Review & Invoice</span>
+              </div>
+
+              {/* Connector lines behind */}
+              <div className="stepper-connector">
+                <div className="flex w-full h-full items-center justify-between" style={{ gap: "2px" }}>
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className={`stepper-connector-line flex-1 ${activeStep >= 3 ? "active" : "inactive"}`} />
+                  <div className={`stepper-connector-line flex-1 ${activeStep >= 4 ? "active" : "inactive"}`} />
+                  <div className="stepper-connector-line inactive flex-1" />
+                  <div className="stepper-connector-line inactive flex-1" />
+                </div>
+              </div>
+            </div>
+
+            {/* Main consultation page content */}
+            <div style={{ maxWidth: "1000px", margin: "0 auto 2rem auto" }}>
+              <PatientHeader patient={consultation.patient} />
+
+              {activeStep === 2 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                  <ChiefComplaintCard
+                    consultation={consultation}
+                    value={chiefComplaint}
+                    onChange={(nextValue) => {
+                      chiefComplaintDirtyRef.current = true;
+                      setChiefComplaint(nextValue);
+                    }}
+                  />
+                  <SymptomsCard
+                    consultationId={consultation.consultation_id}
+                    symptoms={consultation.symptoms}
+                    onDataAdded={handleDataAdded}
+                  />
+                </div>
+              )}
+
+              {activeStep === 3 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                  <ExaminationCard
+                    ref={examinationCardRef}
+                    consultationId={consultation.consultation_id}
+                    examinations={consultation.examinations}
+                    onDataAdded={handleDataAdded}
+                  />
+                  <InvestigationCard
+                    consultationId={consultation.consultation_id}
+                    investigations={consultation.investigations}
+                    onDataAdded={handleDataAdded}
+                  />
+                  <InstructionCard
+                    consultationId={consultation.consultation_id}
+                    instructions={consultation.instructions}
+                    onDataAdded={handleDataAdded}
+                  />
+                  <AllergyCard
+                    patientId={consultation.patient.patient_id}
+                    allergies={consultation.patient.allergies || []}
+                    onDataAdded={handleDataAdded}
+                  />
+                </div>
+              )}
+
+              {activeStep === 4 && (
+                <div style={{ display: "flex", flexDirection: "column", gap: "2rem" }}>
+                  <DiagnosisCard
+                    consultationId={consultation.consultation_id}
+                    diagnoses={consultation.diagnoses}
+                    onDataAdded={handleDataAdded}
+                  />
+                  <DoctorNotesCard
+                    consultation={consultation}
+                    value={doctorNotes}
+                    onChange={(nextValue) => {
+                      doctorNotesDirtyRef.current = true;
+                      setDoctorNotes(nextValue);
+                    }}
+                  />
+                </div>
+              )}
+            </div>
+
+            {/* Bottom Navigation */}
+            <div className="max-w-[1000px] mx-auto flex justify-between items-center" style={{ marginTop: "2rem", paddingBottom: "2rem" }}>
+              <div>
+                {activeStep > 2 && (
+                  <button 
+                    onClick={() => setActiveStep(activeStep - 1)}
+                    className="btn-light-outline"
+                    style={{ padding: "0.75rem 1.75rem", borderRadius: "0.5rem" }}
+                  >
+                    <ArrowLeft size={16} />
+                    <span>Back</span>
+                  </button>
+                )}
+              </div>
+              
+              <div>
+                {activeStep < 4 ? (
+                  <button 
+                    onClick={() => setActiveStep(activeStep + 1)}
+                    className="btn-light-blue"
+                    style={{ padding: "0.75rem 2.25rem", borderRadius: "0.5rem" }}
+                  >
+                    <span>Next</span>
+                    <ArrowRight size={16} />
+                  </button>
+                ) : (
+                  <button
+                    className="btn-light-blue"
+                    style={{ padding: "0.75rem 2.25rem", borderRadius: "0.5rem" }}
+                    disabled={isSubmitting}
+                    onClick={async () => {
+                      if (!consultation) return;
+                      setIsSubmitting(true);
+                      try {
+                        await examinationCardRef.current?.saveMetrics();
+
+                        await api.put(
+                          `/consultations/${consultation.consultation_id}`,
+                          {
+                            chief_complaint: chiefComplaint,
+                            notes: doctorNotes,
+                          }
+                        );
+                        chiefComplaintDirtyRef.current = false;
+                        doctorNotesDirtyRef.current = false;
+                        router.push(`/doctor/prescription/${consultation.consultation_id}`);
+                      } catch (error) {
+                        console.error(error);
+                        alert("Failed to proceed to prescription");
+                      } finally {
+                        setIsSubmitting(false);
+                      }
+                    }}
+                  >
+                    {isSubmitting ? (
+                      <>
+                        <div className="btn-spinner" style={{
+                          width: 18, height: 18,
+                          border: '2px solid rgba(255,255,255,0.3)',
+                          borderTopColor: '#fff',
+                          borderRadius: '50%',
+                          animation: 'spin 0.7s linear infinite',
+                          marginRight: "0.5rem"
+                        }} />
+                        Saving...
+                      </>
+                    ) : (
+                      <>
+                        <span>Proceed to Prescription</span>
+                        <ArrowRight size={16} />
+                      </>
+                    )}
+                  </button>
+                )}
+              </div>
+            </div>
+          </main>
+        </div>
       </div>
     </>
   );

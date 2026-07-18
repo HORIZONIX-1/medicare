@@ -6,6 +6,24 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { PrescriptionItem } from "@/types/prescription";
 import DrugSearchInput from "@/components/prescription/DrugSearchInput";
+import { 
+  LayoutDashboard, 
+  Users, 
+  Stethoscope, 
+  FileText, 
+  Send, 
+  Receipt, 
+  BarChart2, 
+  Calendar as CalendarIcon, 
+  Bell, 
+  Settings as SettingsIcon, 
+  LogOut,
+  ChevronDown,
+  ArrowRight,
+  ArrowLeft,
+  Plus,
+  Trash2
+} from "lucide-react";
 
 interface Props {
   params: Promise<{
@@ -26,6 +44,33 @@ export default function PrescriptionPage({ params }: Props) {
     instructions: "",
     quantity: "",
   });
+  const [formattedDate, setFormattedDate] = useState("Wednesday, June 12, 2024");
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    try {
+      const userString = localStorage.getItem("user");
+      if (userString) {
+        setCurrentUser(JSON.parse(userString));
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  }, []);
+
+  useEffect(() => {
+    try {
+      const options: Intl.DateTimeFormatOptions = { 
+        weekday: 'long', 
+        year: 'numeric', 
+        month: 'long', 
+        day: 'numeric' 
+      };
+      setFormattedDate(new Date().toLocaleDateString('en-US', options));
+    } catch (e) {
+      // fallback
+    }
+  }, []);
 
   useEffect(() => {
     let active = true;
@@ -89,8 +134,6 @@ export default function PrescriptionPage({ params }: Props) {
     patient_code: "P000123",
     date_of_birth: undefined,
   };
-
-  const doctor = consultation?.doctor ?? null;
 
   const diagnoses = Array.isArray(consultation?.diagnoses)
     ? consultation.diagnoses.map((diagnosis: any) => diagnosis.diagnosis_name).filter(Boolean)
@@ -188,21 +231,25 @@ export default function PrescriptionPage({ params }: Props) {
     }
   };
 
-  const lowStockItem = items.find((item) => item.stock_status === "LOW_STOCK");
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("user");
+    router.push("/");
+  };
 
   if (isLoading) {
     return (
-      <div className="opd-loading-container">
-        <div className="spinner" />
-        <p className="opd-loading-text">Loading prescription...</p>
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
+        <p className="text-slate-400 text-sm mt-4">Loading prescription...</p>
       </div>
     );
   }
 
   if (loadError) {
     return (
-      <div className="opd-loading-container">
-        <div className="mx-auto max-w-[900px] rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-amber-200 shadow-sm">
+      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans">
+        <div className="mx-auto max-w-[600px] rounded-2xl border border-amber-500/30 bg-amber-500/10 p-6 text-amber-200 shadow-sm text-center">
           {loadError}
         </div>
       </div>
@@ -210,309 +257,474 @@ export default function PrescriptionPage({ params }: Props) {
   }
 
   return (
-    <div className="opd-page">
-      <div className="opd-orb opd-orb-1" />
-      <div className="opd-orb opd-orb-2" />
-      <div className="opd-orb opd-orb-3" />
-      <div className="opd-grid-lines" />
+    <>
+      <style>{`
+        /* Hide default site layout headers and footers for this page */
+        .header-main,
+        .footer {
+          display: none !important;
+        }
+        .main-content {
+          max-width: none !important;
+          margin: 0 !important;
+          padding: 0 !important;
+        }
+      `}</style>
 
-      <header className="opd-header">
-        <div className="opd-header-content">
-          <div className="opd-header-left">
-            <button
-              type="button"
-              onClick={() => router.push(`/doctor/opd/${resolvedParams.consultationId}`)}
-              className="opd-back-btn"
-              title="Back to OPD"
-            >
-              ←
+      <div className="dr-layout">
+        {/* Left Sidebar */}
+        <aside className="dr-sidebar">
+          {/* Logo Area */}
+          <div className="dr-sidebar-logo">
+            <div className="dr-logo-icon">
+              <Plus size={20} strokeWidth={3} />
+            </div>
+            <div className="dr-logo-text">
+              <span className="dr-logo-title">MediCore</span>
+              <span className="dr-logo-subtitle">Clinic Suite</span>
+            </div>
+          </div>
+
+          {/* Navigation Items */}
+          <nav className="dr-sidebar-nav">
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <LayoutDashboard size={18} />
+                <span>Dashboard</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Users size={18} />
+                <span>Patients</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item active">
+              <div className="dr-nav-item-left">
+                <Stethoscope size={18} />
+                <span>OPD / Consultation</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <FileText size={18} />
+                <span>Prescriptions</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Send size={18} />
+                <span>Referrals</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Receipt size={18} />
+                <span>Invoices</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <BarChart2 size={18} />
+                <span>Reports</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <CalendarIcon size={18} />
+                <span>Calendar</span>
+              </div>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <Bell size={18} />
+                <span>Notifications</span>
+              </div>
+              <span className="dr-nav-badge">3</span>
+            </a>
+            <a href="#" className="dr-nav-item">
+              <div className="dr-nav-item-left">
+                <SettingsIcon size={18} />
+                <span>Settings</span>
+              </div>
+            </a>
+          </nav>
+
+          {/* Sidebar Footer Logout */}
+          <div className="dr-sidebar-footer">
+            <button onClick={handleLogout} className="dr-logout-btn">
+              <LogOut size={18} />
+              <span>Logout</span>
             </button>
-            <div>
-              <h1 className="opd-header-title">Prescription</h1>
-              <p className="opd-header-subtitle">Prescription & Invoice</p>
-            </div>
           </div>
-          <div className="opd-header-right">
-            <div className="opd-header-badge">
-              <span className="opd-header-badge-dot" />
-              {patient.name || 'Patient'}
+        </aside>
+
+        {/* Main Content Area */}
+        <div className="dr-main-content">
+          {/* Header */}
+          <header className="dr-header">
+            <div className="dr-header-date">
+              <CalendarIcon size={16} className="text-blue-600" />
+              <span>{formattedDate}</span>
+              <ChevronDown size={14} className="text-gray-400" />
             </div>
-          </div>
-        </div>
-      </header>
 
-      <main className="opd-main">
-        <div className="mx-auto max-w-[1280px] flex flex-col gap-4">
-          <div className="card-modern">
-            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-              <div className="flex items-center gap-4">
-                <div className="flex h-16 w-16 items-center justify-center rounded-full bg-slate-800 text-2xl text-slate-200">👤</div>
-                <div>
-                  <div className="mt-2 grid grid-cols-1 gap-3 text-sm text-slate-300 sm:grid-cols-3">
-                    <div>
-                      <div className="text-xs">Name</div>
-                      <div className="font-medium text-slate-100">{patient.name || "-"}</div>
-                    </div>
+            <div className="dr-header-right">
+              {/* Notifications */}
+              <button className="dr-bell-btn">
+                <Bell size={18} />
+                <span className="dr-bell-badge">3</span>
+              </button>
 
-                    <div>
-                      <div className="text-xs">Patient Code</div>
-                      <div className="font-medium text-slate-100">{patient.patient_code || "-"}</div>
-                    </div>
+              {/* Doctor Profile */}
+              <div className="dr-profile-badge">
+                <img
+                  src="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&q=80&w=100"
+                  alt="Dr. Sarah Bennett"
+                  className="dr-profile-avatar"
+                />
+                <div className="dr-profile-info">
+                  <span className="dr-profile-name">
+                    {currentUser?.name ? `Dr. ${currentUser.name}` : "Dr. Sarah Bennett"}
+                  </span>
+                  <span className="dr-profile-role">Cardiologist</span>
+                </div>
+                <ChevronDown size={14} className="text-gray-400" />
+              </div>
+            </div>
+          </header>
 
-                    <div>
-                      <div className="text-xs">Date of Birth</div>
-                      <div className="font-medium text-slate-100">{patient.date_of_birth ? String(patient.date_of_birth).slice(0,10) : "-"}</div>
-                    </div>
+          {/* Page Body Scrollable */}
+          <main className="dr-content-scroll">
+            <div className="dr-page-header">
+              <h1 className="dr-page-title">Consultation</h1>
+            </div>
+
+            {/* Stepper Progress Bar */}
+            <div className="consultation-stepper">
+              {/* Steps */}
+              <div className="stepper-step active">
+                <div className="stepper-circle">1</div>
+                <span className="stepper-label">Select Patient</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">2</div>
+                <span className="stepper-label">Chief Complaint</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">3</div>
+                <span className="stepper-label">Examination</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">4</div>
+                <span className="stepper-label">Diagnosis & Notes</span>
+              </div>
+              <div className="stepper-step active">
+                <div className="stepper-circle">5</div>
+                <span className="stepper-label">Prescription</span>
+              </div>
+              <div className="stepper-step">
+                <div className="stepper-circle">6</div>
+                <span className="stepper-label">Review & Invoice</span>
+              </div>
+
+              {/* Connector lines behind */}
+              <div className="stepper-connector">
+                <div className="flex w-full h-full items-center justify-between" style={{ gap: "2px" }}>
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line active flex-1" />
+                  <div className="stepper-connector-line inactive flex-1" />
+                </div>
+              </div>
+            </div>
+
+            {/* Central White Content Card - Patient Info Banner */}
+            <div className="white-card" style={{ padding: "1.75rem 2rem", marginBottom: "1.5rem" }}>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "2rem", justifyContent: "space-between", alignItems: "center" }}>
+                <div style={{ display: "flex", alignItems: "center", gap: "1.25rem" }}>
+                  <div style={{ display: "flex", height: "3.5rem", width: "3.5rem", alignItems: "center", justifyItems: "center", justifyContent: "center", borderRadius: "9999px", backgroundColor: "#f1f5f9", fontSize: "1.5rem", color: "#64748b" }}>👤</div>
+                  <div>
+                    <h3 style={{ fontSize: "1.1rem", fontWeight: 800, color: "#0f172a" }}>{patient.name || "-"}</h3>
+                    <p style={{ fontSize: "0.75rem", color: "#64748b", fontWeight: 600 }}>Patient ID: <span style={{ fontFamily: "monospace", color: "#2563eb", fontWeight: 700 }}>{patient.patient_code || "-"}</span></p>
+                  </div>
+                </div>
+
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(130px, 1fr))", gap: "1.5rem", flex: 1, maxWidth: "600px" }}>
+                  <div>
+                    <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700 }}>Date of Birth</span>
+                    <p style={{ fontSize: "0.8125rem", color: "#334155", fontWeight: 700, marginTop: "2px" }}>
+                      {patient.date_of_birth ? String(patient.date_of_birth).slice(0, 10) : "-"}
+                    </p>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700 }}>Visit Date</span>
+                    <p style={{ fontSize: "0.8125rem", color: "#334155", fontWeight: 700, marginTop: "2px" }}>
+                      {String(visitDate).slice(0, 10)}
+                    </p>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700 }}>Diagnosis</span>
+                    <p style={{ fontSize: "0.8125rem", color: "#334155", fontWeight: 700, marginTop: "2px" }}>
+                      {diagnoses[0] || "Viral Fever"}
+                    </p>
+                  </div>
+                  <div>
+                    <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700 }}>Allergies</span>
+                    <p style={{ fontSize: "0.8125rem", color: "#ef4444", fontWeight: 700, marginTop: "2px" }}>
+                      {allergies.length > 0 ? allergies.join(", ") : "None recorded"}
+                    </p>
                   </div>
                 </div>
               </div>
+            </div>
 
-              <div className="grid gap-3 sm:grid-cols-3">
-                <div className="rounded-lg px-4 py-3">
-                  <p className="text-xs text-slate-400">Visit Date</p>
-                  <p className="mt-1 text-sm font-medium text-slate-100">{String(visitDate).slice(0, 10)}</p>
+            {/* Central White Content Card - Medicines Table */}
+            <div className="white-card" style={{ marginBottom: "1.5rem" }}>
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.25rem" }}>
+                <div>
+                  <h2 className="white-card-title">Prescription Medicines</h2>
+                  <p className="white-card-subtitle" style={{ marginBottom: 0 }}>Configure drug dosages, frequencies, and duration below.</p>
                 </div>
-                <div className="rounded-lg px-4 py-3">
-                  <p className="text-xs text-slate-400">Diagnosis</p>
-                  <p className="mt-1 text-sm font-medium text-slate-100">{diagnoses[0] || "Viral Fever"}</p>
-                </div>
-                <div className="rounded-lg px-4 py-3">
-                  <p className="text-xs text-slate-400">Allergies</p>
-                  <p className="mt-1 text-sm font-medium text-slate-100">
-                    {allergies.length > 0 ? allergies.join(", ") : "No allergies recorded"}
-                  </p>
-                </div>
+                <button onClick={addMedicineRow} className="btn-light-blue">
+                  <Plus size={16} />
+                  <span>Add Medicine Row</span>
+                </button>
               </div>
 
+              <div style={{ overflowX: "auto", border: "1px solid #e2e8f0", borderRadius: "0.5rem" }}>
+                <table className="light-table" style={{ border: "none", width: "100%" }}>
+                  <thead>
+                    <tr>
+                      <th style={{ width: "40px" }}>#</th>
+                      <th style={{ minWidth: "220px" }}>Drug Name</th>
+                      <th style={{ width: "120px" }}>Dosage</th>
+                      <th style={{ width: "130px" }}>Speciality</th>
+                      <th style={{ width: "130px" }}>Meals</th>
+                      <th>Special Notes</th>
+                      <th style={{ width: "130px" }}>Frequency</th>
+                      <th style={{ width: "110px" }}>Duration</th>
+                      <th style={{ width: "90px" }}>Qty</th>
+                      <th style={{ width: "100px" }}>Price</th>
+                      <th style={{ width: "60px", textAlign: "center" }}>Deny?</th>
+                      <th style={{ width: "50px", textAlign: "center" }}></th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {items.map((item, index) => (
+                      <tr key={index}>
+                        <td style={{ fontWeight: 700 }}>{index + 1}</td>
+                        <td>
+                          <div style={{ minWidth: "200px" }}>
+                            <DrugSearchInput
+                              value={item.drug_name}
+                              onChange={(val) => updateItem(index, { drug_name: val })}
+                              onSelect={(drug) => updateItem(index, {
+                                drug_id: drug.drug_id,
+                                drug_name: drug.name,
+                                price: drug.selling_price,
+                                available_quantity: drug.available_quantity,
+                                stock_status: drug.stock_status,
+                              })}
+                            />
+                            <span style={{ fontSize: "10px", color: "#64748b", marginTop: "3px", display: "block" }}>
+                              Type: {item.is_outside_drug ? "Outside Drug" : item.dosage?.includes("Cream") ? "Cream" : "Tablet"}
+                            </span>
+                          </div>
+                        </td>
+                        <td>
+                          <select
+                            value={item.dosage || "1 Tablet"}
+                            onChange={(e) => updateItem(index, { dosage: e.target.value })}
+                            className="light-select"
+                            style={{ padding: "0.375rem 0.5rem" }}
+                          >
+                            <option>1 Tablet</option>
+                            <option>2 Tablets</option>
+                            <option>Apply to affected area</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select
+                            value={item.instruction_1 || ""}
+                            onChange={(e) => updateItem(index, { instruction_1: e.target.value })}
+                            className="light-select"
+                            style={{ padding: "0.375rem 0.5rem" }}
+                          >
+                            <option value="">Select instruction</option>
+                            <option>Only at night</option>
+                            <option>At Night</option>
+                            <option>Apply to affected area</option>
+                            <option>On empty stomach</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select
+                            value={item.instruction_2 || ""}
+                            onChange={(e) => updateItem(index, { instruction_2: e.target.value })}
+                            className="light-select"
+                            style={{ padding: "0.375rem 0.5rem" }}
+                          >
+                            <option>After Food</option>
+                            <option>Before Food</option>
+                            <option>N/A</option>
+                          </select>
+                        </td>
+                        <td>
+                          <input
+                            value={item.instruction_3 || ""}
+                            onChange={(e) => updateItem(index, { instruction_3: e.target.value })}
+                            className="light-input"
+                            style={{ padding: "0.375rem 0.5rem" }}
+                            placeholder="Special notes"
+                          />
+                        </td>
+                        <td>
+                          <select
+                            value={item.frequency || "1 Time / Day"}
+                            onChange={(e) => updateItem(index, { frequency: e.target.value })}
+                            className="light-select"
+                            style={{ padding: "0.375rem 0.5rem" }}
+                          >
+                            <option>1 Time / Day</option>
+                            <option>2 Times / Day</option>
+                            <option>3 Times / Day</option>
+                          </select>
+                        </td>
+                        <td>
+                          <select
+                            value={item.duration || "5 Days"}
+                            onChange={(e) => updateItem(index, { duration: e.target.value })}
+                            className="light-select"
+                            style={{ padding: "0.375rem 0.5rem" }}
+                          >
+                            <option>3 Days</option>
+                            <option>5 Days</option>
+                            <option>7 Days</option>
+                            <option>--</option>
+                          </select>
+                        </td>
+                        <td>
+                          <input
+                            value={item.quantity}
+                            onChange={(e) => updateItem(index, { quantity: Number(e.target.value) || 0 })}
+                            className="light-input"
+                            style={{ padding: "0.375rem 0.5rem", textAlign: "center" }}
+                          />
+                        </td>
+                        <td>
+                          <input
+                            value={item.price}
+                            onChange={(e) => updateItem(index, { price: Number(e.target.value) || 0 })}
+                            className="light-input"
+                            style={{ padding: "0.375rem 0.5rem" }}
+                          />
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          <input
+                            type="checkbox"
+                            checked={Boolean((item as any).patient_denying)}
+                            onChange={(e) => updateItem(index, { patient_denying: e.target.checked })}
+                            className="light-checkbox"
+                          />
+                        </td>
+                        <td style={{ textAlign: "center" }}>
+                          <button
+                            type="button"
+                            onClick={() => setItems((current) => current.filter((_, rowIndex) => rowIndex !== index))}
+                            className="btn-light-outline"
+                            style={{ padding: "0.375rem 0.5rem", color: "#ef4444", borderColor: "#fca5a5" }}
+                          >
+                            <Trash2 size={14} />
+                          </button>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+
+              <div style={{ marginTop: "1rem", display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+                <span style={{ fontSize: "0.75rem", color: "#64748b" }}>* Qty is auto-calculated based on Duration x Frequency x Dosage.</span>
+                <div style={{ display: "flex", gap: "2rem", fontSize: "0.875rem", fontWeight: 700, color: "#0f172a" }}>
+                  <span>Total Items: {totalItems}</span>
+                  <span>Total Amount: <span style={{ color: "#2563eb" }}>Rs. {totalAmount.toFixed(2)}</span></span>
+                </div>
+              </div>
+            </div>
+
+            {/* Central White Content Card - Outside Drug */}
+            <div className="white-card" style={{ marginBottom: "2rem" }}>
+              <h3 className="white-card-section-title" style={{ fontSize: "1.1rem" }}>Outside Drug (Not in System)</h3>
+              <p className="white-card-section-desc">Add medication that is not stocked in the clinic pharmacy.</p>
+              
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", alignItems: "flex-end" }}>
+                <div className="light-input-container">
+                  <label className="light-label">Drug Name</label>
+                  <input
+                    value={outsideDrug.drug_name}
+                    onChange={(e) => setOutsideDrug((current) => ({ ...current, drug_name: e.target.value }))}
+                    placeholder="Enter drug name"
+                    className="light-input"
+                  />
+                </div>
+                <div className="light-input-container">
+                  <label className="light-label">Instructions</label>
+                  <input
+                    value={outsideDrug.instructions}
+                    onChange={(e) => setOutsideDrug((current) => ({ ...current, instructions: e.target.value }))}
+                    placeholder="Enter instructions"
+                    className="light-input"
+                  />
+                </div>
+                <div className="light-input-container">
+                  <label className="light-label">Quantity</label>
+                  <input
+                    value={outsideDrug.quantity}
+                    onChange={(e) => setOutsideDrug((current) => ({ ...current, quantity: e.target.value }))}
+                    placeholder="Enter quantity"
+                    className="light-input"
+                  />
+                </div>
+                <button
+                  type="button"
+                  onClick={addOutsideDrug}
+                  className="btn-light-blue"
+                  style={{ height: "42px" }}
+                >
+                  <Plus size={16} />
+                  <span>Add Outside Drug</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Bottom Actions */}
+            <div className="max-w-[1000px] mx-auto flex justify-between items-center" style={{ paddingBottom: "2rem" }}>
               <button
                 type="button"
                 onClick={() => router.push(`/doctor/opd/${resolvedParams.consultationId}`)}
-                className="btn-cyan"
+                className="btn-light-outline"
+                style={{ padding: "0.75rem 1.75rem", borderRadius: "0.5rem" }}
               >
-                ← Back to OPD
+                <ArrowLeft size={16} />
+                <span>Back to OPD</span>
               </button>
-            </div>
-          </div>
-          <div className="card-modern">
-            <div className="overflow-x-auto rounded-lg">
-            <table className="min-w-full border-collapse text-sm">
-              <thead className="bg-slate-900 text-slate-200">
-                <tr>
-                  {[
-                    "#",
-                    "Drug Name (Type)",
-                    "Dosage",
-                    "Instruction 1 (Speciality)",
-                    "Instruction 2 (Before / After Meals)",
-                    "Instruction 3 (Special Notes)",
-                    "Frequency (Times per day)",
-                    "Duration (Days)",
-                    "Quantity (Auto)",
-                    "Price (Rs.)",
-                    "Patient Denying?",
-                    "Action",
-                  ].map((label) => (
-                    <th key={label} className="whitespace-nowrap border-b border-slate-800 px-3 py-3 text-left text-xs font-semibold uppercase tracking-wide">
-                      {label}
-                    </th>
-                  ))}
-                </tr>
-              </thead>
-              <tbody>
-                {items.map((item, index) => (
-                  <tr key={index} className="border-b border-slate-800 align-top">
-                    <td className="px-3 py-3 text-slate-100">{index + 1}</td>
-                    <td className="px-3 py-3">
-                      <div>
-                        {/* Shared autocomplete input */}
-                        <DrugSearchInput
-                          value={item.drug_name}
-                          onChange={(val) => updateItem(index, { drug_name: val })}
-                          onSelect={(drug) => updateItem(index, {
-                            drug_id: drug.drug_id,
-                            drug_name: drug.name,
-                            price: drug.selling_price,
-                            available_quantity: drug.available_quantity,
-                            stock_status: drug.stock_status,
-                          })}
-                        />
-                      </div>
-                      <p className="mt-1 text-xs text-slate-400">Type: {item.is_outside_drug ? "Outside Drug" : item.dosage?.includes("Cream") ? "Cream" : "Tablet"}</p>
-                    </td>
-                    <td className="px-3 py-3">
-                      <select
-                        value={item.dosage || "1 Tablet"}
-                        onChange={(e) => updateItem(index, { dosage: e.target.value })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100"
-                      >
-                        <option>1 Tablet</option>
-                        <option>2 Tablets</option>
-                        <option>Apply to affected area</option>
-                      </select>
-                    </td>
-                    <td className="px-3 py-3">
-                      <select
-                        value={item.instruction_1 || ""}
-                        onChange={(e) => updateItem(index, { instruction_1: e.target.value })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100"
-                      >
-                        <option>Only at night</option>
-                        <option>At Night</option>
-                        <option>Apply to affected area</option>
-                        <option>On empty stomach</option>
-                      </select>
-                    </td>
-                    <td className="px-3 py-3">
-                      <select
-                        value={item.instruction_2 || ""}
-                        onChange={(e) => updateItem(index, { instruction_2: e.target.value })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100"
-                      >
-                        <option>After Food</option>
-                        <option>Before Food</option>
-                        <option>N/A</option>
-                      </select>
-                    </td>
-                    <td className="px-3 py-3">
-                      <input
-                        value={item.instruction_3 || ""}
-                        onChange={(e) => updateItem(index, { instruction_3: e.target.value })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100 placeholder-slate-500"
-                        placeholder="Special notes"
-                      />
-                    </td>
-                    <td className="px-3 py-3">
-                      <select
-                        value={item.frequency || "1 Time / Day"}
-                        onChange={(e) => updateItem(index, { frequency: e.target.value })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100"
-                      >
-                        <option>1 Time / Day</option>
-                        <option>2 Times / Day</option>
-                        <option>3 Times / Day</option>
-                      </select>
-                    </td>
-                    <td className="px-3 py-3">
-                      <select
-                        value={item.duration || "5 Days"}
-                        onChange={(e) => updateItem(index, { duration: e.target.value })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100"
-                      >
-                        <option>3 Days</option>
-                        <option>5 Days</option>
-                        <option>7 Days</option>
-                        <option>--</option>
-                      </select>
-                    </td>
-                    <td className="px-3 py-3">
-                      <input
-                        value={item.quantity}
-                        onChange={(e) => updateItem(index, { quantity: Number(e.target.value) || 0 })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100 placeholder-slate-500"
-                      />
-                      <p className="mt-1 text-xs text-slate-400">D x F x D</p>
-                    </td>
-                    <td className="px-3 py-3">
-                      <input
-                        value={item.price}
-                        onChange={(e) => updateItem(index, { price: Number(e.target.value) || 0 })}
-                        className="w-full rounded-md border border-slate-700 bg-slate-900 px-2 py-2 text-sm text-slate-100"
-                      />
-                    </td>
-                    <td className="px-3 py-3 text-center">
-                      <input
-                        type="checkbox"
-                        checked={Boolean((item as any).patient_denying)}
-                        onChange={(e) => updateItem(index, { patient_denying: e.target.checked })}
-                        className="h-4 w-4 rounded border-slate-600 bg-slate-900"
-                      />
-                    </td>
-                    <td className="px-3 py-3 text-center">
-                      <button
-                        type="button"
-                        onClick={() => setItems((current) => current.filter((_, rowIndex) => rowIndex !== index))}
-                        className="rounded-md border border-slate-700 px-2 py-2 text-slate-300 hover:bg-slate-800"
-                      >
-                        🗑
-                      </button>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
 
-          <div className="mt-3 text-xs text-slate-400">* Quantity is auto-calculated based on Duration (D) x Frequency (F) x Dosage (D).</div>
-
-          <div className="mt-4 flex items-center justify-end gap-6 px-4 py-3 text-sm">
-            <div className="font-semibold text-slate-100">Total Items: {totalItems}</div>
-            <div className="font-semibold text-slate-100">Total Amount: Rs. {totalAmount.toFixed(2)}</div>
-          </div>
-
-        </div>
-
-        <div className="card-modern">
-          <h2 className="mb-4 text-base font-semibold text-slate-50">Outside Drug (Not in System)</h2>
-          <div className="grid gap-3 lg:grid-cols-[1.1fr_1.4fr_0.8fr_auto]">
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-400">Drug Name</label>
-              <input
-                value={outsideDrug.drug_name}
-                onChange={(e) => setOutsideDrug((current) => ({ ...current, drug_name: e.target.value }))}
-                placeholder="Enter drug name"
-                className="w-full rounded-md border border-slate-700 bg-transparent px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-400">Instructions</label>
-              <input
-                value={outsideDrug.instructions}
-                onChange={(e) => setOutsideDrug((current) => ({ ...current, instructions: e.target.value }))}
-                placeholder="Enter instructions"
-                className="w-full rounded-md border border-slate-700 bg-transparent px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
-              />
-            </div>
-            <div>
-              <label className="mb-1 block text-xs font-medium text-slate-400">Quantity</label>
-              <input
-                value={outsideDrug.quantity}
-                onChange={(e) => setOutsideDrug((current) => ({ ...current, quantity: e.target.value }))}
-                placeholder="Enter quantity"
-                className="w-full rounded-md border border-slate-700 bg-transparent px-3 py-2 text-sm text-slate-100 placeholder-slate-500"
-              />
-            </div>
-            <div className="flex items-end">
               <button
                 type="button"
-                onClick={addOutsideDrug}
-                className="btn-cyan"
+                onClick={savePrescription}
+                className="btn-light-blue"
+                style={{ padding: "0.75rem 2.25rem", borderRadius: "0.5rem" }}
               >
-                + Add Outside Drug
+                <span>Proceed to Invoice</span>
+                <ArrowRight size={16} />
               </button>
             </div>
-          </div>
+
+          </main>
         </div>
-
-        <div className="flex flex-col gap-3 sm:flex-row sm:justify-between">
-          <button
-            type="button"
-            onClick={() => router.push(`/doctor/opd/${resolvedParams.consultationId}`)}
-            className="btn-cyan sm:self-start"
-          >
-            ← Back to OPD
-          </button>
-
-          <button
-            type="button"
-            onClick={savePrescription}
-            className="opd-submit-btn sm:self-end"
-          >
-            Proceed to Invoice →
-          </button>
-        </div>
-
       </div>
-    </main>
-    </div>
+    </>
   );
 }
