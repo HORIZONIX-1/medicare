@@ -130,6 +130,17 @@ const createOrganization = async (payload, context = {}) => {
     req: context.req,
   });
 
+  try {
+    const { createSystemNotification } = require("../notifications/notification.service");
+    await createSystemNotification({
+      title: "New Organization Registered",
+      message: `Organization ${org.name} has been successfully registered.`,
+      type: "ORGANIZATION",
+    });
+  } catch (err) {
+    console.error("Failed to trigger organization creation notification:", err);
+  }
+
   return {
     id: org.organization_id,
     name: org.name,

@@ -111,6 +111,17 @@ const createUser = async (payload, context = {}) => {
     req: context.req,
   });
 
+  try {
+    const { createSystemNotification } = require("../notifications/notification.service");
+    await createSystemNotification({
+      title: "New User Registered",
+      message: `User ${user.name} (${user.email}) has been registered with role ${user.role}.`,
+      type: "SYSTEM",
+    });
+  } catch (err) {
+    console.error("Failed to trigger user creation notification:", err);
+  }
+
   return sanitizeUser(user);
 };
 
@@ -131,7 +142,11 @@ const getUsers = async (query) => {
   }
 
   if (query.organizationId) {
-    where.organization_id = Number(query.organizationId);
+    if (query.organizationId === "none" || query.organizationId === "null") {
+      where.organization_id = null;
+    } else {
+      where.organization_id = Number(query.organizationId);
+    }
   }
 
   if (query.search) {

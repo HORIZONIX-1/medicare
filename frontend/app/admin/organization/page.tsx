@@ -267,11 +267,11 @@ function OrganizationPageContent() {
               {/* Badges for metrics */}
               <div style={{ display: "flex", gap: "12px" }}>
                 <div className="admin-card pad" style={{ flex: 1, padding: "16px 20px" }}>
-                  <div style={{ fontSize: "11px", textTransform: "uppercase", color: "#6b7280" }}>Total Users</div>
+                  <div style={{ fontSize: "13.5px", textTransform: "uppercase", color: "#374151", fontWeight: "750", letterSpacing: "0.03em" }}>Total Users</div>
                   <div style={{ fontSize: "24px", fontWeight: "bold", marginTop: "4px" }}>{orgUsersCount}</div>
                 </div>
                 <div className="admin-card pad" style={{ flex: 1, padding: "16px 20px" }}>
-                  <div style={{ fontSize: "11px", textTransform: "uppercase", color: "#6b7280" }}>Total Patients</div>
+                  <div style={{ fontSize: "13.5px", textTransform: "uppercase", color: "#374151", fontWeight: "750", letterSpacing: "0.03em" }}>Total Patients</div>
                   <div style={{ fontSize: "24px", fontWeight: "bold", marginTop: "4px" }}>{orgPatientsCount}</div>
                 </div>
               </div>
@@ -732,7 +732,7 @@ export default function OrganizationPage() {
 }
 
 const styles = `
-  .org-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}.org-form,.logo-card{min-height:360px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 22px;margin-top:10px}.org-form label{display:block}.org-form span{display:block;font-size:11px;color:#687284;margin-bottom:7px}.org-form input{width:100%;height:42px;border:1px solid #cbd1da;background:#fff;border-radius:0;color:#111827;font-size:12px;padding:0 14px}.org-form input:focus,.org-form textarea:focus{box-shadow:none;border-color:#111827}
+  .org-grid{display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:18px}.org-form,.logo-card{min-height:360px}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 22px;margin-top:10px}.org-form label{display:block}.org-form span{display:block;font-size:13.5px;color:#374151;font-weight:750;margin-bottom:7px;letter-spacing:0.02em}.org-form input{width:100%;height:42px;border:1px solid #cbd1da;background:#fff;border-radius:0;color:#111827;font-size:12px;padding:0 14px}.org-form input:focus,.org-form textarea:focus{box-shadow:none;border-color:#111827}
   .admin-modal-overlay {
     position: fixed;
     top: 0;

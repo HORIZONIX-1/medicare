@@ -152,46 +152,58 @@ export default function AdminDashboard() {
                 ) : (
                   organizations.map((org) => (
                     <tr key={org.id}>
-                      <td style={{ fontWeight: "700" }}>
+                      <td>
                         <div style={{ display: "flex", alignItems: "center", gap: "12px" }}>
                           {org.logoUrl ? (
                             // eslint-disable-next-line @next/next/no-img-element
                             <img 
                               src={getFullLogoUrl(org.logoUrl)} 
                               alt="" 
-                              style={{ width: "32px", height: "32px", objectFit: "contain", border: "1px solid #e5e7eb", padding: "2px" }}
+                              style={{ width: "32px", height: "32px", objectFit: "contain", border: "1px solid #cbd5e1", borderRadius: "4px", padding: "2px" }}
                             />
                           ) : (
-                            <div style={{ width: "32px", height: "32px", background: "#f3f4f6", border: "1px solid #cfd5de", display: "grid", placeItems: "center", fontSize: "10px", fontWeight: "900", color: "#8b95a3" }}>
+                            <div style={{ width: "32px", height: "32px", background: "#f1f5f9", border: "1px solid #cbd5e1", borderRadius: "4px", display: "grid", placeItems: "center", fontSize: "11px", fontWeight: "800", color: "#475569" }}>
                               {org.name.slice(0, 2).toUpperCase()}
                             </div>
                           )}
                           <div>
-                            {org.name}
-                            {org.description && <div style={{ fontSize: "10px", color: "#6b7280", fontWeight: "normal", marginTop: "2px" }}>{org.description.slice(0, 50)}...</div>}
+                            <div style={{ fontSize: "13px", fontWeight: "700", color: "#0f172a" }}>{org.name}</div>
+                            {org.description && (
+                              <div style={{ fontSize: "11px", color: "#64748b", fontWeight: "500", marginTop: "3px" }}>
+                                {org.description.slice(0, 50)}...
+                              </div>
+                            )}
                           </div>
                         </div>
                       </td>
                       <td>
-                        <div style={{ fontSize: "11px" }}>
-                          <div>{org.email || "No email"}</div>
-                          <div style={{ color: "#6b7280", marginTop: "2px" }}>{org.phone || "No phone"}</div>
+                        <div style={{ fontSize: "12px", fontWeight: "500" }}>
+                          <div style={org.email ? { color: "#334155", fontWeight: "600" } : { color: "#94a3b8", fontStyle: "italic" }}>
+                            {org.email || "No email"}
+                          </div>
+                          <div style={org.phone ? { color: "#64748b", marginTop: "3px" } : { color: "#94a3b8", fontStyle: "italic", marginTop: "3px" }}>
+                            {org.phone || "No phone"}
+                          </div>
                         </div>
                       </td>
                       <td>
                         {org.website ? (
-                          <a href={org.website} target="_blank" rel="noopener noreferrer" style={{ color: "#0ea5e9", textDecoration: "none" }}>
+                          <a href={org.website} target="_blank" rel="noopener noreferrer" style={{ color: "#1a56db", fontWeight: "600", textDecoration: "underline", fontSize: "12px" }}>
                             {org.website.replace(/^https?:\/\/(www\.)?/, "")}
                           </a>
                         ) : (
-                          <span style={{ color: "#cbd5e1" }}>-</span>
+                          <span style={{ color: "#94a3b8", fontStyle: "italic" }}>-</span>
                         )}
                       </td>
                       <td>
-                        <span style={{ fontWeight: "bold" }}>{org.usersCount}</span> users
+                        <span style={{ display: "inline-flex", alignItems: "center", padding: "4px 10px", background: "#e0f2fe", color: "#0369a1", borderRadius: "12px", fontSize: "11px", fontWeight: "700" }}>
+                          {org.usersCount} {org.usersCount === 1 ? "user" : "users"}
+                        </span>
                       </td>
                       <td>
-                        <span style={{ fontWeight: "bold" }}>{org.patientsCount}</span> patients
+                        <span style={{ display: "inline-flex", alignItems: "center", padding: "4px 10px", background: "#f0fdf4", color: "#166534", borderRadius: "12px", fontSize: "11px", fontWeight: "700" }}>
+                          {org.patientsCount} {org.patientsCount === 1 ? "patient" : "patients"}
+                        </span>
                       </td>
                       <td>
                         <div style={{ display: "flex", gap: "8px" }}>
@@ -211,22 +223,24 @@ export default function AdminDashboard() {
                           >
                             + Add User
                           </Link>
-                          <Link 
-                            href={`/admin/users?orgId=${org.id}`}
-                            className="action-btn"
-                            style={{
-                              padding: "4px 8px",
-                              fontSize: "10px",
-                              textTransform: "uppercase",
-                              fontWeight: "bold",
-                              border: "1px solid #cfd5de",
-                              background: "#fff",
-                              color: "#111827",
-                              textDecoration: "none"
-                            }}
-                          >
-                            View Users
-                          </Link>
+                         {org.usersCount > 0 && (
+                            <Link 
+                              href={`/admin/users?orgId=${org.id}`}
+                              className="action-btn"
+                              style={{
+                                padding: "4px 8px",
+                                fontSize: "10px",
+                                textTransform: "uppercase",
+                                fontWeight: "bold",
+                               border: "1px solid #cfd5de",
+                                background: "#fff",
+                                color: "#111827",
+                                textDecoration: "none"
+                              }}
+                            >
+                              View Users
+                            </Link>
+                          )}
                           <Link 
                             href={`/admin/organization?orgId=${org.id}`}
                             className="action-btn"
@@ -286,7 +300,44 @@ export default function AdminDashboard() {
 }
 
 const dashboardStyles = `
-  .dashboard-metrics{grid-template-columns:repeat(5,minmax(0,1fr));gap:0;margin:-18px -22px 18px;border-bottom:1px solid #d5d9e0}.metric-card{border-left:0;border-top:0;border-bottom:0;border-radius:0;min-height:112px;padding:26px 24px}.metric-label{text-transform:uppercase;color:#6b7280;font-size:12px;letter-spacing:.04em}.metric-value{font-size:28px;font-weight:800;margin-top:10px;color:#111827}.metric-note{display:inline-flex;background:#f4f5f6;color:#6b7280;font-size:9px;padding:2px 6px;text-transform:uppercase}
+  .dashboard-metrics {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 0;
+    margin: -18px -22px 18px;
+    border-bottom: 1px solid #d5d9e0;
+  }
+  .metric-card {
+    border-left: 0;
+    border-top: 0;
+    border-bottom: 0;
+    border-radius: 0;
+    min-height: 112px;
+    padding: 26px 24px;
+    text-align: center;
+  }
+  .metric-label {
+    text-transform: uppercase;
+    color: #475569;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: .06em;
+  }
+  .metric-value {
+    font-size: 38px;
+    font-weight: 850;
+    margin: 8px 0;
+    color: #0f172a;
+  }
+  .metric-note {
+    display: inline-flex;
+    background: #e2e8f0;
+    color: #334155;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    text-transform: uppercase;
+    border-radius: 3px;
+  }
   .activity-card{min-height:220px}.stock-list{margin-top:22px}.stock-row{display:flex;justify-content:space-between;border-bottom:1px solid #e7e9ed;padding:13px 0}.action-btn:hover{background:#f3f4f6!important}
   @media (max-width:980px){.dashboard-metrics{grid-template-columns:repeat(2,minmax(0,1fr));margin:0 0 14px}.metric-card{border:1px solid #d5d9e0}}
   @media (max-width:640px){.dashboard-metrics{grid-template-columns:1fr}.metric-card{min-height:auto}}

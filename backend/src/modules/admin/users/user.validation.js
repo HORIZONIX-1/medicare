@@ -38,7 +38,10 @@ const listUsersSchema = Joi.object({
   includeDeleted: Joi.boolean().default(false),
   sortBy: Joi.string().valid("name", "email", "role", "created_at").default("created_at"),
   sortOrder: Joi.string().valid("asc", "desc").default("desc"),
-  organizationId: Joi.number().integer().positive().allow(null, ""),
+  organizationId: Joi.alternatives().try(
+    Joi.number().integer().positive(),
+    Joi.string().valid("none", "null", "")
+  ).allow(null),
 });
 
 const passwordSchema = Joi.string()
