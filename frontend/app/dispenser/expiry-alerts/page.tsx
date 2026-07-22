@@ -110,23 +110,6 @@ export default function ExpiryAlertsPage() {
       };
     });
 
-    // Fallback Mock items if no batches exist in DB
-    if (rows.length === 0) {
-      const mockRows: AlertRow[] = [
-        { id: 1, batchId: 101, drugName: 'Amoxicillin 250mg', category: 'Capsule', batchNo: 'B555', expiryDate: '2024-05-22', daysLeft: -8, availableQty: 10, status: 'Expired' },
-        { id: 2, batchId: 102, drugName: 'Cough Syrup 100ml', category: 'Syrup', batchNo: 'S777', expiryDate: '2024-05-28', daysLeft: -2, availableQty: 5, status: 'Expired' },
-        { id: 3, batchId: 103, drugName: 'Cetrizine 10mg', category: 'Tablet', batchNo: 'C321', expiryDate: '2024-06-01', daysLeft: 3, availableQty: 30, status: 'Expiring Soon (0-30 days)' },
-        { id: 4, batchId: 104, drugName: 'Paracetamol 500mg', category: 'Tablet', batchNo: 'B123', expiryDate: '2024-06-05', daysLeft: 7, availableQty: 40, status: 'Expiring Soon (0-30 days)' },
-        { id: 5, batchId: 105, drugName: 'Ibuprofen 400mg', category: 'Tablet', batchNo: 'I212', expiryDate: '2024-06-10', daysLeft: 12, availableQty: 18, status: 'Expiring Soon (0-30 days)' },
-        { id: 6, batchId: 106, drugName: 'Diclofenac 50mg', category: 'Tablet', batchNo: 'D450', expiryDate: '2024-06-20', daysLeft: 22, availableQty: 15, status: 'Expiring Soon (0-30 days)' },
-        { id: 7, batchId: 107, drugName: 'Omeprazole 20mg', category: 'Capsule', batchNo: 'O098', expiryDate: '2024-07-05', daysLeft: 37, availableQty: 8, status: 'Expiring in 31-60 days' },
-        { id: 8, batchId: 108, drugName: 'Salbutamol Inhaler', category: 'Inhaler', batchNo: 'I555', expiryDate: '2024-07-18', daysLeft: 50, availableQty: 12, status: 'Expiring in 31-60 days' },
-        { id: 9, batchId: 109, drugName: 'Antacid Syrup 200ml', category: 'Syrup', batchNo: 'A120', expiryDate: '2024-07-25', daysLeft: 57, availableQty: 25, status: 'Expiring in 31-60 days' },
-        { id: 10, batchId: 110, drugName: 'Metformin 500mg', category: 'Tablet', batchNo: 'M888', expiryDate: '2024-08-15', daysLeft: 78, availableQty: 10, status: 'In Stock' }
-      ];
-      rows = mockRows;
-    }
-
     setAlertsList(rows);
   };
 

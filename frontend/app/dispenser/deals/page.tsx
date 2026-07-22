@@ -81,11 +81,6 @@ const MOCK_SUPPLIERS: Supplier[] = [
         const result = res.data.data || {};
         let items = result.data || [];
         
-        // Fallback locally if empty from server
-        if (items.length === 0) {
-          items = [...MOCK_SUPPLIERS];
-        }
-
         // Filter locally if searchTerm is provided
         if (searchTerm) {
           const term = searchTerm.toLowerCase();
@@ -102,19 +97,10 @@ const MOCK_SUPPLIERS: Supplier[] = [
       }
     } catch (err) {
       console.error("Failed to fetch suppliers:", err);
-      showToast("Error fetching suppliers. Loading offline mock directory.");
-      
-      let items = [...MOCK_SUPPLIERS];
-      if (searchTerm) {
-        const term = searchTerm.toLowerCase();
-        items = items.filter((s: Supplier) => 
-          s.name.toLowerCase().includes(term) || 
-          (s.contact_person && s.contact_person.toLowerCase().includes(term))
-        );
-      }
-      setSuppliers(items);
-      setTotalPages(Math.ceil(items.length / itemsPerPage) || 1);
-      setTotalItems(items.length);
+      showToast("Error fetching suppliers from database.");
+      setSuppliers([]);
+      setTotalPages(1);
+      setTotalItems(0);
     } finally {
       setLoading(false);
     }

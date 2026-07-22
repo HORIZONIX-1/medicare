@@ -2254,5 +2254,24 @@ input[type="range"]::-moz-range-thumb {
   border-color: #cbd5e1 !important;
 }
 
+/* Dispenser Portal Layout Input Overrides */
+.disp-layout input[type="text"],
+.disp-layout input[type="number"],
+.disp-layout select,
+.disp-layout textarea {
+  color: #0f172a !important;
+}
+
+.disp-layout select option {
+  background-color: #ffffff !important;
+  color: #0f172a !important;
+}
+
+.disp-layout input::placeholder,
+.disp-layout textarea::placeholder {
+  color: #94a3b8 !important;
+}
+
+
 
 
