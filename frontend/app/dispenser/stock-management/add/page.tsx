@@ -1,13 +1,17 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
-import { Save, Calendar, Info, ArrowLeft } from 'lucide-react';
+import React, { useState, useEffect, useRef } from 'react';
+import { Save, Calendar, Info, ChevronDown } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import api from '@/lib/axios';
 
 export default function AddDrugStock() {
   const router = useRouter();
+
+  // Input refs for date pickers
+  const expiryInputRef = useRef<HTMLInputElement>(null);
+  const lastSupplyInputRef = useRef<HTMLInputElement>(null);
 
   // Predefined catalog states
   const [predefinedDrugs, setPredefinedDrugs] = useState<any[]>([]);
@@ -50,7 +54,6 @@ export default function AddDrugStock() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        // Try fetching drugs (check /drugs and fall back to /api/v1/drugs)
         const drugsRes = await api.get('/drugs?limit=100').catch(() => api.get('/api/v1/drugs?limit=100'));
         const drugsList = drugsRes.data?.data || drugsRes.data || [];
         setPredefinedDrugs(Array.isArray(drugsList) ? drugsList : []);
@@ -59,7 +62,6 @@ export default function AddDrugStock() {
       }
 
       try {
-        // Try fetching suppliers (check dispenser specific endpoints)
         const suppliersRes = await api.get('/api/v1/dispenser/suppliers').catch(() => api.get('/dispenser/suppliers'));
         const suppliersList = suppliersRes.data?.data?.data || suppliersRes.data?.data || suppliersRes.data || [];
         setDealers(Array.isArray(suppliersList) ? suppliersList : []);
@@ -164,7 +166,6 @@ export default function AddDrugStock() {
     try {
       let drugId = selectedDrugId;
 
-      // 1. Create drug if it's a new one and "Add to predefined list" is checked
       if (!selectedDrugId) {
         if (!name.trim()) {
           alert("Drug Name is required.");
@@ -194,7 +195,6 @@ export default function AddDrugStock() {
         return;
       }
 
-      // 2. If it's a new supplier, register them first
       let finalSupplierId = dealerId ? parseInt(dealerId, 10) : null;
       if (dealerType === 'new' && newDealerName.trim()) {
         const supplierPayload = {
@@ -212,7 +212,6 @@ export default function AddDrugStock() {
         }
       }
 
-      // 3. Create stock batch entry
       const stockPayload = {
         drug_id: parseInt(drugId, 10),
         batch_number: batchNumber || null,
@@ -236,59 +235,104 @@ export default function AddDrugStock() {
     }
   };
 
+  const openDatePicker = (inputRef: React.RefObject<HTMLInputElement>) => {
+    try {
+      if (inputRef.current && typeof inputRef.current.showPicker === 'function') {
+        inputRef.current.showPicker();
+      } else {
+        inputRef.current?.focus();
+      }
+    } catch (e) {
+      inputRef.current?.focus();
+    }
+  };
+
+  const labelStyle = {
+    display: "block",
+    fontSize: "0.84375rem",
+    fontWeight: 700,
+    color: "#000000",
+    textTransform: "uppercase" as const,
+    letterSpacing: "0.05em",
+    marginBottom: "0.625rem"
+  };
+
+  const inputStyle = {
+    width: "100%",
+    padding: "0.75rem 1rem",
+    backgroundColor: "#ffffff",
+    border: "1px solid #cbd1da",
+    borderRadius: "0.75rem",
+    fontSize: "0.9375rem",
+    fontWeight: 600,
+    color: "#000000",
+    outline: "none"
+  };
+
+  const selectStyle = {
+    ...inputStyle,
+    appearance: "none" as const,
+    WebkitAppearance: "none" as const,
+    MozAppearance: "none" as const,
+    paddingRight: "3rem",
+    cursor: "pointer"
+  };
+
   return (
-    <form onSubmit={handleSubmit} className="max-w-6xl mx-auto space-y-8 animate-in fade-in duration-500">
+    <form onSubmit={handleSubmit} style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "2.5rem", color: "#000000", fontFamily: "'Poppins', sans-serif" }}>
       
       {/* Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-slate-100 pb-6">
-        <div>
-          <div className="flex items-center gap-2 text-xs font-semibold text-slate-400 uppercase tracking-wider mb-2">
-            <Link href="/dispenser" className="hover:text-slate-600 transition-colors">Dashboard</Link>
-            <span>&gt;</span>
-            <Link href="/dispenser/stock-management/table" className="hover:text-slate-600 transition-colors">Stock Management</Link>
-            <span>&gt;</span>
-            <span className="text-slate-600">Add Drug Stock</span>
-          </div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Add / Edit Drug</h1>
-          <p className="text-sm text-slate-500 mt-1">Add a new drug stock to inventory or update existing drug details.</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem", borderBottom: "1px solid #cbd1da", paddingBottom: "1.5rem" }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.84375rem", fontWeight: 700, color: "#000000", textTransform: "uppercase" }}>
+          <Link href="/dispenser" style={{ color: "#000000", textDecoration: "none" }}>Dashboard</Link>
+          <span>&gt;</span>
+          <Link href="/dispenser/stock-management/table" style={{ color: "#000000", textDecoration: "none" }}>Stock Management</Link>
+          <span>&gt;</span>
+          <span>Add Drug Stock</span>
         </div>
+        <h1 style={{ fontSize: "2.25rem", fontWeight: 800, color: "#000000", margin: 0 }}>Add / Edit Drug</h1>
+        <p style={{ fontSize: "0.9375rem", fontWeight: 500, color: "#000000", margin: 0 }}>Add a new drug stock to inventory or update existing drug details.</p>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div style={{ display: "grid", gridTemplateColumns: "2fr 1fr", gap: "2rem" }}>
         
         {/* Left Column: Form Fields */}
-        <div className="lg:col-span-2 space-y-8">
+        <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
           
-          {/* Drug Information */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100/50 hover:shadow-md transition-shadow duration-200">
-            <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-3.5 bg-blue-600 rounded-full inline-block"></span>
+          {/* Drug Information Card */}
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "2rem" }}>
+            <h3 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "1.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ width: "0.375rem", height: "1rem", backgroundColor: "#2563eb", borderRadius: "9999px", display: "inline-block" }}></span>
               DRUG INFORMATION
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-x-6 gap-y-5">
+            {/* Grid with Increased Row Gap */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", columnGap: "1.75rem", rowGap: "2.25rem" }}>
               
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label style={labelStyle}>
                   Select Predefined Catalog Item
                 </label>
-                <select 
-                  value={selectedDrugId} 
-                  onChange={handleDrugSelectChange}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 bg-white shadow-sm"
-                >
-                  <option value="">-- Register New Drug --</option>
-                  {predefinedDrugs.map((d: any) => (
-                    <option key={d.drug_id} value={d.drug_id}>
-                      {d.name} {d.dosage_type ? `(${d.dosage_type})` : ''}
-                    </option>
-                  ))}
-                </select>
+                <div style={{ position: "relative" }}>
+                  <select 
+                    value={selectedDrugId} 
+                    onChange={handleDrugSelectChange}
+                    style={selectStyle}
+                  >
+                    <option value="">-- Register New Drug --</option>
+                    {predefinedDrugs.map((d: any) => (
+                      <option key={d.drug_id} value={d.drug_id}>
+                        {d.name} {d.dosage_type ? `(${d.dosage_type})` : ''}
+                      </option>
+                    ))}
+                  </select>
+                  <ChevronDown size={18} style={{ position: "absolute", right: "1.25rem", top: "50%", transform: "translateY(-50%)", color: "#000000", pointerEvents: "none" }} />
+                </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Drug Name <span className="text-red-500">*</span>
+                <label style={labelStyle}>
+                  Drug Name <span style={{ color: "#dc2626" }}>*</span>
                 </label>
                 <input 
                   type="text" 
@@ -297,54 +341,60 @@ export default function AddDrugStock() {
                   onChange={e => setName(e.target.value)}
                   disabled={!!selectedDrugId}
                   required
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed" 
+                  style={inputStyle} 
                 />
               </div>
               
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Category <span className="text-red-500">*</span>
+                <label style={labelStyle}>
+                  Category <span style={{ color: "#dc2626" }}>*</span>
                 </label>
-                <select 
-                  value={category}
-                  onChange={e => setCategory(e.target.value)}
-                  disabled={!!selectedDrugId}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 bg-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <option value="Tablet">Tablet</option>
-                  <option value="Capsule">Capsule</option>
-                  <option value="Syrup">Syrup</option>
-                  <option value="Suspension">Suspension</option>
-                  <option value="Inhaler">Inhaler</option>
-                  <option value="Ointment">Ointment</option>
-                  <option value="Injection">Injection</option>
-                </select>
+                <div style={{ position: "relative" }}>
+                  <select 
+                    value={category}
+                    onChange={e => setCategory(e.target.value)}
+                    disabled={!!selectedDrugId}
+                    style={selectStyle}
+                  >
+                    <option value="Tablet">Tablet</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Syrup">Syrup</option>
+                    <option value="Suspension">Suspension</option>
+                    <option value="Inhaler">Inhaler</option>
+                    <option value="Ointment">Ointment</option>
+                    <option value="Injection">Injection</option>
+                  </select>
+                  <ChevronDown size={18} style={{ position: "absolute", right: "1.25rem", top: "50%", transform: "translateY(-50%)", color: "#000000", pointerEvents: "none" }} />
+                </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Unit Type <span className="text-red-500">*</span>
+                <label style={labelStyle}>
+                  Unit Type <span style={{ color: "#dc2626" }}>*</span>
                 </label>
-                <select 
-                  value={unitType}
-                  onChange={e => setUnitType(e.target.value)}
-                  disabled={!!selectedDrugId}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 bg-white shadow-sm disabled:opacity-60 disabled:cursor-not-allowed"
-                >
-                  <option value="Tablet">Tablet</option>
-                  <option value="Capsule">Capsule</option>
-                  <option value="Bottle">Bottle</option>
-                  <option value="Tube">Tube</option>
-                  <option value="Vial">Vial</option>
-                  <option value="Ampoule">Ampoule</option>
-                </select>
+                <div style={{ position: "relative" }}>
+                  <select 
+                    value={unitType}
+                    onChange={e => setUnitType(e.target.value)}
+                    disabled={!!selectedDrugId}
+                    style={selectStyle}
+                  >
+                    <option value="Tablet">Tablet</option>
+                    <option value="Capsule">Capsule</option>
+                    <option value="Bottle">Bottle</option>
+                    <option value="Tube">Tube</option>
+                    <option value="Vial">Vial</option>
+                    <option value="Ampoule">Ampoule</option>
+                  </select>
+                  <ChevronDown size={18} style={{ position: "absolute", right: "1.25rem", top: "50%", transform: "translateY(-50%)", color: "#000000", pointerEvents: "none" }} />
+                </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <label style={{ ...labelStyle, display: "flex", alignItems: "center", gap: "0.375rem" }}>
                   Strength 
-                  <span className="text-slate-400 cursor-pointer hover:text-slate-600" title="Specify formulation dosage concentration, e.g. 500mg, 10ml.">
-                    <Info size={12} />
+                  <span title="Specify formulation dosage concentration, e.g. 500mg, 10ml.">
+                    <Info size={14} style={{ color: "#000000" }} />
                   </span>
                 </label>
                 <input 
@@ -353,12 +403,12 @@ export default function AddDrugStock() {
                   value={strength}
                   onChange={e => setStrength(e.target.value)}
                   disabled={!!selectedDrugId}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed" 
+                  style={inputStyle} 
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label style={labelStyle}>
                   Batch Number
                 </label>
                 <input 
@@ -366,28 +416,33 @@ export default function AddDrugStock() {
                   placeholder="Enter batch number" 
                   value={batchNumber}
                   onChange={e => setBatchNumber(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm" 
+                  style={inputStyle} 
                 />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label style={labelStyle}>
                   Expiry Date
                 </label>
-                <div className="relative">
+                <div style={{ position: "relative" }}>
                   <input 
-                    type="text" 
-                    placeholder="YYYY-MM-DD" 
+                    ref={expiryInputRef}
+                    type="date" 
                     value={expiryDate}
                     onChange={e => setExpiryDate(e.target.value)}
-                    className="w-full pl-3.5 pr-10 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm" 
+                    onClick={() => openDatePicker(expiryInputRef)}
+                    style={{ ...inputStyle, paddingRight: "3rem", cursor: "pointer" }} 
                   />
-                  <Calendar size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <Calendar 
+                    size={18} 
+                    onClick={() => openDatePicker(expiryInputRef)}
+                    style={{ position: "absolute", right: "1.25rem", top: "50%", transform: "translateY(-50%)", color: "#000000", cursor: "pointer", pointerEvents: "auto" }} 
+                  />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label style={labelStyle}>
                   Manufactured By
                 </label>
                 <input 
@@ -395,12 +450,12 @@ export default function AddDrugStock() {
                   placeholder="Enter manufacturer (optional)" 
                   value={manufacturedBy}
                   onChange={e => setManufacturedBy(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm" 
+                  style={inputStyle} 
                 />
               </div>
 
-              <div className="md:col-span-2">
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+              <div style={{ gridColumn: "span 2 / span 2" }}>
+                <label style={labelStyle}>
                   Drug Description
                 </label>
                 <input 
@@ -408,87 +463,87 @@ export default function AddDrugStock() {
                   placeholder="Enter description (optional)" 
                   value={description}
                   onChange={e => setDescription(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm" 
+                  style={inputStyle} 
                 />
               </div>
             </div>
           </div>
 
-          {/* Pricing Information */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100/50 hover:shadow-md transition-shadow duration-200">
-            <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-3.5 bg-blue-600 rounded-full inline-block"></span>
+          {/* Pricing Information Card */}
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "2rem" }}>
+            <h3 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "1.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ width: "0.375rem", height: "1rem", backgroundColor: "#2563eb", borderRadius: "9999px", display: "inline-block" }}></span>
               PRICING INFORMATION
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", columnGap: "1.5rem", rowGap: "2rem" }}>
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Buying Price (Cost) <span className="text-red-500">*</span>
+                <label style={labelStyle}>
+                  Buying Price (Cost) <span style={{ color: "#dc2626" }}>*</span>
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">Rs.</span>
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: "1rem", top: "50%", transform: "translateY(-50%)", color: "#000000", fontSize: "0.875rem", fontWeight: 700 }}>Rs.</span>
                   <input 
                     type="text" 
                     placeholder="0.00" 
                     value={buyingPrice}
                     onChange={e => setBuyingPrice(e.target.value)}
                     required
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm font-semibold" 
+                    style={{ ...inputStyle, paddingLeft: "2.75rem" }} 
                   />
                 </div>
               </div>
               
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Selling Price <span className="text-red-500">*</span>
+                <label style={labelStyle}>
+                  Selling Price <span style={{ color: "#dc2626" }}>*</span>
                 </label>
-                <div className="relative">
-                  <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">Rs.</span>
+                <div style={{ position: "relative" }}>
+                  <span style={{ position: "absolute", left: "1rem", top: "50%", transform: "translateY(-50%)", color: "#000000", fontSize: "0.875rem", fontWeight: 700 }}>Rs.</span>
                   <input 
                     type="text" 
                     placeholder="0.00" 
                     value={sellingPrice}
                     onChange={e => setSellingPrice(e.target.value)}
                     required
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm font-semibold" 
+                    style={{ ...inputStyle, paddingLeft: "2.75rem" }} 
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
-                  OR Profit Percentage (%) 
-                  <span className="text-slate-400 cursor-pointer hover:text-slate-600" title="Calculate selling price dynamically using profit percentage margins.">
-                    <Info size={12} />
+                <label style={{ ...labelStyle, display: "flex", alignItems: "center", gap: "0.375rem" }}>
+                  Profit Percentage (%) 
+                  <span title="Calculate selling price dynamically using profit percentage margins.">
+                    <Info size={14} style={{ color: "#000000" }} />
                   </span>
                 </label>
-                <div className="relative">
+                <div style={{ position: "relative" }}>
                   <input 
                     type="text" 
                     placeholder="0.00" 
                     value={profitPercentage}
                     onChange={handleProfitChange}
-                    className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm font-semibold" 
+                    style={{ ...inputStyle, paddingRight: "3rem" }} 
                   />
-                  <span className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">%</span>
+                  <span style={{ position: "absolute", right: "1.25rem", top: "50%", transform: "translateY(-50%)", color: "#000000", fontSize: "0.875rem", fontWeight: 800 }}>%</span>
                 </div>
-                <p className="text-[10px] text-slate-400 mt-1.5">(System will calculate selling price)</p>
+                <p style={{ fontSize: "0.75rem", color: "#000000", marginTop: "0.375rem", fontWeight: 500 }}>(System will calculate selling price)</p>
               </div>
             </div>
           </div>
 
-          {/* Initial Stock */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100/50 hover:shadow-md transition-shadow duration-200">
-            <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-3.5 bg-blue-600 rounded-full inline-block"></span>
+          {/* Initial Stock Card */}
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "2rem" }}>
+            <h3 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "1.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ width: "0.375rem", height: "1rem", backgroundColor: "#2563eb", borderRadius: "9999px", display: "inline-block" }}></span>
               INITIAL STOCK
             </h3>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", columnGap: "1.75rem", rowGap: "2rem" }}>
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                  Initial Quantity <span className="text-red-500">*</span>
+                <label style={labelStyle}>
+                  Initial Quantity <span style={{ color: "#dc2626" }}>*</span>
                 </label>
                 <input 
                   type="text" 
@@ -496,15 +551,15 @@ export default function AddDrugStock() {
                   value={quantity}
                   onChange={e => setQuantity(e.target.value)}
                   required
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm font-semibold" 
+                  style={inputStyle} 
                 />
               </div>
               
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5 flex items-center gap-1">
+                <label style={{ ...labelStyle, display: "flex", alignItems: "center", gap: "0.375rem" }}>
                   Reorder Level 
-                  <span className="text-slate-400 cursor-pointer hover:text-slate-600" title="Low stock alerts trigger when total inventory matches or drops below this quantity.">
-                    <Info size={12} />
+                  <span title="Low stock alerts trigger when total inventory matches or drops below this quantity.">
+                    <Info size={14} style={{ color: "#000000" }} />
                   </span>
                 </label>
                 <input 
@@ -512,23 +567,23 @@ export default function AddDrugStock() {
                   placeholder="Enter reorder level" 
                   value={reorderLevel}
                   onChange={e => setReorderLevel(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm font-semibold" 
+                  style={inputStyle} 
                 />
               </div>
             </div>
             
-            <div className="mt-6 pt-5 border-t border-slate-100">
-              <label className="flex items-start gap-3 p-4 bg-blue-50/30 border border-blue-100/50 rounded-2xl transition-all hover:bg-blue-50/50 cursor-pointer group">
+            <div style={{ marginTop: "2rem", paddingTop: "1.5rem", borderTop: "1px solid #cbd1da" }}>
+              <label style={{ display: "flex", alignItems: "flex-start", gap: "0.875rem", padding: "1.25rem", backgroundColor: "#f8fafc", border: "1px solid #cbd1da", borderRadius: "0.75rem", cursor: "pointer" }}>
                 <input 
                   type="checkbox" 
                   id="predefined" 
                   checked={addToPredefined}
                   onChange={e => setAddToPredefined(e.target.checked)}
-                  className="mt-1 w-4 h-4 text-blue-600 border-slate-300 rounded focus:ring-blue-500 cursor-pointer transition-colors" 
+                  style={{ marginTop: "0.25rem", width: "1.125rem", height: "1.125rem", accentColor: "#2563eb", cursor: "pointer" }} 
                 />
                 <div>
-                  <span className="text-sm font-bold text-slate-800 group-hover:text-blue-900 transition-colors">Add to predefined drug list</span>
-                  <p className="text-xs text-slate-500 mt-0.5">Drug will be automatically available for prescription in the consultation suite.</p>
+                  <span style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#000000" }}>Add to predefined drug list</span>
+                  <p style={{ fontSize: "0.8125rem", color: "#000000", marginTop: "0.25rem", fontWeight: 500 }}>Drug will be automatically available for prescription in the consultation suite.</p>
                 </div>
               </label>
             </div>
@@ -536,24 +591,29 @@ export default function AddDrugStock() {
         </div>
 
         {/* Right Column: Dealer & Supply Info */}
-        <div className="space-y-8">
+        <div style={{ display: "flex", flexDirection: "column", gap: "2.5rem" }}>
           
-          {/* Dealer Info */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100/50 hover:shadow-md transition-shadow duration-200">
-            <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-3.5 bg-blue-600 rounded-full inline-block"></span>
+          {/* Dealer Info Card */}
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "2rem" }}>
+            <h3 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "1.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ width: "0.375rem", height: "1rem", backgroundColor: "#2563eb", borderRadius: "9999px", display: "inline-block" }}></span>
               DEALER INFORMATION
             </h3>
             
-            <div className="grid grid-cols-2 gap-3 mb-5">
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "0.75rem", marginBottom: "1.75rem" }}>
               <button 
                 type="button"
                 onClick={() => setDealerType('existing')}
-                className={`p-2.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-all flex items-center justify-center gap-2 ${
-                  dealerType === 'existing' 
-                    ? 'border-blue-100 bg-blue-50/30 text-blue-700' 
-                    : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                }`}
+                style={{
+                  padding: "0.75rem",
+                  borderRadius: "0.75rem",
+                  border: "1px solid #cbd1da",
+                  fontSize: "0.84375rem",
+                  fontWeight: 800,
+                  cursor: "pointer",
+                  backgroundColor: dealerType === 'existing' ? "#eff6ff" : "#ffffff",
+                  color: dealerType === 'existing' ? "#1d4ed8" : "#000000"
+                }}
               >
                 Existing Dealer
               </button>
@@ -567,38 +627,46 @@ export default function AddDrugStock() {
                   setEmail('');
                   setAddress('');
                 }}
-                className={`p-2.5 rounded-xl border text-[11px] font-bold cursor-pointer transition-all flex items-center justify-center gap-2 ${
-                  dealerType === 'new' 
-                    ? 'border-blue-100 bg-blue-50/30 text-blue-700' 
-                    : 'border-slate-200 bg-white text-slate-600 hover:bg-slate-50'
-                }`}
+                style={{
+                  padding: "0.75rem",
+                  borderRadius: "0.75rem",
+                  border: "1px solid #cbd1da",
+                  fontSize: "0.84375rem",
+                  fontWeight: 800,
+                  cursor: "pointer",
+                  backgroundColor: dealerType === 'new' ? "#eff6ff" : "#ffffff",
+                  color: dealerType === 'new' ? "#1d4ed8" : "#000000"
+                }}
               >
                 New Dealer
               </button>
             </div>
 
-            <div className="space-y-4">
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.75rem" }}>
               {dealerType === 'existing' ? (
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                    Dealer Name <span className="text-red-500">*</span>
+                  <label style={labelStyle}>
+                    Dealer Name <span style={{ color: "#dc2626" }}>*</span>
                   </label>
-                  <select 
-                    value={dealerId}
-                    onChange={handleDealerSelectChange}
-                    required
-                    className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 bg-white shadow-sm"
-                  >
-                    <option value="">Select dealer</option>
-                    {dealers.map((d: any) => (
-                      <option key={d.supplier_id} value={d.supplier_id}>{d.name}</option>
-                    ))}
-                  </select>
+                  <div style={{ position: "relative" }}>
+                    <select 
+                      value={dealerId}
+                      onChange={handleDealerSelectChange}
+                      required
+                      style={selectStyle}
+                    >
+                      <option value="">Select dealer</option>
+                      {dealers.map((d: any) => (
+                        <option key={d.supplier_id} value={d.supplier_id}>{d.name}</option>
+                      ))}
+                    </select>
+                    <ChevronDown size={18} style={{ position: "absolute", right: "1.25rem", top: "50%", transform: "translateY(-50%)", color: "#000000", pointerEvents: "none" }} />
+                  </div>
                 </div>
               ) : (
                 <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                    Dealer Name <span className="text-red-500">*</span>
+                  <label style={labelStyle}>
+                    Dealer Name <span style={{ color: "#dc2626" }}>*</span>
                   </label>
                   <input 
                     type="text" 
@@ -606,13 +674,13 @@ export default function AddDrugStock() {
                     value={newDealerName}
                     onChange={e => setNewDealerName(e.target.value)}
                     required
-                    className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm" 
+                    style={inputStyle} 
                   />
                 </div>
               )}
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label style={labelStyle}>
                   Contact Person
                 </label>
                 <input 
@@ -621,41 +689,40 @@ export default function AddDrugStock() {
                   value={contactPerson}
                   onChange={e => setContactPerson(e.target.value)}
                   disabled={dealerType === 'existing'}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed" 
+                  style={inputStyle} 
                 />
               </div>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                    Phone
-                  </label>
-                  <input 
-                    type="text" 
-                    placeholder="Enter phone number" 
-                    value={phone}
-                    onChange={e => setPhone(e.target.value)}
-                    disabled={dealerType === 'existing'}
-                    className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed" 
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
-                    Email
-                  </label>
-                  <input 
-                    type="text" 
-                    placeholder="Enter email address" 
-                    value={email}
-                    onChange={e => setEmail(e.target.value)}
-                    disabled={dealerType === 'existing'}
-                    className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm disabled:opacity-60 disabled:cursor-not-allowed" 
-                  />
-                </div>
+              <div>
+                <label style={labelStyle}>
+                  Phone
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Enter phone number" 
+                  value={phone}
+                  onChange={e => setPhone(e.target.value)}
+                  disabled={dealerType === 'existing'}
+                  style={inputStyle} 
+                />
               </div>
 
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label style={labelStyle}>
+                  Email
+                </label>
+                <input 
+                  type="text" 
+                  placeholder="Enter email address" 
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  disabled={dealerType === 'existing'}
+                  style={inputStyle} 
+                />
+              </div>
+
+              <div>
+                <label style={labelStyle}>
                   Address
                 </label>
                 <textarea 
@@ -664,38 +731,43 @@ export default function AddDrugStock() {
                   value={address}
                   onChange={e => setAddress(e.target.value)}
                   disabled={dealerType === 'existing'}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm resize-none disabled:opacity-60 disabled:cursor-not-allowed"
+                  style={{ ...inputStyle, resize: "none" }}
                 ></textarea>
               </div>
             </div>
           </div>
 
-          {/* Recent Supply Info */}
-          <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100/50 hover:shadow-md transition-shadow duration-200">
-            <h3 className="text-xs font-bold text-blue-600 uppercase tracking-widest mb-6 flex items-center gap-2">
-              <span className="w-1.5 h-3.5 bg-blue-600 rounded-full inline-block"></span>
+          {/* Recent Supply Info Card */}
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "2rem" }}>
+            <h3 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "1.75rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
+              <span style={{ width: "0.375rem", height: "1rem", backgroundColor: "#2563eb", borderRadius: "9999px", display: "inline-block" }}></span>
               RECENT SUPPLY (OPTIONAL)
             </h3>
             
-            <div className="space-y-4">
+            <div style={{ display: "flex", flexDirection: "column", gap: "1.75rem" }}>
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label style={labelStyle}>
                   Last Supply Date
                 </label>
-                <div className="relative">
+                <div style={{ position: "relative" }}>
                   <input 
-                    type="text" 
-                    placeholder="YYYY-MM-DD" 
+                    ref={lastSupplyInputRef}
+                    type="date" 
                     value={lastSupplyDate}
                     onChange={e => setLastSupplyDate(e.target.value)}
-                    className="w-full pl-3.5 pr-10 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm" 
+                    onClick={() => openDatePicker(lastSupplyInputRef)}
+                    style={{ ...inputStyle, paddingRight: "3rem", cursor: "pointer" }} 
                   />
-                  <Calendar size={16} className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none" />
+                  <Calendar 
+                    size={18} 
+                    onClick={() => openDatePicker(lastSupplyInputRef)}
+                    style={{ position: "absolute", right: "1.25rem", top: "50%", transform: "translateY(-50%)", color: "#000000", cursor: "pointer", pointerEvents: "auto" }} 
+                  />
                 </div>
               </div>
               
               <div>
-                <label className="block text-[11px] font-bold text-slate-500 uppercase tracking-wider mb-1.5">
+                <label style={labelStyle}>
                   Invoice / Reference No.
                 </label>
                 <input 
@@ -703,7 +775,7 @@ export default function AddDrugStock() {
                   placeholder="Enter invoice reference" 
                   value={invoiceNo}
                   onChange={e => setInvoiceNo(e.target.value)}
-                  className="w-full px-3.5 py-2.5 bg-slate-50/50 hover:bg-slate-50 border border-slate-200 hover:border-slate-300 rounded-xl text-sm focus:outline-none focus:bg-white focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 transition-all duration-200 text-slate-800 placeholder-slate-400 shadow-sm" 
+                  style={inputStyle} 
                 />
               </div>
             </div>
@@ -712,28 +784,28 @@ export default function AddDrugStock() {
       </div>
 
       {/* Footer Actions */}
-      <div className="flex flex-col sm:flex-row justify-end items-center gap-3 pt-6 border-t border-slate-100">
+      <div style={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "1rem", paddingTop: "1.5rem", borderTop: "1px solid #cbd1da" }}>
         <button 
           type="button" 
           onClick={() => router.push('/dispenser/stock-management/table')}
-          className="w-full sm:w-auto px-5 py-2.5 border border-slate-200 text-slate-600 rounded-xl text-sm font-bold hover:bg-slate-50 hover:text-slate-800 hover:border-slate-300 transition-all active:scale-[0.98]"
+          style={{ padding: "0.75rem 1.5rem", border: "1px solid #cbd1da", color: "#000000", backgroundColor: "#ffffff", borderRadius: "0.75rem", fontSize: "0.875rem", fontWeight: 800, cursor: "pointer" }}
         >
           CANCEL
         </button>
         <button 
           type="button" 
           onClick={handleReset}
-          className="w-full sm:w-auto px-5 py-2.5 border border-slate-200 text-slate-600 rounded-xl text-sm font-bold hover:bg-slate-50 hover:text-slate-800 hover:border-slate-300 transition-all active:scale-[0.98]"
+          style={{ padding: "0.75rem 1.5rem", border: "1px solid #cbd1da", color: "#000000", backgroundColor: "#ffffff", borderRadius: "0.75rem", fontSize: "0.875rem", fontWeight: 800, cursor: "pointer" }}
         >
           RESET
         </button>
         <button 
           type="submit" 
           disabled={submitting}
-          className="w-full sm:w-auto px-6 py-2.5 bg-gradient-to-r from-blue-600 to-indigo-600 text-white rounded-xl text-sm font-bold hover:from-blue-700 hover:to-indigo-700 flex items-center justify-center gap-2 transition-all shadow-md shadow-blue-500/10 hover:shadow-lg hover:shadow-blue-500/20 active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed"
+          style={{ padding: "0.75rem 2rem", backgroundColor: "#000000", color: "#ffffff", border: "1px solid #000000", borderRadius: "0.75rem", fontSize: "0.875rem", fontWeight: 800, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem" }}
         >
-          <Save size={16} /> 
-          <span>{submitting ? 'SAVING...' : 'SAVE DRUG STOCK'}</span>
+          <Save size={18} style={{ color: "#ffffff" }} /> 
+          <span style={{ color: "#ffffff" }}>{submitting ? 'SAVING...' : 'SAVE DRUG STOCK'}</span>
         </button>
       </div>
     </form>

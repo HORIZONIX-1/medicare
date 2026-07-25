@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
 /* PURE CSS - NO TAILWIND REQUIRED */
 
 :root {
@@ -23,7 +25,8 @@
   --cyan-500: #06b6d4;
   --cyan-600: #0891b2;
   --rose-300: #f43f5e;
-  --font-sans: 'Geist Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+  --font-sans: 'Poppins', 'Geist Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'Geist Mono', 'Monaco', 'Courier New', monospace;
 }
 
@@ -1338,13 +1341,46 @@ input[type="range"]::-moz-range-thumb {
 .text-white { color: #ffffff; }
 
 /* ==================== DOCTOR PORTAL LAYOUT (LIGHT THEME) ==================== */
-.dr-layout, .disp-layout {
+.disp-layout {
   display: flex;
   min-height: 100vh;
   background-color: #f8fafc;
-  color: #1e293b;
+  color: #000000 !important;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.disp-layout h1, .disp-layout h2, .disp-layout h3, .disp-layout h4, .disp-layout p, .disp-layout label {
+  color: #000000;
+  opacity: 1 !important;
+}
+
+.disp-layout button span,
+.disp-layout button,
+.disp-layout .text-white,
+.disp-layout [style*="color: #ffffff"],
+.disp-layout [style*="color:#ffffff"] {
+  color: inherit;
+}
+
+.dr-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  color: #0f172a;
   font-family: 'Plus Jakarta Sans', var(--font-sans), sans-serif;
 }
+
+.dr-layout h1,
+.dr-layout h2,
+.dr-layout h3,
+.dr-layout h4 {
+  color: #0f172a !important;
+}
+
+.dr-layout p {
+  color: #1e293b;
+}
+
 
 /* Sidebar */
 .dr-sidebar, .disp-sidebar {
@@ -1415,21 +1451,22 @@ input[type="range"]::-moz-range-thumb {
   justify-content: space-between;
   padding: 0.625rem 0.75rem;
   border-radius: 0.5rem;
-  color: #475569;
+  color: #1e293b;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   transition: all 0.15s ease;
 }
 
 .dr-nav-item:hover, .disp-nav-item:hover {
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
   color: #0f172a;
 }
 
 .dr-nav-item.active, .disp-nav-item.active {
   background-color: #eff6ff;
-  color: #2563eb;
+  color: #1d4ed8;
+  font-weight: 800;
 }
 
 .dr-nav-item-left, .disp-nav-item-left {
@@ -2271,6 +2308,16 @@ input[type="range"]::-moz-range-thumb {
 .disp-layout textarea::placeholder {
   color: #94a3b8 !important;
 }
+
+/* Hide native browser date picker indicator so custom Calendar icon works cleanly */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
+}
+
+
+
 
 
 
