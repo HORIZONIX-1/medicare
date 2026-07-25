@@ -53,16 +53,33 @@ export default function ReceptionistPatients() {
 
   useEffect(() => {
     fetchDoctors();
+    // Fetch initial list of all patients in organization
+    const loadInitialPatients = async () => {
+      try {
+        setIsSearching(true);
+        const response = await api.get("/patients/search", {
+          params: {
+            type: "patient_id",
+            value: ""
+          }
+        });
+        setPatients(response.data);
+      } catch (error) {
+        console.error("Failed to load initial patients list:", error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+    loadInitialPatients();
   }, []);
 
   const handleSearch = async () => {
-    if (!searchValue.trim()) return;
     try {
       setIsSearching(true);
       const response = await api.get("/patients/search", {
         params: {
           type: searchType,
-          value: searchValue
+          value: searchValue || ""
         }
       });
       setPatients(response.data);
@@ -266,7 +283,8 @@ export default function ReceptionistPatients() {
                   <input
                     {...register("name", { required: true })}
                     placeholder="John Doe"
-                    className="light-input pl-10"
+                    className="light-input"
+                    style={{ paddingLeft: "2.5rem" }}
                     required
                   />
                   <User size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
@@ -279,7 +297,8 @@ export default function ReceptionistPatients() {
                   <input
                     {...register("nic")}
                     placeholder="9-digit or 12-digit NIC"
-                    className="light-input pl-10"
+                    className="light-input"
+                    style={{ paddingLeft: "2.5rem" }}
                   />
                   <CreditCard size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
                 </div>
@@ -291,7 +310,8 @@ export default function ReceptionistPatients() {
                   <input
                     {...register("phone")}
                     placeholder="07XXXXXXXX"
-                    className="light-input pl-10"
+                    className="light-input"
+                    style={{ paddingLeft: "2.5rem" }}
                   />
                   <Phone size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
                 </div>
@@ -305,7 +325,8 @@ export default function ReceptionistPatients() {
                   <input
                     type="date"
                     {...register("date_of_birth", { required: true })}
-                    className="light-input pl-10"
+                    className="light-input"
+                    style={{ paddingLeft: "2.5rem" }}
                     required
                   />
                   <Calendar size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
@@ -318,7 +339,7 @@ export default function ReceptionistPatients() {
                   <select
                     {...register("gender", { required: true })}
                     className="light-select"
-                    style={{ paddingLeft: "2.5rem", appearance: "none" }}
+                    style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem", appearance: "none" }}
                     required
                   >
                     <option value="">Select Gender</option>
@@ -336,7 +357,8 @@ export default function ReceptionistPatients() {
                   <input
                     {...register("address")}
                     placeholder="Address street and city"
-                    className="light-input pl-10"
+                    className="light-input"
+                    style={{ paddingLeft: "2.5rem" }}
                   />
                   <FileText size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
                 </div>
