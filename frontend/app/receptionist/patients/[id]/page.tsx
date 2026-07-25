@@ -175,7 +175,7 @@ export default function ReceptionistPatientProfile({ params }: Props) {
           <ArrowLeft size={18} />
         </button>
         <div>
-          <span className="text-emerald-600 text-xs font-bold uppercase tracking-wider">Patient Card</span>
+          <span className="text-blue-600 text-xs font-bold uppercase tracking-wider">Patient Card</span>
           <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight mt-0.5">
             {patient?.name}
           </h1>
@@ -185,7 +185,7 @@ export default function ReceptionistPatientProfile({ params }: Props) {
       {saveStatus && (
         <div className={`p-4 rounded-xl border text-xs font-semibold mb-6 flex items-start gap-2 ${
           saveStatus.type === "success" 
-            ? "bg-emerald-50 border-emerald-100 text-emerald-800" 
+            ? "bg-blue-50 border-blue-100 text-blue-800" 
             : "bg-red-50 border-red-100 text-red-800"
         }`}>
           {saveStatus.type === "success" ? <CheckCircle size={16} className="mt-0.5" /> : <AlertTriangle size={16} className="mt-0.5" />}
@@ -202,7 +202,7 @@ export default function ReceptionistPatientProfile({ params }: Props) {
             {/* Header info */}
             <div className="flex justify-between items-start border-b border-slate-100 pb-5 mb-5">
               <div>
-                <span className="font-mono text-emerald-700 bg-emerald-50 px-2 py-1 rounded text-xs font-bold">
+                <span className="font-mono text-blue-700 bg-blue-50 px-2 py-1 rounded text-xs font-bold">
                   {patient?.patient_code}
                 </span>
                 <span className="text-slate-400 text-xs ml-3">Gender: <strong>{patient?.gender}</strong></span>
@@ -212,7 +212,7 @@ export default function ReceptionistPatientProfile({ params }: Props) {
                 <div className="flex gap-2">
                   <button
                     onClick={() => setIsEditing(true)}
-                    className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50 transition"
+                    className="btn-light-outline"
                   >
                     <Edit2 size={14} />
                     <span>Edit Profile</span>
@@ -231,7 +231,7 @@ export default function ReceptionistPatientProfile({ params }: Props) {
                     setIsEditing(false);
                     setSaveStatus(null);
                   }}
-                  className="flex items-center gap-1.5 px-3 py-1.5 border border-slate-200 text-slate-500 rounded-lg text-xs font-bold hover:bg-slate-50 transition"
+                  className="btn-light-outline"
                 >
                   <X size={14} />
                   <span>Cancel</span>
@@ -244,32 +244,27 @@ export default function ReceptionistPatientProfile({ params }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="light-input-container">
                   <label className="light-label">Full Name</label>
-                  <div className="relative">
-                    <input
-                      {...register("name", { required: true })}
-                      disabled={!isEditing}
-                      className="light-input"
-                      style={{ paddingLeft: "2.5rem" }}
-                      required
-                    />
-                    <User size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                  </div>
+                  <input
+                    {...register("name", { required: true })}
+                    disabled={!isEditing}
+                    className="light-input"
+                    required
+                  />
                 </div>
 
                 <div className="light-input-container">
                   <label className="light-label">Gender</label>
-                  <div className="relative">
+                  <div style={{ position: "relative" }}>
                     <select
                       {...register("gender", { required: true })}
                       disabled={!isEditing}
                       className="light-select font-medium text-slate-800"
-                      style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem", appearance: "none" }}
+                      style={{ appearance: "none", paddingRight: "2.5rem" }}
                       required
                     >
                       <option value="Male">Male</option>
                       <option value="Female">Female</option>
                     </select>
-                    <User size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
                     <ChevronDown size={14} className="absolute right-3.5 top-4 text-slate-400 pointer-events-none" />
                   </div>
                 </div>
@@ -278,58 +273,42 @@ export default function ReceptionistPatientProfile({ params }: Props) {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="light-input-container">
                   <label className="light-label">Date of Birth</label>
-                  <div className="relative">
-                    <input
-                      type="date"
-                      {...register("date_of_birth", { required: true })}
-                      disabled={!isEditing}
-                      className="light-input"
-                      style={{ paddingLeft: "2.5rem" }}
-                      required
-                    />
-                    <Calendar size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                  </div>
+                  <input
+                    type="date"
+                    {...register("date_of_birth", { required: true })}
+                    disabled={!isEditing}
+                    className="light-input"
+                    required
+                  />
                 </div>
 
                 <div className="light-input-container">
                   <label className="light-label">NIC</label>
-                  <div className="relative">
-                    <input
-                      {...register("nic")}
-                      disabled={!isEditing}
-                      className="light-input"
-                      style={{ paddingLeft: "2.5rem" }}
-                    />
-                    <CreditCard size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                  </div>
+                  <input
+                    {...register("nic")}
+                    disabled={!isEditing}
+                    className="light-input"
+                  />
                 </div>
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
                 <div className="light-input-container">
                   <label className="light-label">Phone Number</label>
-                  <div className="relative">
-                    <input
-                      {...register("phone")}
-                      disabled={!isEditing}
-                      className="light-input"
-                      style={{ paddingLeft: "2.5rem" }}
-                    />
-                    <Phone size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                  </div>
+                  <input
+                    {...register("phone")}
+                    disabled={!isEditing}
+                    className="light-input"
+                  />
                 </div>
 
                 <div className="light-input-container">
                   <label className="light-label">Address</label>
-                  <div className="relative">
-                    <input
-                      {...register("address")}
-                      disabled={!isEditing}
-                      className="light-input"
-                      style={{ paddingLeft: "2.5rem" }}
-                    />
-                    <FileText size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                  </div>
+                  <input
+                    {...register("address")}
+                    disabled={!isEditing}
+                    className="light-input"
+                  />
                 </div>
               </div>
 
@@ -338,7 +317,8 @@ export default function ReceptionistPatientProfile({ params }: Props) {
                   <button
                     type="submit"
                     disabled={isSaving}
-                    className="px-5 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-md shadow-emerald-600/10 active:scale-95 transition-all"
+                    className="btn-light-blue"
+                    style={{ borderRadius: "0.5rem" }}
                   >
                     <Save size={16} />
                     <span>{isSaving ? "Saving..." : "Save Changes"}</span>
@@ -361,7 +341,7 @@ export default function ReceptionistPatientProfile({ params }: Props) {
                 {patient?.consultations?.map((consult: any) => (
                   <div key={consult.consultation_id} className="p-4 border border-slate-100 rounded-xl hover:bg-slate-50/50 transition">
                     <div className="flex justify-between items-center text-xs mb-2">
-                      <div className="flex items-center gap-1.5 text-emerald-800 font-bold">
+                      <div className="flex items-center gap-1.5 text-blue-800 font-bold">
                         <Clock size={12} />
                         <span>{new Date(consult.visit_date).toLocaleDateString()}</span>
                       </div>
@@ -422,7 +402,8 @@ export default function ReceptionistPatientProfile({ params }: Props) {
               <button
                 type="submit"
                 disabled={isAddingAllergy || !newAllergy.trim()}
-                className="px-3 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-xs font-bold disabled:opacity-50 transition"
+                className="btn-light-select"
+                style={{ height: "36px" }}
               >
                 <Plus size={14} />
               </button>
@@ -433,7 +414,7 @@ export default function ReceptionistPatientProfile({ params }: Props) {
 
       {/* CASCADING DELETION CONFIRMATION MODAL */}
       {isDeleteModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4" style={{ backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}>
           <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             {/* Modal Header */}
             <div className="px-6 py-5 bg-red-50 border-b border-red-100 flex items-center gap-3">

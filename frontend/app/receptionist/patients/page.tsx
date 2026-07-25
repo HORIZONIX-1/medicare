@@ -153,21 +153,21 @@ export default function ReceptionistPatients() {
 
   return (
     <div className="max-w-[1000px] mx-auto p-4 md:p-6">
-      {/* Page Title */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight">Patient Records</h1>
-        <p className="text-slate-500 text-sm">Register new patients or check in existing patients for consultations.</p>
-      </div>
-
       {/* Main Form container (White card) */}
       <div className="white-card">
+        <div className="white-card-step-title">Step 1 of 6</div>
+        <h2 className="white-card-title">Select Patient</h2>
+        <p className="white-card-subtitle">
+          Search for an existing patient or register a new patient.
+        </p>
+
         {/* SECTION 1: SEARCH PATIENTS */}
         <div className="mb-10">
-          <h3 className="white-card-section-title text-emerald-800">1. Find Existing Patient</h3>
-          <p className="white-card-section-desc">Search for patients in your clinic database to perform check-ins.</p>
+          <h3 className="white-card-section-title">1. Search Existing Patient</h3>
+          <p className="white-card-section-desc">Search using Patient ID, NIC or Phone number.</p>
 
-          <div className="flex gap-3 flex-wrap">
-            <div className="relative min-w-[130px]">
+          <div style={{ display: "flex", gap: "0.75rem", flexWrap: "wrap", marginBottom: "1.5rem" }}>
+            <div style={{ position: "relative", minWidth: "150px" }}>
               <select
                 value={searchType}
                 onChange={(e) => setSearchType(e.target.value)}
@@ -178,27 +178,28 @@ export default function ReceptionistPatients() {
                 <option value="nic">NIC</option>
                 <option value="phone">Phone number</option>
               </select>
-              <div className="absolute inset-y-0 right-3 flex items-center pointer-events-none text-slate-400">
-                <ChevronDown size={14} />
+              <div style={{ pointerEvents: "none", position: "absolute", inset: "0 0.75rem 0 auto", display: "flex", alignItems: "center", color: "#94a3b8" }}>
+                <ChevronDown size={16} />
               </div>
             </div>
 
             <input
               type="text"
-              placeholder="Search code, NIC or phone..."
+              placeholder="Enter Patient ID, NIC or Phone number"
               value={searchValue}
               onChange={(e) => setSearchValue(e.target.value)}
               onKeyDown={(e) => {
                 if (e.key === "Enter") handleSearch();
               }}
-              className="light-input flex-1 min-w-[200px]"
-              style={{ height: "42px" }}
+              className="light-input"
+              style={{ flex: 1, minWidth: "200px", height: "42px" }}
             />
 
             <button
               onClick={handleSearch}
               disabled={isSearching}
-              className="px-5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-bold flex items-center gap-2 active:scale-95 transition-all shadow-md shadow-emerald-600/10"
+              className="btn-light-blue"
+              style={{ height: "42px", borderRadius: "0.5rem" }}
             >
               <Search size={16} />
               <span>{isSearching ? "Searching..." : "Search"}</span>
@@ -208,16 +209,26 @@ export default function ReceptionistPatients() {
           {/* PATIENT SEARCH TABLE RESULTS */}
           <div className="mt-6">
             {patients.length === 0 ? (
-              <div className="text-center py-8 bg-slate-50 border border-dashed border-slate-200 rounded-xl">
-                <span className="text-slate-400 text-xs">No records search results loaded.</span>
+              <div style={{
+                textAlign: "center",
+                padding: "2.5rem 1.5rem",
+                backgroundColor: "#f8fafc",
+                border: "1px dashed #cbd5e1",
+                borderRadius: "0.5rem"
+              }}>
+                <span style={{ fontSize: "2rem", display: "block", marginBottom: "0.5rem", opacity: 0.6 }}>📁</span>
+                <p style={{ fontSize: "0.875rem", fontWeight: 700, color: "#475569" }}>No Patients Displayed</p>
+                <p style={{ fontSize: "0.75rem", color: "#64748b", marginTop: "0.25rem" }}>
+                  Submit a search query above to fetch record matches from the clinic base.
+                </p>
               </div>
             ) : (
-              <div className="light-table-container border border-slate-150 rounded-xl overflow-hidden shadow-sm">
+              <div className="light-table-container">
                 <table className="light-table">
                   <thead>
-                    <tr className="bg-slate-55">
-                      <th>ID Code</th>
-                      <th>Full Name</th>
+                    <tr>
+                      <th>Patient ID</th>
+                      <th>Name</th>
                       <th>NIC</th>
                       <th>Phone</th>
                       <th>Gender</th>
@@ -226,9 +237,9 @@ export default function ReceptionistPatients() {
                   </thead>
                   <tbody>
                     {patients.map((p) => (
-                      <tr key={p.patient_id} className="hover:bg-slate-50/55 transition">
-                        <td className="light-table-code font-bold text-emerald-800">{p.patient_code}</td>
-                        <td className="font-semibold text-slate-800">{p.name}</td>
+                      <tr key={p.patient_id}>
+                        <td className="light-table-code">{p.patient_code}</td>
+                        <td className="light-table-name">{p.name}</td>
                         <td>{p.nic || "—"}</td>
                         <td>{p.phone || "—"}</td>
                         <td>{p.gender}</td>
@@ -236,13 +247,14 @@ export default function ReceptionistPatients() {
                           <div style={{ display: "inline-flex", gap: "0.5rem" }}>
                             <button
                               onClick={() => router.push(`/receptionist/patients/${p.patient_id}`)}
-                              className="px-3 py-1 border border-slate-200 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50 transition"
+                              className="btn-light-outline"
                             >
                               View Profile
                             </button>
                             <button
                               onClick={() => startCheckInFlow(p)}
-                              className="px-3 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition"
+                              className="btn-light-select"
+                              style={{ minWidth: "80px" }}
                             >
                               Check In
                             </button>
@@ -257,20 +269,16 @@ export default function ReceptionistPatients() {
           </div>
         </div>
 
-        {/* Divider */}
-        <div className="relative my-10 flex items-center justify-center">
-          <div className="absolute inset-0 flex items-center">
-            <div className="w-full border-t border-slate-200"></div>
-          </div>
-          <span className="relative px-4 bg-white text-slate-400 text-xs font-bold uppercase tracking-wider">
-            Or Register New
-          </span>
+        {/* OR Divider */}
+        <div className="or-divider-container">
+          <div className="or-divider-line" />
+          <span className="or-divider-badge">OR</span>
         </div>
 
         {/* SECTION 2: REGISTER NEW PATIENT */}
         <div>
-          <h3 className="white-card-section-title text-emerald-800">2. Register New Patient</h3>
-          <p className="white-card-section-desc">Create a new patient record in the clinic database.</p>
+          <h3 className="white-card-section-title">2. Register New Patient</h3>
+          <p className="white-card-section-desc">If patient is not registered, create a new patient account.</p>
 
           {registerStatus && (
             <div className={`p-4 rounded-xl border text-xs font-semibold mb-6 flex items-start gap-2 ${
@@ -283,103 +291,115 @@ export default function ReceptionistPatients() {
             </div>
           )}
 
-          <form onSubmit={handleSubmit(handleRegisterSubmit)} className="space-y-4">
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <form onSubmit={handleSubmit(handleRegisterSubmit)}>
+            {/* Row 1 */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1rem", marginBottom: "1rem" }}>
               <div className="light-input-container">
                 <label className="light-label">Full Name <span className="light-required">*</span></label>
-                <div className="relative">
-                  <input
-                    {...register("name", { required: true })}
-                    placeholder="John Doe"
-                    className="light-input"
-                    style={{ paddingLeft: "2.5rem" }}
-                    required
-                  />
-                  <User size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                </div>
+                <input
+                  {...register("name", { required: true })}
+                  placeholder="Enter full name"
+                  className="light-input"
+                  required
+                />
               </div>
 
               <div className="light-input-container">
-                <label className="light-label">NIC</label>
-                <div className="relative">
-                  <input
-                    {...register("nic")}
-                    placeholder="9-digit or 12-digit NIC"
-                    className="light-input"
-                    style={{ paddingLeft: "2.5rem" }}
-                  />
-                  <CreditCard size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                </div>
+                <label className="light-label">NIC <span className="light-required">*</span></label>
+                <input
+                  {...register("nic", { required: true })}
+                  placeholder="Enter NIC"
+                  className="light-input"
+                  required
+                />
               </div>
 
               <div className="light-input-container">
-                <label className="light-label">Phone Number</label>
-                <div className="relative">
-                  <input
-                    {...register("phone")}
-                    placeholder="07XXXXXXXX"
-                    className="light-input"
-                    style={{ paddingLeft: "2.5rem" }}
-                  />
-                  <Phone size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                </div>
+                <label className="light-label">Phone Number <span className="light-required">*</span></label>
+                <input
+                  {...register("phone", { required: true })}
+                  placeholder="Enter phone number"
+                  className="light-input"
+                  required
+                />
               </div>
             </div>
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            {/* Row 2 */}
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(250px, 1fr))", gap: "1rem", marginBottom: "1.5rem" }}>
               <div className="light-input-container">
                 <label className="light-label">Date of Birth <span className="light-required">*</span></label>
-                <div className="relative">
+                <div style={{ position: "relative" }}>
                   <input
                     type="date"
                     {...register("date_of_birth", { required: true })}
                     className="light-input"
-                    style={{ paddingLeft: "2.5rem" }}
+                    style={{ paddingRight: "2.5rem" }}
                     required
                   />
-                  <Calendar size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
+                  <Calendar 
+                    size={16} 
+                    style={{ 
+                      position: "absolute", 
+                      inset: "0 0.875rem 0 auto", 
+                      margin: "auto", 
+                      color: "#94a3b8", 
+                      pointerEvents: "none" 
+                    }} 
+                  />
                 </div>
               </div>
 
               <div className="light-input-container">
                 <label className="light-label">Gender <span className="light-required">*</span></label>
-                <div className="relative">
+                <div style={{ position: "relative" }}>
                   <select
                     {...register("gender", { required: true })}
                     className="light-select"
-                    style={{ paddingLeft: "2.5rem", paddingRight: "2.5rem", appearance: "none" }}
+                    style={{ appearance: "none", paddingRight: "2.5rem" }}
                     required
                   >
-                    <option value="">Select Gender</option>
+                    <option value="">Select gender</option>
                     <option value="Male">Male</option>
                     <option value="Female">Female</option>
                   </select>
-                  <User size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                  <ChevronDown size={14} className="absolute right-3.5 top-4 text-slate-400 pointer-events-none" />
+                  <ChevronDown 
+                    size={16} 
+                    style={{ 
+                      position: "absolute", 
+                      inset: "0 0.875rem 0 auto", 
+                      margin: "auto", 
+                      color: "#94a3b8", 
+                      pointerEvents: "none" 
+                    }} 
+                  />
                 </div>
               </div>
 
               <div className="light-input-container">
-                <label className="light-label">Address</label>
-                <div className="relative">
-                  <input
-                    {...register("address")}
-                    placeholder="Address street and city"
-                    className="light-input"
-                    style={{ paddingLeft: "2.5rem" }}
-                  />
-                  <FileText size={16} className="absolute left-3.5 top-3.5 text-slate-400 pointer-events-none" />
-                </div>
+                <label className="light-label">Address (Optional)</label>
+                <input
+                  {...register("address")}
+                  placeholder="Enter address"
+                  className="light-input"
+                />
               </div>
             </div>
 
-            <div className="flex justify-end pt-4">
+            {/* Row 3 Checkbox & Register Button */}
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "1rem" }}>
+              <label className="light-checkbox-container">
+                <input type="checkbox" className="light-checkbox" />
+                <span className="light-checkbox-label">Send registration confirmation via SMS / WhatsApp</span>
+              </label>
+
               <button
                 type="submit"
                 disabled={isRegistering}
-                className="px-6 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white rounded-xl text-sm font-bold flex items-center gap-2 shadow-md shadow-emerald-600/10 active:scale-95 transition-all"
+                className="btn-light-blue"
+                style={{ borderRadius: "0.5rem" }}
               >
-                <UserPlus size={18} />
+                <UserPlus size={16} />
                 <span>{isRegistering ? "Registering..." : "Register Patient"}</span>
               </button>
             </div>
@@ -389,7 +409,7 @@ export default function ReceptionistPatients() {
 
       {/* CHECK-IN MODAL POPUP */}
       {isCheckInModalOpen && targetPatient && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4" style={{ backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}>
           <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
               <div>
@@ -408,7 +428,7 @@ export default function ReceptionistPatients() {
               {checkInStatus && (
                 <div className={`p-3 rounded-xl border text-xs font-semibold mb-4 flex items-start gap-2 ${
                   checkInStatus.type === "success" 
-                    ? "bg-emerald-50 border-emerald-100 text-emerald-800" 
+                    ? "bg-blue-50 border-blue-100 text-blue-800" 
                     : "bg-red-50 border-red-100 text-red-800"
                 }`}>
                   {checkInStatus.type === "success" ? <CheckCircle size={14} className="mt-0.5" /> : <AlertCircle size={14} className="mt-0.5" />}
@@ -454,7 +474,7 @@ export default function ReceptionistPatients() {
                   <button
                     type="submit"
                     disabled={isCheckingIn || !selectedDoctorId}
-                    className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
                     {isCheckingIn ? "Checking in..." : "Confirm Check-in"}
                   </button>
