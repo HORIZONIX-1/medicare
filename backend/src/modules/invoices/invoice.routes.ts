@@ -4,14 +4,19 @@ import {
   createInvoice,
   finalizeInvoice,
   getInvoice,
+  listInvoices,
 } from "./invoice.controller";
+
+import { authMiddleware } from "../../middleware/auth.middleware";
 
 const router = express.Router();
 
-router.post("/", createInvoice);
+router.post("/", authMiddleware, createInvoice);
 
-router.post("/:id/finalize", finalizeInvoice);
+router.post("/:id/finalize", authMiddleware, finalizeInvoice);
 
-router.get("/:id", getInvoice);
+router.get("/", authMiddleware, listInvoices);
+
+router.get("/:id", authMiddleware, getInvoice);
 
 export default router;

@@ -267,18 +267,18 @@ export default function InvoicePreviewPage({ params }: Props) {
                 <span>OPD / Consultation</span>
               </div>
             </Link>
-            <a href="#" className="dr-nav-item">
+            <Link href="/doctor/prescription" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <FileText size={18} />
                 <span>Prescriptions</span>
               </div>
-            </a>
-            <a href="#" className="dr-nav-item">
+            </Link>
+            <Link href="/doctor/invoice" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <Receipt size={18} />
                 <span>Invoices</span>
               </div>
-            </a>
+            </Link>
             <a href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <CalendarIcon size={18} />

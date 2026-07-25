@@ -71,3 +71,15 @@ export const getInvoice =
     });
   }
 };
+
+export const listInvoices = async (req: any, res: Response) => {
+  try {
+    const invoices = await invoiceService.listInvoices(req.user);
+    res.json(invoices);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to list invoices",
+    });
+  }
+};

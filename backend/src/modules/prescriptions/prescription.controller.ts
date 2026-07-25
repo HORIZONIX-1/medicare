@@ -49,3 +49,15 @@ export const getPrescription =
     });
   }
 };
+
+export const listPrescriptions = async (req: any, res: Response) => {
+  try {
+    const prescriptions = await prescriptionService.listPrescriptions(req.user);
+    res.json(prescriptions);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to get prescriptions list",
+    });
+  }
+};

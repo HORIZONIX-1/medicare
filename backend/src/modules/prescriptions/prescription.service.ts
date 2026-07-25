@@ -162,3 +162,40 @@ export const getPrescription =
       },
     });
   };
+
+export const listPrescriptions = async (currentUser?: { userId: number; role: string }) => {
+  let organizationId: number | null = null;
+
+  if (currentUser && (currentUser.role === "DOCTOR" || currentUser.role === "RECEPTIONIST" || currentUser.role === "DISPENSER")) {
+    const user = await prisma.user.findUnique({
+      where: { user_id: currentUser.userId },
+      select: { organization_id: true }
+    });
+    organizationId = user?.organization_id ?? null;
+  }
+
+  const where: any = {};
+  if (organizationId !== null) {
+    where.consultation = {
+      doctor: {
+        organization_id: organizationId
+      }
+    };
+  }
+
+  return prisma.prescription.findMany({
+    where,
+    include: {
+      consultation: {
+        include: {
+          patient: true,
+          doctor: true
+        }
+      },
+      items: true
+    },
+    orderBy: {
+      created_at: "desc"
+    }
+  });
+};
