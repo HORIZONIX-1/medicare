@@ -79,3 +79,50 @@ export const addPatientAllergy = async (req: any, res: any) => {
     res.status(500).json({ message: "Failed to add patient allergy" });
   }
 };
+
+export const updatePatient = async (req: any, res: any) => {
+  try {
+    const patientId = Number(req.params.id);
+
+    if (Number.isNaN(patientId)) {
+      return res.status(400).json({ message: "Invalid patient id" });
+    }
+
+    const patient = await patientService.updatePatient(
+      patientId,
+      req.body,
+      req.user
+    );
+
+    res.json({
+      message: "Patient updated successfully",
+      patient
+    });
+  } catch (error: any) {
+    console.error("Error in updatePatient controller:", error);
+    res.status(500).json({
+      message: error.message || "Failed to update patient"
+    });
+  }
+};
+
+export const deletePatient = async (req: any, res: any) => {
+  try {
+    const patientId = Number(req.params.id);
+
+    if (Number.isNaN(patientId)) {
+      return res.status(400).json({ message: "Invalid patient id" });
+    }
+
+    await patientService.deletePatient(patientId, req.user);
+
+    res.json({
+      message: "Patient deleted successfully"
+    });
+  } catch (error: any) {
+    console.error("Error in deletePatient controller:", error);
+    res.status(500).json({
+      message: error.message || "Failed to delete patient"
+    });
+  }
+};
