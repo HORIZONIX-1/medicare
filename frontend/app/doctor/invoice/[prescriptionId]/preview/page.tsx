@@ -3,6 +3,7 @@
 import { use, useEffect, useRef, useState } from "react";
 import api from "@/lib/axios";
 import { useSearchParams, useRouter } from "next/navigation";
+import Link from "next/link";
 import { useReactToPrint } from "react-to-print";
 import jsPDF from "jspdf";
 import html2canvas from "html2canvas";
@@ -248,34 +249,28 @@ export default function InvoicePreviewPage({ params }: Props) {
 
           {/* Navigation Items */}
           <nav className="dr-sidebar-nav">
-            <a href="#" className="dr-nav-item">
+            <Link href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <LayoutDashboard size={18} />
                 <span>Dashboard</span>
               </div>
-            </a>
-            <a href="#" className="dr-nav-item">
+            </Link>
+            <Link href="/doctor/patients" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <Users size={18} />
                 <span>Patients</span>
               </div>
-            </a>
-            <a href="#" className="dr-nav-item active">
+            </Link>
+            <Link href="/doctor/opd" className="dr-nav-item active">
               <div className="dr-nav-item-left">
                 <Stethoscope size={18} />
                 <span>OPD / Consultation</span>
               </div>
-            </a>
+            </Link>
             <a href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <FileText size={18} />
                 <span>Prescriptions</span>
-              </div>
-            </a>
-            <a href="#" className="dr-nav-item">
-              <div className="dr-nav-item-left">
-                <Send size={18} />
-                <span>Referrals</span>
               </div>
             </a>
             <a href="#" className="dr-nav-item">
@@ -286,22 +281,9 @@ export default function InvoicePreviewPage({ params }: Props) {
             </a>
             <a href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
-                <BarChart2 size={18} />
-                <span>Reports</span>
-              </div>
-            </a>
-            <a href="#" className="dr-nav-item">
-              <div className="dr-nav-item-left">
                 <CalendarIcon size={18} />
                 <span>Calendar</span>
               </div>
-            </a>
-            <a href="#" className="dr-nav-item">
-              <div className="dr-nav-item-left">
-                <Bell size={18} />
-                <span>Notifications</span>
-              </div>
-              <span className="dr-nav-badge">3</span>
             </a>
             <a href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">

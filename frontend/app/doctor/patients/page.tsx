@@ -2,9 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import PatientSearchForm from "@/components/patients/PatientSearchForm";
 import PatientTable from "@/components/patients/PatientTable";
-import RegisterPatientForm from "@/components/patients/RegisterPatientForm";
 import api from "@/lib/axios";
 import { 
   LayoutDashboard, 
@@ -19,15 +19,16 @@ import {
   Settings as SettingsIcon, 
   LogOut,
   ChevronDown,
-  ArrowRight,
-  Plus
+  Plus,
+  Search
 } from "lucide-react";
 
-export default function PatientsPage() {
+export default function PatientsDirectoryPage() {
   const router = useRouter();
   const [searchType, setSearchType] = useState("patient_id");
   const [searchValue, setSearchValue] = useState("");
   const [patients, setPatients] = useState([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [formattedDate, setFormattedDate] = useState("Wednesday, June 12, 2024");
@@ -58,8 +59,34 @@ export default function PatientsPage() {
     }
   }, []);
 
+  // Fetch initial list of all patients in the organization
+  useEffect(() => {
+    const loadInitialPatients = async () => {
+      try {
+        setIsSearching(true);
+        const response = await api.get("/patients/search", {
+          params: {
+            type: "patient_id",
+            value: "",
+          },
+        });
+        setPatients(response.data);
+      } catch (error) {
+        console.error("Failed to load initial patients list:", error);
+      } finally {
+        setIsSearching(false);
+      }
+    };
+    
+    const token = localStorage.getItem("token");
+    if (token) {
+      loadInitialPatients();
+    }
+  }, []);
+
   const handleSearch = async () => {
     try {
+      setIsSearching(true);
       const response = await api.get("/patients/search", {
         params: {
           type: searchType,
@@ -68,7 +95,9 @@ export default function PatientsPage() {
       });
       setPatients(response.data);
     } catch (error) {
-      console.error(error);
+      console.error("Search failed:", error);
+    } finally {
+      setIsSearching(false);
     }
   };
 
@@ -118,34 +147,28 @@ export default function PatientsPage() {
 
           {/* Navigation Items */}
           <nav className="dr-sidebar-nav">
-            <a href="#" className="dr-nav-item">
+            <Link href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <LayoutDashboard size={18} />
                 <span>Dashboard</span>
               </div>
-            </a>
-            <a href="#" className="dr-nav-item">
+            </Link>
+            <Link href="/doctor/patients" className="dr-nav-item active">
               <div className="dr-nav-item-left">
                 <Users size={18} />
                 <span>Patients</span>
               </div>
-            </a>
-            <a href="#" className="dr-nav-item active">
+            </Link>
+            <Link href="/doctor/opd" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <Stethoscope size={18} />
                 <span>OPD / Consultation</span>
               </div>
-            </a>
+            </Link>
             <a href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <FileText size={18} />
                 <span>Prescriptions</span>
-              </div>
-            </a>
-            <a href="#" className="dr-nav-item">
-              <div className="dr-nav-item-left">
-                <Send size={18} />
-                <span>Referrals</span>
               </div>
             </a>
             <a href="#" className="dr-nav-item">
@@ -156,22 +179,9 @@ export default function PatientsPage() {
             </a>
             <a href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
-                <BarChart2 size={18} />
-                <span>Reports</span>
-              </div>
-            </a>
-            <a href="#" className="dr-nav-item">
-              <div className="dr-nav-item-left">
                 <CalendarIcon size={18} />
                 <span>Calendar</span>
               </div>
-            </a>
-            <a href="#" className="dr-nav-item">
-              <div className="dr-nav-item-left">
-                <Bell size={18} />
-                <span>Notifications</span>
-              </div>
-              <span className="dr-nav-badge">3</span>
             </a>
             <a href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
@@ -228,58 +238,17 @@ export default function PatientsPage() {
           {/* Page Body Scrollable */}
           <main className="dr-content-scroll">
             <div className="dr-page-header">
-              <h1 className="dr-page-title">Consultation</h1>
-            </div>
-
-            {/* Stepper Progress Bar */}
-            <div className="consultation-stepper">
-              {/* Steps */}
-              <div className="stepper-step active">
-                <div className="stepper-circle">1</div>
-                <span className="stepper-label">Select Patient</span>
-              </div>
-              <div className="stepper-step">
-                <div className="stepper-circle">2</div>
-                <span className="stepper-label">Chief Complaint</span>
-              </div>
-              <div className="stepper-step">
-                <div className="stepper-circle">3</div>
-                <span className="stepper-label">Examination</span>
-              </div>
-              <div className="stepper-step">
-                <div className="stepper-circle">4</div>
-                <span className="stepper-label">Diagnosis & Notes</span>
-              </div>
-              <div className="stepper-step">
-                <div className="stepper-circle">5</div>
-                <span className="stepper-label">Prescription</span>
-              </div>
-              <div className="stepper-step">
-                <div className="stepper-circle">6</div>
-                <span className="stepper-label">Review & Invoice</span>
-              </div>
-
-              {/* Connector lines behind */}
-              <div className="stepper-connector">
-                <div className="flex w-full h-full items-center justify-between" style={{ gap: "2px" }}>
-                  <div className="stepper-connector-line active flex-1" />
-                  <div className="stepper-connector-line inactive flex-1" />
-                  <div className="stepper-connector-line inactive flex-1" />
-                  <div className="stepper-connector-line inactive flex-1" />
-                  <div className="stepper-connector-line inactive flex-1" />
-                </div>
-              </div>
+              <h1 className="dr-page-title">Patient Directory</h1>
             </div>
 
             {/* Central White Content Card */}
             <div className="white-card">
-              <div className="white-card-step-title">Step 1 of 6</div>
-              <h2 className="white-card-title">Select Patient</h2>
+              <h2 className="white-card-title">All Clinic Patients</h2>
               <p className="white-card-subtitle">
-                Search for an existing patient or register a new patient.
+                Search patients in your organization and view their profiles or start new consultations.
               </p>
 
-              {/* 1. Search Existing Patient Section */}
+              {/* Patient Search Section */}
               <PatientSearchForm
                 searchType={searchType}
                 setSearchType={setSearchType}
@@ -288,24 +257,14 @@ export default function PatientsPage() {
                 onSearch={handleSearch}
               />
 
-              <PatientTable patients={patients} />
-
-              {/* OR Divider */}
-              <div className="or-divider-container">
-                <div className="or-divider-line" />
-                <span className="or-divider-badge">OR</span>
-              </div>
-
-              {/* 2. Register New Patient Section */}
-              <RegisterPatientForm />
-            </div>
-
-            {/* Bottom Navigation */}
-            <div className="max-w-[1000px] mx-auto flex justify-end">
-              <button className="btn-light-blue" style={{ padding: "0.75rem 2.25rem", fontSize: "0.95rem", borderRadius: "0.5rem" }}>
-                <span>Next</span>
-                <ArrowRight size={18} />
-              </button>
+              {isSearching ? (
+                <div className="text-center py-8">
+                  <div className="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-indigo-500 mx-auto"></div>
+                  <p className="text-slate-400 text-xs mt-3">Searching records...</p>
+                </div>
+              ) : (
+                <PatientTable patients={patients} />
+              )}
             </div>
           </main>
         </div>
