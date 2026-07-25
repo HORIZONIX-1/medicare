@@ -23,7 +23,7 @@ export default function PatientPrescriptionBanner({
 }: BannerProps) {
   return (
     <div style={{ backgroundColor: "#ffffff", border: "1px solid #cbd1da", borderRadius: "0.75rem", padding: "1.75rem", marginBottom: "1.5rem", color: "#000000", fontFamily: "'Poppins', sans-serif" }}>
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", justifyBetween: "space-between", alignItems: "center" }}>
+      <div style={{ display: "flex", flexWrap: "wrap", gap: "1.5rem", justifyContent: "space-between", alignItems: "center" }}>
         <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
           <div style={{ width: "3.5rem", height: "3.5rem", borderRadius: "0.5rem", backgroundColor: "#f1f5f9", border: "1px solid #cbd1da", display: "grid", placeItems: "center", flexShrink: 0, color: "#000000" }}>
             <User size={26} />
