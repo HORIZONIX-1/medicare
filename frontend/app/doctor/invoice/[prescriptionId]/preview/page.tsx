@@ -249,7 +249,7 @@ export default function InvoicePreviewPage({ params }: Props) {
 
           {/* Navigation Items */}
           <nav className="dr-sidebar-nav">
-            <Link href="#" className="dr-nav-item">
+            <Link href="/doctor/dashboard" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <LayoutDashboard size={18} />
                 <span>Dashboard</span>

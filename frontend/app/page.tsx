@@ -91,7 +91,7 @@ export default function LoginPage() {
       if (user.role === "ADMIN") {
         router.push("/admin");
       } else if (user.role === "DOCTOR") {
-        router.push("/doctor/patients");
+        router.push("/doctor/dashboard");
       } else if (user.role === "RECEPTIONIST") {
         router.push("/receptionist/dashboard");
       } else if (user.role === "DISPENSER" || user.role === "PHARMACIST") {
