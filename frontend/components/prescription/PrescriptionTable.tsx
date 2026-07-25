@@ -33,7 +33,7 @@ export default function PrescriptionTable({ items, setItems }: Props) {
 
   return (
     <div className="bg-white border border-[#d5d9e0] rounded p-5 text-[#111827]">
-      <div className="mb-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between border-b border-[#e2e8f0] pb-4">
+      <div className="mb-4 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#475569]">
             Prescription Builder

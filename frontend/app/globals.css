@@ -1,3 +1,5 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
+
 /* PURE CSS - NO TAILWIND REQUIRED */
 
 :root {
@@ -23,7 +25,8 @@
   --cyan-500: #06b6d4;
   --cyan-600: #0891b2;
   --rose-300: #f43f5e;
-  --font-sans: 'Geist Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-poppins: 'Poppins', sans-serif;
+  --font-sans: 'Poppins', 'Geist Sans', ui-sans-serif, system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
   --font-mono: 'Geist Mono', 'Monaco', 'Courier New', monospace;
 }
 
@@ -1338,7 +1341,15 @@ input[type="range"]::-moz-range-thumb {
 .text-white { color: #ffffff; }
 
 /* ==================== DOCTOR PORTAL LAYOUT (LIGHT THEME) ==================== */
-.dr-layout, .disp-layout {
+.disp-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+  color: #0f172a;
+  font-family: 'Poppins', sans-serif !important;
+}
+
+.dr-layout {
   display: flex;
   min-height: 100vh;
   background-color: #f8fafc;
@@ -2285,18 +2296,7 @@ input[type="range"]::-moz-range-thumb {
   color: #94a3b8 !important;
 }
 
-/* Dispenser Portal 2 Column Grid Utility */
-.disp-grid-2col {
-  display: grid !important;
-  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
-  gap: 1.25rem !important;
-}
 
-@media (max-width: 768px) {
-  .disp-grid-2col {
-    grid-template-columns: 1fr !important;
-  }
-}
 
 
 

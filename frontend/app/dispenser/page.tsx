@@ -121,48 +121,48 @@ export default function DispenserDashboard() {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto flex flex-col gap-8 animate-in fade-in duration-500 text-[#0f172a]">
+    <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "2.5rem", color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}>
       
       {/* Page Header */}
-      <div className="flex justify-between items-center">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <h1 className="text-3xl font-black text-[#0f172a] tracking-tight">Dashboard</h1>
-          <p className="text-sm font-semibold text-[#334155] mt-1">Welcome back, Pharmacy Dispenser. Here's a live overview of center stock.</p>
+          <h1 style={{ fontSize: "2.125rem", fontWeight: 900, color: "#0f172a", letterSpacing: "-0.025em", margin: 0 }}>Dashboard</h1>
+          <p style={{ fontSize: "0.9375rem", fontWeight: 600, color: "#334155", marginTop: "0.375rem" }}>Welcome back, Pharmacy Dispenser. Here's a live overview of center stock.</p>
         </div>
         <button 
           onClick={loadDashboardData}
-          className="p-2 border border-[#cbd1da] bg-white hover:bg-slate-100 text-[#111827] rounded-xl text-sm font-extrabold transition-all active:scale-[0.98]"
+          style={{ padding: "0.625rem 0.75rem", border: "1px solid #cbd1da", backgroundColor: "#ffffff", color: "#111827", borderRadius: "0.75rem", fontSize: "0.875rem", fontWeight: 800, cursor: "pointer" }}
           title="Reload Dashboard"
         >
-          <Clock size={16} className={loading ? 'animate-spin' : ''} />
+          <Clock size={18} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
 
-      {/* Stats Cards - 2 Columns x 2 Rows */}
-      <div className="disp-grid-2col">
+      {/* Stats Cards - 2 Columns x 2 Rows Inline Grid */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "1.5rem" }}>
         <StatCard 
-          icon={<Pill size={22} className="text-blue-600" />} 
+          icon={<Pill size={24} style={{ color: "#2563eb" }} />} 
           title="TOTAL DRUG TYPES" 
           value={stats.totalTypes} 
           subtitle="All active drugs in catalog"
           bgColor="#eff6ff"
         />
         <StatCard 
-          icon={<CheckCircle size={22} className="text-emerald-600" />} 
+          icon={<CheckCircle size={24} style={{ color: "#059669" }} />} 
           title="IN-STOCK TYPES" 
           value={stats.inStock} 
           subtitle="Sufficient inventory margin"
           bgColor="#f0fdf4"
         />
         <StatCard 
-          icon={<AlertCircle size={22} className="text-amber-600" />} 
+          icon={<AlertCircle size={24} style={{ color: "#d97706" }} />} 
           title="LOW STOCK TYPES" 
           value={stats.lowStock} 
           subtitle="Below reorder warning line"
           bgColor="#fffbeb"
         />
         <StatCard 
-          icon={<HelpCircle size={22} className="text-rose-600" />} 
+          icon={<HelpCircle size={24} style={{ color: "#e11d48" }} />} 
           title="OUT OF STOCK TYPES" 
           value={stats.outOfStock} 
           subtitle="Stock is completely depleted"
@@ -172,25 +172,25 @@ export default function DispenserDashboard() {
 
       {/* Alerts Section */}
       <div>
-        <h3 className="text-xs font-extrabold text-[#475569] uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 style={{ fontSize: "0.8125rem", fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <span>🔔 ALERTS</span>
         </h3>
-        <div className="disp-grid-2col">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "1.5rem" }}>
           {/* Low Stock Alerts */}
-          <div className="bg-white border border-[#d5d9e0] rounded-2xl p-6 shadow-sm flex flex-col">
-            <div className="flex justify-between items-center mb-5 border-b border-[#e2e8f0] pb-3">
-              <h3 className="text-sm font-extrabold text-[#0f172a] flex items-center gap-2">
-                <AlertCircle size={18} className="text-amber-600" /> 
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "1.75rem", display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <h3 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#0f172a", display: "flex", alignItems: "center", gap: "0.5rem", margin: 0 }}>
+                <AlertCircle size={20} style={{ color: "#d97706" }} /> 
                 <span>Low Stock Alerts</span>
               </h3>
               <Link 
                 href="/dispenser/stock-management/table" 
-                className="px-3 py-1.5 border border-[#cbd1da] hover:border-[#111827] text-[#111827] hover:bg-slate-50 rounded-xl text-xs font-extrabold transition-all"
+                style={{ padding: "0.4375rem 0.875rem", border: "1px solid #cbd1da", color: "#111827", backgroundColor: "#ffffff", borderRadius: "0.75rem", fontSize: "0.8125rem", fontWeight: 800, textDecoration: "none" }}
               >
                 View All
               </Link>
             </div>
-            <div className="flex-1 flex flex-col gap-3">
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1rem" }}>
               {lowStockAlerts.length > 0 ? (
                 lowStockAlerts.map((item, idx) => (
                   <AlertItem 
@@ -200,7 +200,7 @@ export default function DispenserDashboard() {
                   />
                 ))
               ) : (
-                <div className="flex-1 flex flex-col items-center justify-center py-8 text-center text-[#475569] text-xs font-bold">
+                <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2.5rem 0", textAlign: "center", color: "#475569", fontSize: "0.8125rem", fontWeight: 700 }}>
                   No low stock warnings. Everything looks healthy!
                 </div>
               )}
@@ -208,20 +208,20 @@ export default function DispenserDashboard() {
           </div>
 
           {/* Expiry Alerts */}
-          <div className="bg-white border border-[#d5d9e0] rounded-2xl p-6 shadow-sm flex flex-col">
-            <div className="flex justify-between items-center mb-5 border-b border-[#e2e8f0] pb-3">
-              <h3 className="text-sm font-extrabold text-[#0f172a] flex items-center gap-2">
-                <AlertCircle size={18} className="text-rose-600" /> 
+          <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "1.75rem", display: "flex", flexDirection: "column" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+              <h3 style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#0f172a", display: "flex", alignItems: "center", gap: "0.5rem", margin: 0 }}>
+                <AlertCircle size={20} style={{ color: "#e11d48" }} /> 
                 <span>Expiry Alerts (Next 90 Days)</span>
               </h3>
               <Link 
                 href="/dispenser/expiry-alerts" 
-                className="px-3 py-1.5 border border-[#cbd1da] hover:border-[#111827] text-[#111827] hover:bg-slate-50 rounded-xl text-xs font-extrabold transition-all"
+                style={{ padding: "0.4375rem 0.875rem", border: "1px solid #cbd1da", color: "#111827", backgroundColor: "#ffffff", borderRadius: "0.75rem", fontSize: "0.8125rem", fontWeight: 800, textDecoration: "none" }}
               >
                 View All
               </Link>
             </div>
-            <div className="flex-1 flex flex-col gap-3">
+            <div style={{ flex: 1, display: "flex", flexDirection: "column", gap: "1rem" }}>
               {expiryAlerts.length > 0 ? (
                 expiryAlerts.map((item, idx) => (
                   <AlertItem 
@@ -232,7 +232,7 @@ export default function DispenserDashboard() {
                   />
                 ))
               ) : (
-                <div className="flex-1 flex flex-col items-center justify-center py-8 text-center text-[#475569] text-xs font-bold">
+                <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "2.5rem 0", textAlign: "center", color: "#475569", fontSize: "0.8125rem", fontWeight: 700 }}>
                   No batches nearing expiry within the next 90 days.
                 </div>
               )}
@@ -241,32 +241,32 @@ export default function DispenserDashboard() {
         </div>
       </div>
 
-      {/* Quick Actions */}
+      {/* Quick Actions Inline Grid */}
       <div>
-        <h3 className="text-xs font-extrabold text-[#475569] uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 style={{ fontSize: "0.8125rem", fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "1.25rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
           <span>⚡ QUICK ACTIONS</span>
         </h3>
-        <div className="disp-grid-2col">
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "1.5rem" }}>
           <QuickActionCard 
-            icon={<Plus size={18} className="text-blue-600" />} 
+            icon={<Plus size={20} style={{ color: "#2563eb" }} />} 
             title="ADD DRUG STOCK" 
             desc="Add new stock to inventory" 
             href="/dispenser/stock-management/add"
           />
           <QuickActionCard 
-            icon={<Edit size={18} className="text-indigo-600" />} 
+            icon={<Edit size={20} style={{ color: "#4f46e5" }} />} 
             title="MANAGE DRUG LIST" 
             desc="Edit / Delete drug details" 
             href="/dispenser/drug-list"
           />
           <QuickActionCard 
-            icon={<Table size={18} className="text-emerald-600" />} 
+            icon={<Table size={20} style={{ color: "#059669" }} />} 
             title="VIEW STOCK TABLE" 
             desc="View all stock & details" 
             href="/dispenser/stock-management/table"
           />
           <QuickActionCard 
-            icon={<Users size={18} className="text-purple-600" />} 
+            icon={<Users size={20} style={{ color: "#9333ea" }} />} 
             title="DEALERS" 
             desc="View dealer details & contact" 
             href="/dispenser/deals"
@@ -275,17 +275,17 @@ export default function DispenserDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white border border-[#d5d9e0] rounded-2xl p-6 shadow-sm">
-        <div className="flex justify-between items-center mb-6 border-b border-[#e2e8f0] pb-4">
-          <h3 className="text-base font-extrabold text-[#0f172a]">Recent Activity</h3>
+      <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "1.75rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.75rem" }}>
+          <h3 style={{ fontSize: "1.0625rem", fontWeight: 800, color: "#0f172a", margin: 0 }}>Recent Activity</h3>
           <Link 
             href="/dispenser/stock-management/log"
-            className="px-3.5 py-1.5 border border-[#cbd1da] hover:border-[#111827] text-[#111827] hover:bg-slate-50 rounded-xl text-xs font-extrabold transition-all"
+            style={{ padding: "0.4375rem 0.9375rem", border: "1px solid #cbd1da", color: "#111827", backgroundColor: "#ffffff", borderRadius: "0.75rem", fontSize: "0.8125rem", fontWeight: 800, textDecoration: "none" }}
           >
             View All Audit Logs
           </Link>
         </div>
-        <div className="flex flex-col gap-4">
+        <div style={{ display: "flex", flexDirection: "column", gap: "1.25rem" }}>
           {recentActivities.length > 0 ? (
             recentActivities.map((log, index) => (
               <ActivityItem 
@@ -296,7 +296,7 @@ export default function DispenserDashboard() {
               />
             ))
           ) : (
-            <div className="text-center py-6 text-[#475569] text-xs font-bold">
+            <div style={{ textAlign: "center", padding: "2rem 0", color: "#475569", fontSize: "0.8125rem", fontWeight: 700 }}>
               No recent activity logs recorded in audit database.
             </div>
           )}
@@ -309,17 +309,16 @@ export default function DispenserDashboard() {
 
 function StatCard({ icon, title, value, subtitle, bgColor }: StatCardProps) {
   return (
-    <div className="bg-white border border-[#d5d9e0] rounded-2xl flex items-center gap-5 p-6 shadow-sm hover:shadow-md transition-all duration-200">
+    <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", display: "flex", alignItems: "center", gap: "1.5rem", padding: "1.75rem" }}>
       <div 
-        className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
-        style={{ backgroundColor: bgColor }}
+        style={{ width: "3.5rem", height: "3.5rem", borderRadius: "9999px", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, backgroundColor: bgColor }}
       >
         {icon}
       </div>
-      <div>
-        <p className="text-[11px] font-extrabold text-[#475569] uppercase tracking-widest">{title}</p>
-        <p className="text-2xl font-black text-[#0f172a] mt-0.5 leading-none tracking-tight">{value}</p>
-        <p className="text-xs text-[#334155] mt-1 font-bold">{subtitle}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.375rem" }}>
+        <p style={{ fontSize: "0.75rem", fontWeight: 800, color: "#475569", textTransform: "uppercase", letterSpacing: "0.05em", margin: 0 }}>{title}</p>
+        <p style={{ fontSize: "1.75rem", fontWeight: 900, color: "#0f172a", lineHeight: 1, letterSpacing: "-0.025em", margin: 0 }}>{value}</p>
+        <p style={{ fontSize: "0.8125rem", color: "#334155", fontWeight: 700, margin: 0 }}>{subtitle}</p>
       </div>
     </div>
   );
@@ -327,14 +326,14 @@ function StatCard({ icon, title, value, subtitle, bgColor }: StatCardProps) {
 
 function AlertItem({ name, details, isDanger }: AlertItemProps) {
   return (
-    <div className="flex items-center justify-between p-3.5 border border-[#cbd1da] rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer group">
-      <div className="flex items-center gap-3">
-        <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${isDanger ? 'bg-rose-600 animate-pulse' : 'bg-amber-600'}`}></div>
-        <span className="text-sm font-extrabold text-[#0f172a] group-hover:text-blue-600 transition-colors">{name}</span>
+    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1rem 1.125rem", border: "1px solid #cbd1da", borderRadius: "0.75rem", backgroundColor: "#f8fafc" }}>
+      <div style={{ display: "flex", alignItems: "center", gap: "0.875rem" }}>
+        <div style={{ width: "0.625rem", height: "0.625rem", borderRadius: "9999px", flexShrink: 0, backgroundColor: isDanger ? "#e11d48" : "#d97706" }}></div>
+        <span style={{ fontSize: "0.9375rem", fontWeight: 800, color: "#0f172a" }}>{name}</span>
       </div>
-      <div className="flex items-center gap-2 shrink-0">
-        <span className="text-xs text-[#334155] font-bold">{details}</span>
-        <ArrowRight size={14} className="text-[#475569] group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+      <div style={{ display: "flex", alignItems: "center", gap: "0.625rem", flexShrink: 0 }}>
+        <span style={{ fontSize: "0.8125rem", color: "#334155", fontWeight: 700 }}>{details}</span>
+        <ArrowRight size={16} style={{ color: "#475569" }} />
       </div>
     </div>
   );
@@ -344,14 +343,14 @@ function QuickActionCard({ icon, title, desc, href }: QuickActionCardProps) {
   return (
     <Link 
       href={href} 
-      className="bg-white border border-[#d5d9e0] rounded-2xl flex items-center gap-4 p-4 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 active:scale-[0.98] group"
+      style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", display: "flex", alignItems: "center", gap: "1.25rem", padding: "1.25rem 1.5rem", textDecoration: "none" }}
     >
-      <div className="w-11 h-11 rounded-xl bg-slate-100 border border-[#cbd1da] flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:border-blue-200 transition-colors">
+      <div style={{ width: "3rem", height: "3rem", borderRadius: "0.75rem", backgroundColor: "#f1f5f9", border: "1px solid #cbd1da", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
         {icon}
       </div>
-      <div>
-        <p className="text-xs font-black text-[#0f172a] group-hover:text-blue-600 transition-colors">{title}</p>
-        <p className="text-[11px] text-[#334155] mt-0.5 font-bold leading-tight">{desc}</p>
+      <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+        <p style={{ fontSize: "0.84375rem", fontWeight: 900, color: "#0f172a", margin: 0 }}>{title}</p>
+        <p style={{ fontSize: "0.78125rem", color: "#334155", fontWeight: 700, lineHeight: 1.3, margin: 0 }}>{desc}</p>
       </div>
     </Link>
   );
@@ -359,14 +358,14 @@ function QuickActionCard({ icon, title, desc, href }: QuickActionCardProps) {
 
 function ActivityItem({ text, user, time }: ActivityItemProps) {
   return (
-    <div className="flex justify-between items-start gap-4 py-3 border-b border-[#e2e8f0] last:border-b-0 last:pb-0">
-      <div className="flex gap-3">
-        <div className="mt-2 w-1.5 h-1.5 rounded-full bg-[#0f172a] shrink-0"></div>
-        <p className="text-sm text-[#0f172a] font-bold leading-snug">{text}</p>
+    <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-start", gap: "1.25rem", padding: "0.875rem 0", borderBottom: "1px solid #e2e8f0" }}>
+      <div style={{ display: "flex", gap: "0.875rem" }}>
+        <div style={{ marginTop: "0.5rem", width: "0.4375rem", height: "0.4375rem", borderRadius: "9999px", backgroundColor: "#0f172a", flexShrink: 0 }}></div>
+        <p style={{ fontSize: "0.9375rem", color: "#0f172a", fontWeight: 700, lineHeight: 1.4, margin: 0 }}>{text}</p>
       </div>
-      <div className="text-right shrink-0">
-        <p className="text-xs font-black text-[#0f172a]">{user}</p>
-        <p className="text-[10px] text-[#475569] mt-0.5 font-bold">{time}</p>
+      <div style={{ textAlign: "right", flexShrink: 0 }}>
+        <p style={{ fontSize: "0.8125rem", fontWeight: 900, color: "#0f172a", margin: 0 }}>{user}</p>
+        <p style={{ fontSize: "0.75rem", color: "#475569", marginTop: "0.1875rem", fontWeight: 700, margin: 0 }}>{time}</p>
       </div>
     </div>
   );

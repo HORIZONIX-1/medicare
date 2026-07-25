@@ -33,57 +33,62 @@ export default function DispensingQueueTable({
   onSearchChange,
 }: Props) {
   return (
-    <div className="bg-white border border-[#cbd1da] rounded p-6 h-[550px] flex flex-col text-[#0f172a]">
-      <h3 className="text-xs font-black text-[#0f172a] uppercase tracking-wider mb-3">PRESCRIPTION QUEUE</h3>
+    <div style={{ backgroundColor: "#ffffff", border: "1px solid #cbd1da", borderRadius: "0.5rem", padding: "1.5rem", height: "550px", display: "flex", flexDirection: "column", color: "#0f172a", fontFamily: "'Poppins', sans-serif" }}>
+      <h3 style={{ fontSize: "0.75rem", fontWeight: 900, color: "#0f172a", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.75rem" }}>
+        PRESCRIPTION QUEUE
+      </h3>
       
       {/* Search & Filter */}
-      <div className="flex gap-2 mb-4 shrink-0">
-        <div className="relative flex-1 flex border border-[#cbd1da] rounded bg-white px-3 items-center">
-          <Search size={14} className="text-[#334155] mr-2" />
+      <div style={{ display: "flex", gap: "0.5rem", marginBottom: "1rem", flexShrink: 0 }}>
+        <div style={{ position: "relative", flex: 1, display: "flex", border: "1px solid #cbd1da", borderRadius: "0.375rem", backgroundColor: "#ffffff", padding: "0 0.75rem", alignItems: "center" }}>
+          <Search size={14} style={{ color: "#334155", marginRight: "0.5rem" }} />
           <input 
             type="text" 
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search by Patient Name / ID" 
-            className="border-none w-full h-9 text-xs font-bold outline-none text-[#0f172a] placeholder-[#475569]"
+            style={{ border: "none", width: "100%", height: "2.25rem", fontSize: "0.75rem", fontWeight: 700, outline: "none", color: "#0f172a" }}
           />
         </div>
-        <button className="h-9 px-4 text-xs font-black text-white bg-[#0f172a] border border-[#0f172a] rounded hover:bg-[#1e293b] transition-colors">
+        <button style={{ height: "2.25rem", padding: "0 1rem", fontSize: "0.75rem", fontWeight: 900, color: "#ffffff", backgroundColor: "#0f172a", border: "1px solid #0f172a", borderRadius: "0.375rem", cursor: "pointer" }}>
           SEARCH
         </button>
-        <button className="h-9 w-9 flex items-center justify-center border border-[#cbd1da] bg-white text-[#0f172a] rounded hover:bg-[#f1f5f9] transition-colors">
+        <button style={{ height: "2.25rem", width: "2.25rem", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #cbd1da", backgroundColor: "#ffffff", color: "#0f172a", borderRadius: "0.375rem", cursor: "pointer" }}>
           <Filter size={14} />
         </button>
       </div>
 
       {/* Table */}
-      <div className="flex-1 overflow-y-auto border border-[#cbd1da] rounded">
-        <table className="w-full text-left border-collapse">
+      <div style={{ flex: 1, overflowY: "auto", border: "1px solid #cbd1da", borderRadius: "0.375rem" }}>
+        <table style={{ width: "100%", textAlign: "left", borderCollapse: "collapse" }}>
           <thead>
-            <tr className="bg-[#f1f5f9] border-b border-[#cbd1da] text-[10px] font-black uppercase tracking-wider text-[#0f172a] h-10">
-              <th className="px-3 w-10">#</th>
-              <th className="px-3">PATIENT NAME</th>
-              <th className="px-3">PATIENT ID</th>
-              <th className="px-3">DATE</th>
-              <th className="px-3 text-center">STATUS</th>
+            <tr style={{ backgroundColor: "#f1f5f9", borderBottom: "1px solid #cbd1da", fontSize: "0.625rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", color: "#0f172a", height: "2.5rem" }}>
+              <th style={{ padding: "0 0.75rem", width: "2.5rem" }}>#</th>
+              <th style={{ padding: "0 0.75rem" }}>PATIENT NAME</th>
+              <th style={{ padding: "0 0.75rem" }}>PATIENT ID</th>
+              <th style={{ padding: "0 0.75rem" }}>DATE</th>
+              <th style={{ padding: "0 0.75rem", textAlign: "center" }}>STATUS</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#cbd1da] text-xs font-bold text-[#0f172a]">
+          <tbody style={{ fontSize: "0.75rem", fontWeight: 700, color: "#0f172a" }}>
             {queues.length > 0 ? (
               queues.map((row, idx) => (
                 <tr 
                   key={row.id} 
                   onClick={() => onSelectItem(row)}
-                  className={`h-11 cursor-pointer transition-colors ${
-                    selectedItem?.id === row.id ? 'bg-[#e2e8f0] font-black' : 'hover:bg-[#f1f5f9]'
-                  }`}
+                  style={{
+                    height: "2.75rem",
+                    cursor: "pointer",
+                    borderBottom: "1px solid #cbd1da",
+                    backgroundColor: selectedItem?.id === row.id ? "#e2e8f0" : "transparent"
+                  }}
                 >
-                  <td className="px-3 font-extrabold text-[#1e293b]">{idx + 1}</td>
-                  <td className="px-3 font-black text-[#0f172a]">{row.name}</td>
-                  <td className="px-3 font-mono text-[#1d4ed8] font-extrabold">{row.pid}</td>
-                  <td className="px-3 text-[#1e293b] font-bold">{row.date}</td>
-                  <td className="px-3 text-center">
-                    <span className="inline-flex items-center px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded border border-amber-300 bg-amber-100 text-amber-900">
+                  <td style={{ padding: "0 0.75rem", fontWeight: 800, color: "#1e293b" }}>{idx + 1}</td>
+                  <td style={{ padding: "0 0.75rem", fontWeight: 900, color: "#0f172a" }}>{row.name}</td>
+                  <td style={{ padding: "0 0.75rem", fontFamily: "monospace", color: "#1d4ed8", fontWeight: 800 }}>{row.pid}</td>
+                  <td style={{ padding: "0 0.75rem", color: "#1e293b", fontWeight: 700 }}>{row.date}</td>
+                  <td style={{ padding: "0 0.75rem", textAlign: "center" }}>
+                    <span style={{ display: "inline-flex", alignItems: "center", padding: "0.125rem 0.625rem", fontSize: "0.5625rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", borderRadius: "0.25rem", border: "1px solid #fde68a", backgroundColor: "#fef3c7", color: "#78350f" }}>
                       Pending
                     </span>
                   </td>
@@ -91,7 +96,7 @@ export default function DispensingQueueTable({
               ))
             ) : (
               <tr>
-                <td colSpan={5} className="text-center py-8 text-xs font-extrabold text-[#334155]">
+                <td colSpan={5} style={{ textAlign: "center", padding: "2rem 0", fontSize: "0.75rem", fontWeight: 800, color: "#334155" }}>
                   No pending prescriptions found.
                 </td>
               </tr>
@@ -101,12 +106,12 @@ export default function DispensingQueueTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-3 text-xs font-bold text-[#334155] shrink-0">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "0.75rem", fontSize: "0.75rem", fontWeight: 700, color: "#334155", flexShrink: 0 }}>
         <span>Showing {queues.length} entries</span>
-        <div className="flex gap-1">
-          <button className="px-2 py-1 border border-[#cbd1da] rounded text-[#64748b]" disabled>&lt;</button>
-          <button className="px-2.5 py-1 bg-[#0f172a] text-white rounded font-extrabold">1</button>
-          <button className="px-2 py-1 border border-[#cbd1da] rounded text-[#64748b]" disabled>&gt;</button>
+        <div style={{ display: "flex", gap: "0.25rem" }}>
+          <button style={{ padding: "0.25rem 0.5rem", border: "1px solid #cbd1da", borderRadius: "0.25rem", color: "#64748b", backgroundColor: "#ffffff" }} disabled>&lt;</button>
+          <button style={{ padding: "0.25rem 0.625rem", backgroundColor: "#0f172a", color: "#ffffff", borderRadius: "0.25rem", fontWeight: 900 }}>1</button>
+          <button style={{ padding: "0.25rem 0.5rem", border: "1px solid #cbd1da", borderRadius: "0.25rem", color: "#64748b", backgroundColor: "#ffffff" }} disabled>&gt;</button>
         </div>
       </div>
     </div>
