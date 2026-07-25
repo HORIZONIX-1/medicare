@@ -1345,8 +1345,21 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   min-height: 100vh;
   background-color: #f8fafc;
-  color: #0f172a;
+  color: #000000 !important;
   font-family: 'Poppins', sans-serif !important;
+}
+
+.disp-layout h1, .disp-layout h2, .disp-layout h3, .disp-layout h4, .disp-layout p, .disp-layout label {
+  color: #000000;
+  opacity: 1 !important;
+}
+
+.disp-layout button span,
+.disp-layout button,
+.disp-layout .text-white,
+.disp-layout [style*="color: #ffffff"],
+.disp-layout [style*="color:#ffffff"] {
+  color: inherit;
 }
 
 .dr-layout {
@@ -1357,14 +1370,14 @@ input[type="range"]::-moz-range-thumb {
   font-family: 'Plus Jakarta Sans', var(--font-sans), sans-serif;
 }
 
-.dr-layout h1, .disp-layout h1,
-.dr-layout h2, .disp-layout h2,
-.dr-layout h3, .disp-layout h3,
-.dr-layout h4, .disp-layout h4 {
+.dr-layout h1,
+.dr-layout h2,
+.dr-layout h3,
+.dr-layout h4 {
   color: #0f172a !important;
 }
 
-.dr-layout p, .disp-layout p {
+.dr-layout p {
   color: #1e293b;
 }
 
@@ -2294,6 +2307,13 @@ input[type="range"]::-moz-range-thumb {
 .disp-layout input::placeholder,
 .disp-layout textarea::placeholder {
   color: #94a3b8 !important;
+}
+
+/* Hide native browser date picker indicator so custom Calendar icon works cleanly */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  display: none !important;
+  -webkit-appearance: none !important;
+  opacity: 0 !important;
 }
 
 

@@ -168,9 +168,9 @@ export default function DispensingQueue() {
 
       {/* Header */}
       <div>
-        <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#475569]">Prescriptions / Dispensing</p>
-        <h1 className="text-2xl font-extrabold text-[#111827] mt-0.5">Prescription Dispensing Queue</h1>
-        <p className="text-xs font-medium text-[#64748b] mt-0.5">View pending prescriptions and dispense medicines to patients.</p>
+        <p style={{ fontSize: "0.84375rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", color: "#000000", margin: 0 }}>Prescriptions / Dispensing</p>
+        <h1 style={{ fontSize: "2.25rem", fontWeight: 900, color: "#000000", marginTop: "0.25rem", marginBottom: 0 }}>Prescription Dispensing Queue</h1>
+        <p style={{ fontSize: "0.9375rem", fontWeight: 700, color: "#000000", marginTop: "0.375rem" }}>View pending prescriptions and dispense medicines to patients.</p>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

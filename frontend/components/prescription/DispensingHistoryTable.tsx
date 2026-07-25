@@ -44,19 +44,21 @@ export default function DispensingHistoryTable({
   onDateFilterChange,
 }: Props) {
   return (
-    <div className="bg-white border border-[#cbd1da] rounded p-6 h-[550px] flex flex-col text-[#0f172a]">
-      <h3 className="text-xs font-black text-[#0f172a] uppercase tracking-wider mb-3">DISPENSATION LOGS</h3>
+    <div style={{ backgroundColor: "#ffffff", border: "1px solid #cbd1da", borderRadius: "0.75rem", padding: "1.75rem", height: "620px", display: "flex", flexDirection: "column", color: "#000000", fontFamily: "'Poppins', sans-serif" }}>
+      <h3 style={{ fontSize: "0.9375rem", fontWeight: 900, color: "#000000", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "1rem" }}>
+        DISPENSATION LOGS
+      </h3>
       
       {/* Search & Filters */}
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 mb-4 shrink-0">
-        <div className="relative">
-          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#334155]" />
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(3, minmax(0, 1fr))", gap: "0.625rem", marginBottom: "1.25rem", flexShrink: 0 }}>
+        <div style={{ position: "relative" }}>
+          <Search size={16} style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", color: "#000000" }} />
           <input 
             type="text" 
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search Patient / ID" 
-            className="w-full pl-8 pr-3 h-9 border border-[#cbd1da] rounded text-xs font-bold focus:outline-none focus:border-[#0f172a] bg-white text-[#0f172a] placeholder-[#475569]"
+            style={{ width: "100%", paddingLeft: "2.25rem", paddingRight: "0.75rem", height: "2.5rem", border: "1px solid #cbd1da", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 700, outline: "none", backgroundColor: "#ffffff", color: "#000000" }}
           />
         </div>
         
@@ -64,7 +66,7 @@ export default function DispensingHistoryTable({
           <select 
             value={statusFilter}
             onChange={(e) => onStatusFilterChange(e.target.value)}
-            className="w-full h-9 px-3 border border-[#cbd1da] rounded text-xs font-bold focus:outline-none focus:border-[#0f172a] bg-white text-[#0f172a]"
+            style={{ width: "100%", height: "2.5rem", padding: "0 0.75rem", border: "1px solid #cbd1da", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 800, outline: "none", backgroundColor: "#ffffff", color: "#000000" }}
           >
             <option value="All">All Statuses</option>
             <option value="Fully Dispensed">Fully Dispensed</option>
@@ -76,7 +78,7 @@ export default function DispensingHistoryTable({
           <select 
             value={dateFilter}
             onChange={(e) => onDateFilterChange(e.target.value)}
-            className="w-full h-9 px-3 border border-[#cbd1da] rounded text-xs font-bold focus:outline-none focus:border-[#0f172a] bg-white text-[#0f172a]"
+            style={{ width: "100%", height: "2.5rem", padding: "0 0.75rem", border: "1px solid #cbd1da", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 800, outline: "none", backgroundColor: "#ffffff", color: "#000000" }}
           >
             <option value="All">All Dates</option>
             <option value="Today">Today</option>
@@ -86,43 +88,54 @@ export default function DispensingHistoryTable({
       </div>
 
       {/* Table */}
-      <div className="flex-1 overflow-y-auto border border-[#cbd1da] rounded">
-        <table className="w-full text-left border-collapse">
+      <div style={{ flex: 1, overflowY: "auto", border: "1px solid #cbd1da", borderRadius: "0.5rem" }}>
+        <table style={{ width: "100%", textAlign: "left", borderCollapse: "collapse" }}>
           <thead>
-            <tr className="bg-[#f1f5f9] border-b border-[#cbd1da] text-[10px] font-black uppercase tracking-wider text-[#0f172a] h-10">
-              <th className="px-3 w-8">#</th>
-              <th className="px-3">PATIENT NAME</th>
-              <th className="px-3">PRESCRIPTION</th>
-              <th className="px-3">DATE</th>
-              <th className="px-3 text-center">STATUS</th>
+            <tr style={{ backgroundColor: "#f1f5f9", borderBottom: "1.5px solid #cbd1da", fontSize: "0.78125rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", color: "#000000", height: "2.875rem" }}>
+              <th style={{ padding: "0 1rem", width: "3rem" }}>#</th>
+              <th style={{ padding: "0 1rem" }}>PATIENT NAME</th>
+              <th style={{ padding: "0 1rem" }}>PRESCRIPTION</th>
+              <th style={{ padding: "0 1rem" }}>DATE</th>
+              <th style={{ padding: "0 1rem", textAlign: "center" }}>STATUS</th>
             </tr>
           </thead>
-          <tbody className="divide-y divide-[#cbd1da] text-xs font-bold text-[#0f172a]">
+          <tbody style={{ fontSize: "0.875rem", fontWeight: 800, color: "#000000" }}>
             {history.length > 0 ? (
               history.map((item, idx) => (
                 <tr 
                   key={item.id} 
                   onClick={() => onSelectItem(item)}
-                  className={`h-12 cursor-pointer transition-colors ${
-                    selectedItem?.id === item.id ? 'bg-[#e2e8f0] font-black' : 'hover:bg-[#f1f5f9]'
-                  }`}
+                  style={{
+                    height: "3.5rem",
+                    cursor: "pointer",
+                    borderBottom: "1px solid #cbd1da",
+                    backgroundColor: selectedItem?.id === item.id ? "#e2e8f0" : "transparent"
+                  }}
                 >
-                  <td className="px-3 font-extrabold text-[#1e293b]">{idx + 1}</td>
-                  <td className="px-3">
-                    <div className="font-black text-[#0f172a]">{item.patientName}</div>
-                    <div className="text-[10px] text-[#334155] font-mono font-bold">{item.patientId}</div>
+                  <td style={{ padding: "0 1rem", fontWeight: 800, color: "#000000" }}>{idx + 1}</td>
+                  <td style={{ padding: "0 1rem" }}>
+                    <div style={{ fontWeight: 900, fontSize: "0.9375rem", color: "#000000" }}>{item.patientName}</div>
+                    <div style={{ fontSize: "0.78125rem", color: "#000000", fontFamily: "monospace", fontWeight: 800 }}>{item.patientId}</div>
                   </td>
-                  <td className="px-3 font-mono text-[#1d4ed8] font-extrabold">{item.prescriptionId}</td>
-                  <td className="px-3">
-                    <div className="text-[#0f172a] font-bold">{item.date}</div>
-                    <div className="text-[10px] text-[#334155] font-bold">{item.time}</div>
+                  <td style={{ padding: "0 1rem", fontFamily: "monospace", color: "#1d4ed8", fontSize: "0.9375rem", fontWeight: 900 }}>{item.prescriptionId}</td>
+                  <td style={{ padding: "0 1rem" }}>
+                    <div style={{ color: "#000000", fontWeight: 800, fontSize: "0.875rem" }}>{item.date}</div>
+                    <div style={{ fontSize: "0.75rem", color: "#000000", fontWeight: 700 }}>{item.time}</div>
                   </td>
-                  <td className="px-3 text-center">
-                    <span className={`inline-flex items-center px-2.5 py-0.5 text-[9px] font-black uppercase tracking-wider rounded border ${
-                      item.status === 'Fully Dispensed' 
-                        ? 'text-emerald-900 border-emerald-300 bg-emerald-100' 
-                        : 'text-amber-900 border-amber-300 bg-amber-100'
-                    }`}>
+                  <td style={{ padding: "0 1rem", textAlign: "center" }}>
+                    <span style={{
+                      display: "inline-flex",
+                      alignItems: "center",
+                      padding: "0.25rem 0.625rem",
+                      fontSize: "0.6875rem",
+                      fontWeight: 900,
+                      textTransform: "uppercase",
+                      letterSpacing: "0.05em",
+                      borderRadius: "0.375rem",
+                      border: item.status === 'Fully Dispensed' ? "1px solid #a7f3d0" : "1px solid #fde68a",
+                      backgroundColor: item.status === 'Fully Dispensed' ? "#d1fae5" : "#fef3c7",
+                      color: item.status === 'Fully Dispensed' ? "#065f46" : "#78350f"
+                    }}>
                       {item.status.split(' ')[0]}
                     </span>
                   </td>
@@ -130,7 +143,7 @@ export default function DispensingHistoryTable({
               ))
             ) : (
               <tr>
-                <td colSpan={5} className="text-center py-8 text-xs font-extrabold text-[#334155]">
+                <td colSpan={5} style={{ textAlign: "center", padding: "2.5rem 0", fontSize: "0.875rem", fontWeight: 800, color: "#000000" }}>
                   No dispensation history records found.
                 </td>
               </tr>
@@ -140,12 +153,12 @@ export default function DispensingHistoryTable({
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-between items-center mt-3 text-xs font-bold text-[#334155] shrink-0">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1rem", fontSize: "0.84375rem", fontWeight: 800, color: "#000000", flexShrink: 0 }}>
         <span>Showing {history.length} entries</span>
-        <div className="flex gap-1">
-          <button className="px-2 py-1 border border-[#cbd1da] rounded text-[#64748b]" disabled>&lt;</button>
-          <button className="px-2.5 py-1 bg-[#0f172a] text-white rounded font-extrabold">1</button>
-          <button className="px-2 py-1 border border-[#cbd1da] rounded text-[#64748b]" disabled>&gt;</button>
+        <div style={{ display: "flex", gap: "0.375rem" }}>
+          <button style={{ padding: "0.375rem 0.625rem", border: "1px solid #cbd1da", borderRadius: "0.375rem", color: "#000000", backgroundColor: "#ffffff" }} disabled>&lt;</button>
+          <button style={{ padding: "0.375rem 0.75rem", backgroundColor: "#000000", color: "#ffffff", borderRadius: "0.375rem", fontWeight: 900 }}>1</button>
+          <button style={{ padding: "0.375rem 0.625rem", border: "1px solid #cbd1da", borderRadius: "0.375rem", color: "#000000", backgroundColor: "#ffffff" }} disabled>&gt;</button>
         </div>
       </div>
     </div>
