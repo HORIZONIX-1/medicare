@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useState, useMemo } from 'react';
-import { Search, Filter, Calendar, AlertTriangle, FileText, Clock, Check, X } from 'lucide-react';
+import { Search, Filter, Calendar, AlertTriangle, FileText, Clock, Check, X, User } from 'lucide-react';
 
 interface DrugItem {
   name: string;
@@ -142,11 +142,11 @@ export default function DispensingQueue() {
   const handleDispense = (type: 'full' | 'partial' | 'cancel') => {
     if (!selectedItem) return;
     if (type === 'full') {
-      showToast(`✅ Prescription dispensed successfully for ${selectedItem.name}!`);
+      showToast(`Prescription dispensed successfully for ${selectedItem.name}!`);
     } else if (type === 'partial') {
-      showToast(`⚠️ Prescription marked as partially dispensed for ${selectedItem.name}.`);
+      showToast(`Prescription marked as partially dispensed for ${selectedItem.name}.`);
     } else {
-      showToast(`❌ Dispensation cancelled for ${selectedItem.name}.`);
+      showToast(`Dispensation cancelled for ${selectedItem.name}.`);
     }
   };
 
@@ -157,7 +157,6 @@ export default function DispensingQueue() {
     );
   }, [queues, searchQuery]);
 
-  // Keep selected item updated if search results change
   React.useEffect(() => {
     if (filteredQueues.length > 0) {
       if (!selectedItem || !filteredQueues.some(item => item.id === selectedItem.id)) {
@@ -169,28 +168,13 @@ export default function DispensingQueue() {
   }, [filteredQueues, selectedItem]);
 
   return (
-    <div style={{ maxWidth: "1400px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "2rem" }}>
+    <div className="max-w-[1400px] mx-auto flex flex-col gap-6 font-sans text-[#111827]">
       {/* Toast Notification */}
       {toastMessage && (
-        <div style={{
-          position: "fixed",
-          top: "1.5rem",
-          right: "1.5rem",
-          zIndex: 9999,
-          backgroundColor: "#0f172a",
-          color: "#ffffff",
-          fontSize: "0.875rem",
-          padding: "0.75rem 1rem",
-          borderRadius: "0.5rem",
-          boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
-          border: "1px solid #1e293b",
-          display: "flex",
-          alignItems: "center",
-          gap: "0.75rem"
-        }}>
-          <div style={{ width: "8px", height: "8px", borderRadius: "9999px", backgroundColor: "#10b981" }}></div>
+        <div className="fixed top-6 right-6 z-50 bg-[#111827] text-white text-xs font-bold px-4 py-3 rounded border border-gray-700 shadow-xl flex items-center gap-3">
+          <div className="w-2 h-2 rounded-full bg-emerald-400"></div>
           <span>{toastMessage}</span>
-          <button onClick={() => setToastMessage(null)} style={{ background: "transparent", border: "none", color: "#94a3b8", cursor: "pointer", marginLeft: "0.5rem" }}>
+          <button onClick={() => setToastMessage(null)} className="text-gray-400 hover:text-white ml-2">
             <X size={14} />
           </button>
         </div>
@@ -198,49 +182,50 @@ export default function DispensingQueue() {
 
       {/* Header */}
       <div>
-        <h1 className="dr-page-title" style={{ fontSize: "1.75rem" }}>Prescription Dispensing</h1>
-        <p style={{ fontSize: "0.875rem", color: "#64748b", marginTop: "4px" }}>View pending prescriptions and dispense medicines to patients.</p>
+        <p className="text-[11px] font-extrabold uppercase tracking-wider text-[#475569]">Prescriptions / Dispensing</p>
+        <h1 className="text-2xl font-extrabold text-[#111827] mt-0.5">Prescription Dispensing Queue</h1>
+        <p className="text-xs font-medium text-[#64748b] mt-0.5">View pending prescriptions and dispense medicines to patients.</p>
       </div>
 
-      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(550px, 1fr))", gap: "2rem" }}>
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         {/* Left Column: Queue List */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-          <div className="white-card" style={{ padding: "2rem", marginBottom: 0, height: "550px", display: "flex", flexDirection: "column" }}>
-            <h3 style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em", marginBottom: "1rem" }}>PRESCRIPTION QUEUE</h3>
+        <div className="flex flex-col gap-6">
+          <div className="bg-white border border-[#d5d9e0] rounded p-6 h-[550px] flex flex-col">
+            <h3 className="text-[11px] font-extrabold text-[#475569] uppercase tracking-wider mb-3">PRESCRIPTION QUEUE</h3>
             
             {/* Search & Filter */}
-            <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.25rem", flexShrink: 0 }}>
-              <div style={{ position: "relative", flex: 1, display: "flex", border: "1px solid #cbd5e1", borderRadius: "0.5rem", padding: "0 0.75rem", alignItems: "center", backgroundColor: "#ffffff" }}>
-                <Search size={16} className="text-gray-400" style={{ marginRight: "0.5rem" }} />
+            <div className="flex gap-2 mb-4 shrink-0">
+              <div className="relative flex-1 flex border border-[#cbd1da] rounded bg-white px-3 items-center">
+                <Search size={14} className="text-[#64748b] mr-2" />
                 <input 
                   type="text" 
                   value={searchQuery}
                   onChange={(e) => setSearchQuery(e.target.value)}
                   placeholder="Search by Patient Name / ID" 
-                  style={{ border: "none", width: "100%", height: "38px", fontSize: "0.8125rem", outline: "none", color: "#0f172a" }}
+                  className="border-none w-full h-9 text-xs font-semibold outline-none text-[#111827]"
                 />
               </div>
-              <button className="btn-light-blue" style={{ height: "40px", padding: "0 1.25rem" }}>
+              <button className="h-9 px-4 text-xs font-extrabold text-white bg-[#111827] border border-[#111827] rounded hover:bg-[#1f2937] transition-colors">
                 SEARCH
               </button>
-              <button className="btn-light-outline" style={{ height: "40px", width: "40px", display: "flex", alignItems: "center", justifyContent: "center", padding: 0 }}>
-                <Filter size={16} />
+              <button className="h-9 w-9 flex items-center justify-center border border-[#cbd1da] bg-white text-[#111827] rounded hover:bg-[#f3f4f6] transition-colors">
+                <Filter size={14} />
               </button>
             </div>
 
             {/* Table */}
-            <div style={{ flex: 1, overflowY: "auto", border: "1px solid #e2e8f0", borderRadius: "0.5rem" }}>
-              <table className="light-table" style={{ border: "none", width: "100%" }}>
+            <div className="flex-1 overflow-y-auto border border-[#cbd1da] rounded">
+              <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr>
-                    <th style={{ width: "40px" }}>#</th>
-                    <th>PATIENT NAME</th>
-                    <th>PRESCRIPTION ID</th>
-                    <th>DATE</th>
-                    <th style={{ textAlign: "center" }}>STATUS</th>
+                  <tr className="bg-[#f1f2f4] border-b border-[#cbd1da] text-[10px] font-extrabold uppercase tracking-wider text-[#475569] h-10">
+                    <th className="px-3 w-10">#</th>
+                    <th className="px-3">PATIENT NAME</th>
+                    <th className="px-3">PATIENT ID</th>
+                    <th className="px-3">DATE</th>
+                    <th className="px-3 text-center">STATUS</th>
                   </tr>
                 </thead>
-                <tbody>
+                <tbody className="divide-y divide-[#e2e8f0] text-xs font-semibold text-[#111827]">
                   {filteredQueues.length > 0 ? (
                     filteredQueues.map((row, idx) => (
                       <tr 
@@ -249,14 +234,16 @@ export default function DispensingQueue() {
                           setSelectedItem(row);
                           setCustomNotes('');
                         }}
-                        style={{ cursor: "pointer", backgroundColor: selectedItem?.id === row.id ? "#eff6ff" : "transparent" }}
+                        className={`h-11 cursor-pointer transition-colors ${
+                          selectedItem?.id === row.id ? 'bg-[#f1f5f9] font-bold' : 'hover:bg-[#f8fafc]'
+                        }`}
                       >
-                        <td style={{ fontWeight: 700 }}>{idx + 1}</td>
-                        <td style={{ fontWeight: 800, color: "#0f172a" }}>{row.name}</td>
-                        <td style={{ fontFamily: "monospace", color: "#2563eb", fontWeight: 700 }}>{row.pid}</td>
-                        <td>{row.date}</td>
-                        <td style={{ textAlign: "center" }}>
-                          <span className="patient-status-badge">
+                        <td className="px-3 font-bold text-[#475569]">{idx + 1}</td>
+                        <td className="px-3 font-extrabold text-[#111827]">{row.name}</td>
+                        <td className="px-3 font-mono text-[#2563eb] font-bold">{row.pid}</td>
+                        <td className="px-3 text-[#475569]">{row.date}</td>
+                        <td className="px-3 text-center">
+                          <span className="inline-flex items-center px-2 py-0.5 text-[9px] font-extrabold uppercase tracking-wider rounded border border-amber-200 bg-amber-50 text-amber-700">
                             Pending
                           </span>
                         </td>
@@ -264,7 +251,7 @@ export default function DispensingQueue() {
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={5} style={{ textAlign: "center", padding: "2rem", color: "#64748b" }}>
+                      <td colSpan={5} className="text-center py-8 text-xs font-semibold text-[#64748b]">
                         No pending prescriptions found.
                       </td>
                     </tr>
@@ -274,62 +261,66 @@ export default function DispensingQueue() {
             </div>
 
             {/* Pagination */}
-            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginTop: "1.25rem", fontSize: "0.75rem", color: "#64748b", flexShrink: 0 }}>
+            <div className="flex justify-between items-center mt-3 text-xs font-semibold text-[#64748b] shrink-0">
               <span>Showing {filteredQueues.length} of {queues.length} entries</span>
-              <div style={{ display: "flex", gap: "0.25rem" }}>
-                <button className="btn-light-outline" style={{ padding: "0.25rem 0.5rem" }} disabled>&lt;</button>
-                <button className="btn-light-blue" style={{ padding: "0.25rem 0.75rem" }}>1</button>
-                <button className="btn-light-outline" style={{ padding: "0.25rem 0.5rem" }} disabled>&gt;</button>
+              <div className="flex gap-1">
+                <button className="px-2 py-1 border border-[#cbd1da] rounded text-[#94a3b8]" disabled>&lt;</button>
+                <button className="px-2.5 py-1 bg-[#111827] text-white rounded font-bold">1</button>
+                <button className="px-2 py-1 border border-[#cbd1da] rounded text-[#94a3b8]" disabled>&gt;</button>
               </div>
             </div>
           </div>
 
           {/* Stats Bottom Left */}
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))", gap: "1rem" }}>
-            <div className="white-card" style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1rem 1.25rem", marginBottom: 0 }}>
-              <div style={{ width: "2.5rem", height: "2.5rem", borderRadius: "9999px", backgroundColor: "#f1f5f9", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <FileText size={18} className="text-gray-500" />
+          <div className="grid grid-cols-3 gap-4">
+            <div className="bg-white border border-[#d5d9e0] rounded p-4 flex items-center gap-3">
+              <div className="w-9 h-9 rounded bg-[#f1f5f9] flex items-center justify-center flex-shrink-0">
+                <FileText size={16} className="text-[#475569]" />
               </div>
               <div>
-                <p style={{ fontSize: "1.125rem", fontWeight: 800, color: "#0f172a", lineHeight: 1.1 }}>18</p>
-                <p style={{ fontSize: "0.6875rem", color: "#64748b", marginTop: "2px", fontWeight: 600 }}>Total Prescriptions</p>
+                <p className="text-lg font-extrabold text-[#111827] leading-tight">18</p>
+                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748b] mt-0.5">Total</p>
               </div>
             </div>
-            <div className="white-card" style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1rem 1.25rem", marginBottom: 0 }}>
-              <div style={{ width: "2.5rem", height: "2.5rem", borderRadius: "9999px", backgroundColor: "#fffbeb", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Clock size={18} className="text-amber-500" />
+            <div className="bg-white border border-[#d5d9e0] rounded p-4 flex items-center gap-3">
+              <div className="w-9 h-9 rounded bg-[#fffbeb] flex items-center justify-center flex-shrink-0">
+                <Clock size={16} className="text-amber-600" />
               </div>
               <div>
-                <p style={{ fontSize: "1.125rem", fontWeight: 800, color: "#0f172a", lineHeight: 1.1 }}>12</p>
-                <p style={{ fontSize: "0.6875rem", color: "#64748b", marginTop: "2px", fontWeight: 600 }}>Pending</p>
+                <p className="text-lg font-extrabold text-[#111827] leading-tight">12</p>
+                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748b] mt-0.5">Pending</p>
               </div>
             </div>
-            <div className="white-card" style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1rem 1.25rem", marginBottom: 0 }}>
-              <div style={{ width: "2.5rem", height: "2.5rem", borderRadius: "9999px", backgroundColor: "#e0f2fe", display: "flex", alignItems: "center", justifyItems: "center", justifyContent: "center", flexShrink: 0 }}>
-                <Check size={18} className="text-blue-500" />
+            <div className="bg-white border border-[#d5d9e0] rounded p-4 flex items-center gap-3">
+              <div className="w-9 h-9 rounded bg-[#e0f2fe] flex items-center justify-center flex-shrink-0">
+                <Check size={16} className="text-[#2563eb]" />
               </div>
               <div>
-                <p style={{ fontSize: "1.125rem", fontWeight: 800, color: "#0f172a", lineHeight: 1.1 }}>6</p>
-                <p style={{ fontSize: "0.6875rem", color: "#64748b", marginTop: "2px", fontWeight: 600 }}>Dispensed Today</p>
+                <p className="text-lg font-extrabold text-[#111827] leading-tight">6</p>
+                <p className="text-[10px] font-extrabold uppercase tracking-wider text-[#64748b] mt-0.5">Dispensed</p>
               </div>
             </div>
           </div>
         </div>
 
         {/* Right Column: Prescription Details */}
-        <div className="white-card" style={{ padding: "2rem", marginBottom: 0, display: "flex", flexDirection: "column", minHeight: "600px" }}>
+        <div className="bg-white border border-[#d5d9e0] rounded p-6 flex flex-col min-h-[580px]">
           {selectedItem ? (
             <>
-              <h3 style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em", marginBottom: "1.25rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.5rem" }}>PRESCRIPTION DETAILS</h3>
+              <h3 className="text-[11px] font-extrabold text-[#475569] uppercase tracking-wider mb-4 border-b border-[#e2e8f0] pb-2">
+                PRESCRIPTION DETAILS
+              </h3>
               
               {/* Patient Info Banner */}
-              <div style={{ display: "flex", flexWrap: "wrap", justifyContent: "space-between", alignItems: "flex-start", gap: "1rem", marginBottom: "1.5rem" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
-                  <div style={{ display: "flex", width: "3.5rem", height: "3.5rem", borderRadius: "9999px", backgroundColor: "#f1f5f9", color: "#64748b", fontSize: "1.5rem", alignItems: "center", justifyContent: "center" }}>👤</div>
+              <div className="flex flex-wrap justify-between items-start gap-4 mb-5">
+                <div className="flex items-center gap-3">
+                  <div className="w-12 h-12 rounded bg-[#f1f5f9] border border-[#cbd5e1] flex items-center justify-center text-[#475569] shrink-0">
+                    <User size={20} />
+                  </div>
                   <div>
-                    <h2 style={{ fontSize: "1.25rem", fontWeight: 800, color: "#0f172a", lineHeight: 1.15 }}>{selectedItem.name}</h2>
-                    <div style={{ fontSize: "0.75rem", color: "#64748b", display: "flex", gap: "0.5rem", marginTop: "4px" }}>
-                      <span style={{ fontFamily: "monospace", color: "#2563eb", fontWeight: 700 }}>{selectedItem.pid}</span>
+                    <h2 className="text-base font-extrabold text-[#111827] leading-snug">{selectedItem.name}</h2>
+                    <div className="text-xs font-semibold text-[#64748b] flex gap-2 mt-0.5">
+                      <span className="font-mono text-[#2563eb] font-bold">{selectedItem.pid}</span>
                       <span>•</span>
                       <span>{selectedItem.age}</span>
                       <span>•</span>
@@ -338,50 +329,52 @@ export default function DispensingQueue() {
                   </div>
                 </div>
                 <div>
-                  <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, display: "block", marginBottom: "2px" }}>Prescription Date</span>
-                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", border: "1px solid #cbd5e1", borderRadius: "0.25rem", padding: "0.35rem 0.75rem", fontSize: "0.75rem", fontWeight: 700, color: "#334155", backgroundColor: "#f8fafc" }}>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#475569] block mb-1">Prescription Date</span>
+                  <div className="flex items-center gap-2 border border-[#cbd1da] rounded px-3 py-1 text-xs font-bold text-[#111827] bg-[#f8fafc]">
                     <span>{selectedItem.date}</span>
-                    <Calendar size={12} className="text-gray-400" />
+                    <Calendar size={12} className="text-[#64748b]" />
                   </div>
                 </div>
               </div>
 
               {/* Diagnosis & Doctor */}
-              <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem", marginBottom: "1.5rem" }}>
+              <div className="grid grid-cols-2 gap-4 mb-5">
                 <div>
-                  <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, display: "block", marginBottom: "2px" }}>Diagnosis</span>
-                  <div style={{ border: "1px solid #cbd5e1", borderRadius: "0.375rem", padding: "0.5rem 0.75rem", fontSize: "0.8125rem", fontWeight: 700, color: "#334155", backgroundColor: "#f8fafc" }}>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#475569] block mb-1">Diagnosis</span>
+                  <div className="border border-[#cbd1da] rounded p-2 text-xs font-bold text-[#111827] bg-[#f8fafc]">
                     {selectedItem.diagnosis}
                   </div>
                 </div>
                 <div>
-                  <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, display: "block", marginBottom: "2px" }}>Prescribing Doctor</span>
-                  <div style={{ border: "1px solid #cbd5e1", borderRadius: "0.375rem", padding: "0.5rem 0.75rem", fontSize: "0.8125rem", fontWeight: 700, color: "#334155", backgroundColor: "#f8fafc" }}>
+                  <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#475569] block mb-1">Prescribing Doctor</span>
+                  <div className="border border-[#cbd1da] rounded p-2 text-xs font-bold text-[#111827] bg-[#f8fafc]">
                     {selectedItem.doctor}
                   </div>
                 </div>
               </div>
 
               {/* Prescribed Medicines */}
-              <div style={{ flex: 1, marginBottom: "1.5rem", overflowY: "auto" }}>
-                <h4 style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, letterSpacing: "0.05em", marginBottom: "0.5rem", borderBottom: "1px solid #f1f5f9", paddingBottom: "0.25rem" }}>PRESCRIBED MEDICINES</h4>
-                <div style={{ border: "1px solid #e2e8f0", borderRadius: "0.5rem", overflow: "hidden" }}>
-                  <table className="light-table" style={{ border: "none", width: "100%" }}>
+              <div className="flex-1 mb-5 overflow-y-auto">
+                <h4 className="text-[10px] font-extrabold text-[#475569] uppercase tracking-wider mb-2 border-b border-[#e2e8f0] pb-1">
+                  PRESCRIBED MEDICINES
+                </h4>
+                <div className="border border-[#cbd1da] rounded overflow-hidden">
+                  <table className="w-full text-xs text-left border-collapse">
                     <thead>
-                      <tr>
-                        <th style={{ width: "30px" }}>#</th>
-                        <th>DRUG NAME</th>
-                        <th>STRENGTH / FORM</th>
-                        <th style={{ width: "80px", textAlign: "center" }}>QTY</th>
+                      <tr className="bg-[#f1f2f4] border-b border-[#cbd1da] text-[10px] font-extrabold uppercase tracking-wider text-[#475569] h-9">
+                        <th className="px-3 w-8">#</th>
+                        <th className="px-3">DRUG NAME</th>
+                        <th className="px-3">STRENGTH / FORM</th>
+                        <th className="px-3 w-20 text-center">QTY</th>
                       </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-[#e2e8f0] font-semibold text-[#111827]">
                       {selectedItem.drugs.map((drug, index) => (
-                        <tr key={index}>
-                          <td style={{ fontWeight: 700 }}>{index + 1}</td>
-                          <td style={{ fontWeight: 700, color: "#0f172a" }}>{drug.name}</td>
-                          <td>{drug.strength} / {drug.type}</td>
-                          <td style={{ textAlign: "center", fontWeight: 800, color: "#2563eb" }}>{drug.qty}</td>
+                        <tr key={index} className="h-10 hover:bg-[#f8fafc]">
+                          <td className="px-3 font-bold text-[#475569]">{index + 1}</td>
+                          <td className="px-3 font-extrabold text-[#111827]">{drug.name}</td>
+                          <td className="px-3 text-[#475569]">{drug.strength} / {drug.type}</td>
+                          <td className="px-3 text-center font-extrabold text-[#2563eb]">{drug.qty}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -391,11 +384,11 @@ export default function DispensingQueue() {
 
               {/* Alerts */}
               {selectedItem.alerts && selectedItem.alerts.length > 0 && (
-                <div style={{ display: "flex", gap: "0.75rem", padding: "0.875rem 1.15rem", border: "1px solid #fca5a5", borderRadius: "0.375rem", backgroundColor: "#fef2f2", marginBottom: "1.25rem", flexShrink: 0 }}>
-                  <AlertTriangle size={18} className="text-red-500" style={{ marginTop: "2px", flexShrink: 0 }} />
+                <div className="flex gap-3 p-3 border border-red-200 rounded bg-red-50 mb-4 shrink-0">
+                  <AlertTriangle size={16} className="text-red-600 mt-0.5 shrink-0" />
                   <div>
-                    <span style={{ fontSize: "0.6875rem", color: "#b91c1c", textTransform: "uppercase", fontWeight: 700, display: "block", marginBottom: "2px" }}>ALERTS</span>
-                    <ul style={{ fontSize: "0.75rem", color: "#b91c1c", paddingLeft: "1rem", margin: 0 }}>
+                    <span className="text-[10px] font-extrabold text-red-700 uppercase tracking-wider block mb-1">SAFETY ALERTS</span>
+                    <ul className="text-xs font-semibold text-red-700 list-disc pl-4 space-y-0.5">
                       {selectedItem.alerts.map((alert, idx) => (
                         <li key={idx}>{alert}</li>
                       ))}
@@ -405,46 +398,42 @@ export default function DispensingQueue() {
               )}
 
               {/* Notes */}
-              <div style={{ marginBottom: "1.5rem", flexShrink: 0 }}>
-                <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 700, display: "block", marginBottom: "4px" }}>NOTES (OPTIONAL)</span>
+              <div className="mb-5 shrink-0">
+                <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#475569] block mb-1">NOTES (OPTIONAL)</span>
                 <textarea 
                   value={customNotes}
                   onChange={(e) => setCustomNotes(e.target.value)}
                   placeholder="Enter notes..." 
-                  className="light-input"
-                  style={{ minHeight: "70px", padding: "0.5rem 0.75rem" }}
+                  className="w-full h-16 p-2 rounded border border-[#cbd1da] bg-white text-xs font-semibold text-[#111827] focus:border-[#111827] focus:outline-none"
                 ></textarea>
               </div>
 
               {/* Actions */}
-              <div style={{ display: "flex", gap: "0.75rem", marginTop: "auto", borderTop: "1px solid #f1f5f9", paddingTop: "1rem", flexShrink: 0 }}>
+              <div className="flex gap-3 mt-auto border-t border-[#e2e8f0] pt-4 shrink-0">
                 <button 
                   onClick={() => handleDispense('full')}
-                  className="btn-light-blue"
-                  style={{ flex: 1, padding: "0.75rem 0" }}
+                  className="flex-1 py-2.5 text-xs font-extrabold text-white bg-[#111827] border border-[#111827] rounded hover:bg-[#1f2937] transition-colors"
                 >
                   DISPENSE AVAILABLE
                 </button>
                 <button 
                   onClick={() => handleDispense('partial')}
-                  className="btn-light-outline"
-                  style={{ flex: 1, padding: "0.75rem 0" }}
+                  className="flex-1 py-2.5 text-xs font-extrabold text-[#111827] bg-white border border-[#cbd1da] rounded hover:bg-[#f3f4f6] transition-colors"
                 >
                   MARK AS PARTIAL
                 </button>
                 <button 
                   onClick={() => handleDispense('cancel')}
-                  className="btn-light-outline"
-                  style={{ padding: "0.75rem 1rem", color: "#ef4444", borderColor: "#fca5a5" }}
+                  className="px-4 py-2.5 text-xs font-extrabold text-red-600 bg-white border border-red-200 rounded hover:bg-red-50 transition-colors"
                 >
                   CANCEL
                 </button>
               </div>
             </>
           ) : (
-            <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#64748b" }}>
-              <FileText size={48} style={{ color: "#cbd5e1", marginBottom: "0.5rem" }} />
-              <p style={{ fontSize: "0.875rem" }}>Select a prescription record from the queue to view details.</p>
+            <div className="flex-1 flex flex-col items-center justify-center text-[#64748b]">
+              <FileText size={40} className="text-[#cbd5e1] mb-2" />
+              <p className="text-xs font-semibold">Select a prescription record from the queue to view details.</p>
             </div>
           )}
         </div>
