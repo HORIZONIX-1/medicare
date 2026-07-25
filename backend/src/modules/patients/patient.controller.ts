@@ -6,7 +6,8 @@ export const searchPatients = async (req: any, res: any) => {
 
     const patients = await patientService.searchPatients(
       type,
-      value
+      value,
+      req.user
     );
 
     res.json(patients);
