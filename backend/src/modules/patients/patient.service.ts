@@ -8,18 +8,18 @@ export const searchPatients = async (
   console.log("searchPatients called with:", { type, value, currentUser });
   let organizationId: number | null = null;
 
-  if (currentUser && currentUser.role === "DOCTOR") {
+  if (currentUser && (currentUser.role === "DOCTOR" || currentUser.role === "RECEPTIONIST")) {
     const user = await prisma.user.findUnique({
       where: { user_id: currentUser.userId },
       select: { organization_id: true }
     });
     organizationId = user?.organization_id ?? null;
-    console.log("Found organizationId for doctor:", organizationId);
+    console.log(`Found organizationId for ${currentUser.role}:`, organizationId);
   }
 
   const where: any = {};
 
-  if (currentUser && currentUser.role === "DOCTOR") {
+  if (currentUser && (currentUser.role === "DOCTOR" || currentUser.role === "RECEPTIONIST")) {
     where.organization_id = organizationId;
   }
 
