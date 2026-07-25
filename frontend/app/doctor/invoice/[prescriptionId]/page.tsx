@@ -50,6 +50,15 @@ export default function InvoicePage({ params }: Props) {
       if (userString) {
         setCurrentUser(JSON.parse(userString));
       }
+      
+      const savedFee = localStorage.getItem("doctorFee");
+      const savedDiscount = localStorage.getItem("discount");
+      if (savedFee) {
+        setDoctorFee(Number(savedFee));
+      }
+      if (savedDiscount) {
+        setDiscount(Number(savedDiscount));
+      }
     } catch (e) {
       console.error(e);
     }
@@ -171,12 +180,12 @@ export default function InvoicePage({ params }: Props) {
                 <span>Calendar</span>
               </div>
             </Link>
-            <a href="#" className="dr-nav-item">
+            <Link href="/doctor/settings" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <SettingsIcon size={18} />
                 <span>Settings</span>
               </div>
-            </a>
+            </Link>
           </nav>
 
           {/* Sidebar Footer Logout */}

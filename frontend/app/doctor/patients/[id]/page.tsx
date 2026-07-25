@@ -290,12 +290,12 @@ export default function DoctorPatientProfile({ params }: Props) {
                 <span>Calendar</span>
               </div>
             </Link>
-            <a href="#" className="dr-nav-item">
+            <Link href="/doctor/settings" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <SettingsIcon size={18} />
                 <span>Settings</span>
               </div>
-            </a>
+            </Link>
           </nav>
 
           {/* Sidebar Footer Logout */}
