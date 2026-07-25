@@ -10,7 +10,7 @@ interface Props {
   onSelect: (drug: any) => void;
 }
 
-export default function DrugSearchInput({ value, placeholder = "Search Drug", onChange, onSelect }: Props) {
+export default function DrugSearchInput({ value, placeholder = "Search Drug...", onChange, onSelect }: Props) {
   const [inputValue, setInputValue] = useState(value);
   const [searchResults, setSearchResults] = useState<any[]>([]);
   const [isSearching, setIsSearching] = useState(false);
@@ -19,7 +19,6 @@ export default function DrugSearchInput({ value, placeholder = "Search Drug", on
   const dropdownRef = useRef<HTMLDivElement>(null);
   const selectInProgress = useRef(false);
 
-  // Keep local input in sync with external value changes (e.g., initial load)
   useEffect(() => {
     if (!selectInProgress.current) {
       setInputValue(value);
@@ -58,7 +57,6 @@ export default function DrugSearchInput({ value, placeholder = "Search Drug", on
 
       if (requestId !== searchRequestId.current) return;
 
-      // Filter stocked drugs with available quantity > 0
       setSearchResults(stockedDrugs.filter((d) => d && Number(d.available_quantity) > 0));
     } catch (e) {
       console.error(e);
@@ -85,7 +83,6 @@ export default function DrugSearchInput({ value, placeholder = "Search Drug", on
     }, 100);
   };
 
-  // Close dropdown on click outside
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
@@ -103,7 +100,7 @@ export default function DrugSearchInput({ value, placeholder = "Search Drug", on
       <input
         value={inputValue}
         placeholder={placeholder}
-        className="w-full rounded-md border border-slate-300 bg-white px-3 py-1.5 text-sm text-slate-800 focus:border-blue-500 focus:ring-1 focus:ring-blue-500 outline-none"
+        className="w-full h-9 rounded border border-[#cbd1da] bg-white px-3 text-xs font-semibold text-[#111827] focus:border-[#111827] focus:outline-none transition-colors"
         onChange={(e) => handleInputChange(e.target.value)}
         onFocus={() => {
           if (inputValue.trim()) {
@@ -114,13 +111,13 @@ export default function DrugSearchInput({ value, placeholder = "Search Drug", on
       />
 
       {isOpen && (isSearching || searchResults.length > 0) && (
-        <div className="absolute left-0 right-0 z-50 mt-1 max-h-60 overflow-y-auto rounded-md border border-slate-200 bg-white shadow-lg">
+        <div className="absolute left-0 right-0 z-50 mt-1 max-h-56 overflow-y-auto rounded border border-[#d5d9e0] bg-white shadow-lg">
           {isSearching && searchResults.length === 0 && (
-            <div className="px-3 py-2 text-xs text-slate-400">Searching stocked drugs...</div>
+            <div className="px-3 py-2 text-xs font-semibold text-[#64748b]">Searching stocked drugs...</div>
           )}
 
           {!isSearching && searchResults.length === 0 && (
-            <div className="px-3 py-2 text-xs text-slate-400">No stocked drugs found.</div>
+            <div className="px-3 py-2 text-xs font-semibold text-[#64748b]">No stocked drugs found.</div>
           )}
 
           {searchResults.map((drug) => (
@@ -128,11 +125,11 @@ export default function DrugSearchInput({ value, placeholder = "Search Drug", on
               key={drug.drug_id}
               type="button"
               onClick={() => handleSelect(drug)}
-              className="w-full px-3 py-2 text-left text-sm text-slate-700 hover:bg-slate-50 transition-colors focus:bg-slate-50 outline-none"
+              className="w-full px-3 py-2 text-left text-xs font-semibold text-[#111827] hover:bg-[#f3f4f6] transition-colors focus:bg-[#f3f4f6] outline-none border-b border-[#f1f5f9] last:border-b-0"
             >
               <div className="flex justify-between items-center">
-                <span className="font-medium text-slate-800">{drug.name}</span>
-                <span className="text-xs text-slate-500" style={{ marginLeft: "10px" }}>
+                <span className="font-bold text-[#111827]">{drug.name}</span>
+                <span className="text-[10px] font-bold uppercase tracking-wider text-[#64748b] bg-[#f1f5f9] px-2 py-0.5 rounded">
                   Stock: {drug.available_quantity} ({drug.stock_status})
                 </span>
               </div>
