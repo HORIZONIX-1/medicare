@@ -233,12 +233,20 @@ export default function ReceptionistPatients() {
                         <td>{p.phone || "—"}</td>
                         <td>{p.gender}</td>
                         <td style={{ textAlign: "right" }}>
-                          <button
-                            onClick={() => startCheckInFlow(p)}
-                            className="px-3 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition"
-                          >
-                            Check In
-                          </button>
+                          <div style={{ display: "inline-flex", gap: "0.5rem" }}>
+                            <button
+                              onClick={() => router.push(`/receptionist/patients/${p.patient_id}`)}
+                              className="px-3 py-1 border border-slate-200 text-slate-700 rounded-lg text-xs font-bold hover:bg-slate-50 transition"
+                            >
+                              View Profile
+                            </button>
+                            <button
+                              onClick={() => startCheckInFlow(p)}
+                              className="px-3 py-1 bg-emerald-100 hover:bg-emerald-200 text-emerald-800 rounded-lg text-xs font-bold transition"
+                            >
+                              Check In
+                            </button>
+                          </div>
                         </td>
                       </tr>
                     ))}

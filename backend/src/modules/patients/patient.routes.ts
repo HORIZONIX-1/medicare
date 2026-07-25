@@ -5,6 +5,8 @@ import {
   searchPatients,
   getPatientProfile,
   addPatientAllergy,
+  updatePatient,
+  deletePatient,
 } from "./patient.controller";
 
 import { authMiddleware } from "../../middleware/auth.middleware";
@@ -16,6 +18,10 @@ router.post("/", authMiddleware, createPatient as any);
 router.get("/search", authMiddleware, searchPatients as any);
 
 router.post("/:id/allergies", authMiddleware, addPatientAllergy as any);
+
+router.put("/:id", authMiddleware, updatePatient as any);
+
+router.delete("/:id", authMiddleware, deletePatient as any);
 
 router.get("/:id", authMiddleware, getPatientProfile as any);
 
