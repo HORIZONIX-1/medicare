@@ -89,12 +89,12 @@ export default function ReceptionistLayout({
         <aside className="dr-sidebar">
           {/* Logo Area */}
           <div className="dr-sidebar-logo">
-            <div className="dr-logo-icon" style={{ backgroundColor: "#10b981" }}>
+            <div className="dr-logo-icon" style={{ backgroundColor: "#2563eb" }}>
               <Plus size={20} strokeWidth={3} />
             </div>
             <div className="dr-logo-text">
               <span className="dr-logo-title">MediCore</span>
-              <span className="dr-logo-subtitle" style={{ borderColor: "#10b981" }}>Reception Suite</span>
+              <span className="dr-logo-subtitle" style={{ borderColor: "#2563eb" }}>Reception Suite</span>
             </div>
           </div>
 
@@ -135,7 +135,7 @@ export default function ReceptionistLayout({
           {/* Top Header */}
           <header className="dr-header">
             <div className="dr-header-date">
-              <CalendarIcon size={16} className="text-emerald-600" />
+              <CalendarIcon size={16} className="text-blue-600" />
               <span>{formattedDate}</span>
               <ChevronDown size={14} className="text-gray-400" />
             </div>
@@ -152,8 +152,8 @@ export default function ReceptionistLayout({
                   width: "2.25rem",
                   height: "2.25rem",
                   borderRadius: "9999px",
-                  backgroundColor: "#d1fae5",
-                  color: "#065f46",
+                  backgroundColor: "#dbeafe",
+                  color: "#1e40af",
                   fontWeight: 800,
                   fontSize: "0.95rem",
                   alignItems: "center",

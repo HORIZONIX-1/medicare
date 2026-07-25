@@ -409,7 +409,7 @@ export default function ReceptionistPatients() {
 
       {/* CHECK-IN MODAL POPUP */}
       {isCheckInModalOpen && targetPatient && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4" style={{ backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}>
           <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
               <div>
@@ -428,7 +428,7 @@ export default function ReceptionistPatients() {
               {checkInStatus && (
                 <div className={`p-3 rounded-xl border text-xs font-semibold mb-4 flex items-start gap-2 ${
                   checkInStatus.type === "success" 
-                    ? "bg-emerald-50 border-emerald-100 text-emerald-800" 
+                    ? "bg-blue-50 border-blue-100 text-blue-800" 
                     : "bg-red-50 border-red-100 text-red-800"
                 }`}>
                   {checkInStatus.type === "success" ? <CheckCircle size={14} className="mt-0.5" /> : <AlertCircle size={14} className="mt-0.5" />}
@@ -474,7 +474,7 @@ export default function ReceptionistPatients() {
                   <button
                     type="submit"
                     disabled={isCheckingIn || !selectedDoctorId}
-                    className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
                     {isCheckingIn ? "Checking in..." : "Confirm Check-in"}
                   </button>

@@ -145,7 +145,7 @@ export default function ReceptionistDashboard() {
       {/* Upper Welcome Header */}
       <div className="flex flex-col md:flex-row justify-between items-start md:items-center gap-4 mb-6">
         <div>
-          <span className="text-emerald-600 text-xs font-bold tracking-wider uppercase">Portal Overview</span>
+          <span className="text-blue-600 text-xs font-bold tracking-wider uppercase">Portal Overview</span>
           <h1 className="text-2xl font-extrabold text-slate-800 tracking-tight mt-1">
             {stats?.organization?.name || "Clinic Dashboard"}
           </h1>
@@ -163,7 +163,7 @@ export default function ReceptionistDashboard() {
             setSearchResults([]);
             setIsCheckInModalOpen(true);
           }}
-          className="flex items-center gap-2 px-4 py-2.5 bg-emerald-600 text-white rounded-xl text-sm font-bold shadow-md shadow-emerald-600/20 hover:bg-emerald-700 active:scale-95 transition-all"
+          className="flex items-center gap-2 px-4 py-2.5 bg-blue-600 text-white rounded-xl text-sm font-bold shadow-md shadow-blue-600/20 hover:bg-blue-700 active:scale-95 transition-all"
         >
           <Plus size={16} />
           <span>New Check-in</span>
@@ -196,7 +196,7 @@ export default function ReceptionistDashboard() {
 
         {/* Card 3 */}
         <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm flex items-center gap-4">
-          <div className="w-12 h-12 rounded-xl bg-emerald-50 flex items-center justify-center text-emerald-600">
+          <div className="w-12 h-12 rounded-xl bg-blue-50 flex items-center justify-center text-blue-600">
             <Activity size={24} />
           </div>
           <div>
@@ -215,7 +215,7 @@ export default function ReceptionistDashboard() {
               <h2 className="font-extrabold text-slate-800 text-base">Doctors & Daily Loads</h2>
               <p className="text-slate-500 text-xs">Assigned patient consultation count for today.</p>
             </div>
-            <span className="px-2.5 py-1 bg-emerald-100 text-emerald-800 text-xs font-bold rounded-full uppercase">
+            <span className="px-2.5 py-1 bg-blue-100 text-blue-800 text-xs font-bold rounded-full uppercase">
               Active Now
             </span>
           </div>
@@ -246,7 +246,7 @@ export default function ReceptionistDashboard() {
 
                     <button
                       onClick={() => openCheckInForDoctor(doc.doctor_id)}
-                      className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-emerald-50 hover:text-emerald-700 transition"
+                      className="px-3 py-1.5 bg-slate-100 text-slate-700 rounded-lg text-xs font-bold hover:bg-blue-50 hover:text-blue-700 transition"
                     >
                       Check-in Patient
                     </button>
@@ -263,12 +263,12 @@ export default function ReceptionistDashboard() {
           {stats?.organization && (
             <div className="bg-gradient-to-br from-slate-900 to-slate-950 text-white rounded-2xl p-6 shadow-sm border border-slate-800">
               <div className="flex items-center gap-3 mb-4">
-                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-emerald-400">
+                <div className="w-10 h-10 rounded-xl bg-slate-800 flex items-center justify-center text-blue-400">
                   <Building2 size={20} />
                 </div>
                 <div>
                   <h4 className="font-extrabold text-sm text-slate-100">{stats.organization.name}</h4>
-                  <span className="text-[10px] bg-slate-800 text-emerald-400 font-bold px-2 py-0.5 rounded uppercase">
+                  <span className="text-[10px] bg-slate-800 text-blue-400 font-bold px-2 py-0.5 rounded uppercase">
                     Your Center
                   </span>
                 </div>
@@ -290,7 +290,7 @@ export default function ReceptionistDashboard() {
                 {stats.organization.website && (
                   <div className="flex items-center gap-2">
                     <Globe size={12} className="text-slate-500" />
-                    <a href={stats.organization.website} target="_blank" rel="noreferrer" className="hover:underline text-emerald-400">
+                    <a href={stats.organization.website} target="_blank" rel="noreferrer" className="hover:underline text-blue-400">
                       {stats.organization.website.replace(/(^\w+:|^)\/\//, "")}
                     </a>
                   </div>
@@ -315,7 +315,7 @@ export default function ReceptionistDashboard() {
                     <div>
                       <h4 className="font-bold text-slate-800">{patient.name}</h4>
                       <div className="flex items-center gap-2 text-slate-500 mt-0.5">
-                        <span className="font-mono text-emerald-700 bg-emerald-50 px-1.5 py-0.5 rounded text-[10px]">
+                        <span className="font-mono text-blue-700 bg-blue-50 px-1.5 py-0.5 rounded text-[10px]">
                           {patient.patient_code}
                         </span>
                         <span>•</span>
@@ -335,7 +335,7 @@ export default function ReceptionistDashboard() {
 
       {/* QUICK CHECK-IN MODAL */}
       {isCheckInModalOpen && (
-        <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4">
+        <div className="fixed inset-0 z-50 bg-slate-900/60 flex items-center justify-center p-4" style={{ backdropFilter: "blur(4px)", WebkitBackdropFilter: "blur(4px)" }}>
           <div className="bg-white w-full max-w-md rounded-2xl shadow-xl overflow-hidden animate-in fade-in zoom-in duration-200">
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-slate-100 flex justify-between items-center">
@@ -356,7 +356,7 @@ export default function ReceptionistDashboard() {
               {checkInStatus && (
                 <div className={`p-3 rounded-xl border text-xs font-semibold mb-4 flex items-start gap-2 ${
                   checkInStatus.type === "success" 
-                    ? "bg-emerald-50 border-emerald-100 text-emerald-800" 
+                    ? "bg-blue-50 border-blue-100 text-blue-800" 
                     : "bg-red-50 border-red-100 text-red-800"
                 }`}>
                   {checkInStatus.type === "success" ? <CheckCircle size={14} className="mt-0.5" /> : <AlertCircle size={14} className="mt-0.5" />}
@@ -487,7 +487,7 @@ export default function ReceptionistDashboard() {
                   <button
                     type="submit"
                     disabled={isCheckingIn || !selectedPatient || !selectedDoctorId}
-                    className="px-4 py-2 bg-emerald-600 text-white rounded-xl text-xs font-bold hover:bg-emerald-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
+                    className="px-4 py-2 bg-blue-600 text-white rounded-xl text-xs font-bold hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed transition"
                   >
                     {isCheckingIn ? "Checking in..." : "Confirm Check-in"}
                   </button>
