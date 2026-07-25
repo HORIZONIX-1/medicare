@@ -235,7 +235,7 @@ export default function AddDrugStock() {
     }
   };
 
-  const openDatePicker = (inputRef: React.RefObject<HTMLInputElement>) => {
+  const openDatePicker = (inputRef: React.RefObject<HTMLInputElement | null>) => {
     try {
       if (inputRef.current && typeof inputRef.current.showPicker === 'function') {
         inputRef.current.showPicker();
