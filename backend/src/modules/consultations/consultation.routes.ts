@@ -4,6 +4,7 @@ import {
   startConsultation,
   updateConsultation,
   getConsultation,
+  listConsultations,
 } from "./consultation.controller";
 
 import { authMiddleware }
@@ -19,6 +20,13 @@ router.post(
   authMiddleware,
   roleMiddleware("DOCTOR"),
   startConsultation as any
+);
+
+router.get(
+  "/",
+  authMiddleware,
+  roleMiddleware("DOCTOR"),
+  listConsultations as any
 );
 
 router.put(

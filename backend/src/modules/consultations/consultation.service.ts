@@ -67,3 +67,34 @@ export const getConsultation =
     },
   });
 };
+
+export const listConsultations = async (currentUser?: { userId: number; role: string }) => {
+  let organizationId: number | null = null;
+
+  if (currentUser && (currentUser.role === "DOCTOR" || currentUser.role === "RECEPTIONIST" || currentUser.role === "DISPENSER")) {
+    const user = await prisma.user.findUnique({
+      where: { user_id: currentUser.userId },
+      select: { organization_id: true }
+    });
+    organizationId = user?.organization_id ?? null;
+  }
+
+  const where: any = {};
+  if (organizationId !== null) {
+    where.doctor = {
+      organization_id: organizationId
+    };
+  }
+
+  return prisma.consultation.findMany({
+    where,
+    include: {
+      patient: true,
+      doctor: true,
+      diagnoses: true
+    },
+    orderBy: {
+      visit_date: "desc"
+    }
+  });
+};

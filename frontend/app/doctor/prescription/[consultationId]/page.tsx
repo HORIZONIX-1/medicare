@@ -309,12 +309,12 @@ export default function PrescriptionPage({ params }: Props) {
                 <span>Invoices</span>
               </div>
             </Link>
-            <a href="#" className="dr-nav-item">
+            <Link href="/doctor/calendar" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <CalendarIcon size={16} />
                 <span>Calendar</span>
               </div>
-            </a>
+            </Link>
             <a href="#" className="dr-nav-item">
               <div className="dr-nav-item-left">
                 <SettingsIcon size={16} />

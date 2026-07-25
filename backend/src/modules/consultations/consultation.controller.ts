@@ -64,3 +64,15 @@ export const getConsultation =
     });
   }
 };
+
+export const listConsultations = async (req: AuthRequest, res: Response) => {
+  try {
+    const consultations = await consultationService.listConsultations(req.user);
+    res.json(consultations);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({
+      message: "Failed to list consultations",
+    });
+  }
+};
