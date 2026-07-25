@@ -20,42 +20,56 @@ export default function DispensingActions({
   onPrint,
   onDownload,
 }: Props) {
+  const btnBaseStyle = {
+    flex: 1,
+    padding: "0.75rem 1rem",
+    fontSize: "0.84375rem",
+    fontWeight: 800,
+    borderRadius: "0.75rem",
+    cursor: "pointer",
+    display: "flex",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "0.5rem",
+    fontFamily: "'Poppins', sans-serif"
+  };
+
   if (type === "history") {
     return (
-      <div className="flex gap-3 mt-4 shrink-0 border-t border-[#e2e8f0] pt-4">
+      <div style={{ display: "flex", gap: "0.875rem", marginTop: "1.25rem", borderTop: "1px solid #cbd1da", paddingTop: "1.25rem", flexShrink: 0 }}>
         <button 
           onClick={onPrint}
-          className="flex-1 py-2.5 text-xs font-extrabold text-white bg-[#111827] border border-[#111827] rounded hover:bg-[#1f2937] transition-colors flex items-center justify-center gap-2"
+          style={{ ...btnBaseStyle, color: "#ffffff", backgroundColor: "#000000", border: "1px solid #000000" }}
         >
-          <Printer size={14} /> <span>PRINT RECEIPT</span>
+          <Printer size={16} style={{ color: "#ffffff" }} /> <span style={{ color: "#ffffff" }}>PRINT RECEIPT</span>
         </button>
         <button 
           onClick={onDownload}
-          className="flex-1 py-2.5 text-xs font-extrabold text-[#111827] bg-white border border-[#cbd1da] rounded hover:bg-[#f3f4f6] transition-colors flex items-center justify-center gap-2"
+          style={{ ...btnBaseStyle, color: "#000000", backgroundColor: "#ffffff", border: "1px solid #cbd1da" }}
         >
-          <Download size={14} /> <span>EXPORT RECORD</span>
+          <Download size={16} style={{ color: "#000000" }} /> <span>EXPORT RECORD</span>
         </button>
       </div>
     );
   }
 
   return (
-    <div className="flex gap-3 mt-4 border-t border-[#e2e8f0] pt-4 shrink-0">
+    <div style={{ display: "flex", gap: "0.875rem", marginTop: "1.25rem", borderTop: "1px solid #cbd1da", paddingTop: "1.25rem", flexShrink: 0 }}>
       <button 
         onClick={onDispenseFull}
-        className="flex-1 py-2.5 text-xs font-extrabold text-white bg-[#111827] border border-[#111827] rounded hover:bg-[#1f2937] transition-colors"
+        style={{ ...btnBaseStyle, color: "#ffffff", backgroundColor: "#000000", border: "1px solid #000000" }}
       >
-        DISPENSE AVAILABLE
+        <span style={{ color: "#ffffff" }}>DISPENSE AVAILABLE</span>
       </button>
       <button 
         onClick={onDispensePartial}
-        className="flex-1 py-2.5 text-xs font-extrabold text-[#111827] bg-white border border-[#cbd1da] rounded hover:bg-[#f3f4f6] transition-colors"
+        style={{ ...btnBaseStyle, color: "#000000", backgroundColor: "#ffffff", border: "1px solid #cbd1da" }}
       >
-        MARK AS PARTIAL
+        <span>MARK AS PARTIAL</span>
       </button>
       <button 
         onClick={onCancel}
-        className="px-4 py-2.5 text-xs font-extrabold text-red-600 bg-white border border-red-200 rounded hover:bg-red-50 transition-colors"
+        style={{ padding: "0.75rem 1.25rem", fontSize: "0.84375rem", fontWeight: 800, color: "#dc2626", backgroundColor: "#ffffff", border: "1px solid #fca5a5", borderRadius: "0.75rem", cursor: "pointer", fontFamily: "'Poppins', sans-serif" }}
       >
         CANCEL
       </button>
