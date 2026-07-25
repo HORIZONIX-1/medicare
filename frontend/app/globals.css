@@ -1342,9 +1342,21 @@ input[type="range"]::-moz-range-thumb {
   display: flex;
   min-height: 100vh;
   background-color: #f8fafc;
-  color: #1e293b;
+  color: #0f172a;
   font-family: 'Plus Jakarta Sans', var(--font-sans), sans-serif;
 }
+
+.dr-layout h1, .disp-layout h1,
+.dr-layout h2, .disp-layout h2,
+.dr-layout h3, .disp-layout h3,
+.dr-layout h4, .disp-layout h4 {
+  color: #0f172a !important;
+}
+
+.dr-layout p, .disp-layout p {
+  color: #1e293b;
+}
+
 
 /* Sidebar */
 .dr-sidebar, .disp-sidebar {
@@ -1415,21 +1427,22 @@ input[type="range"]::-moz-range-thumb {
   justify-content: space-between;
   padding: 0.625rem 0.75rem;
   border-radius: 0.5rem;
-  color: #475569;
+  color: #1e293b;
   font-size: 0.875rem;
-  font-weight: 600;
+  font-weight: 700;
   text-decoration: none;
   transition: all 0.15s ease;
 }
 
 .dr-nav-item:hover, .disp-nav-item:hover {
-  background-color: #f8fafc;
+  background-color: #f1f5f9;
   color: #0f172a;
 }
 
 .dr-nav-item.active, .disp-nav-item.active {
   background-color: #eff6ff;
-  color: #2563eb;
+  color: #1d4ed8;
+  font-weight: 800;
 }
 
 .dr-nav-item-left, .disp-nav-item-left {
@@ -2271,6 +2284,20 @@ input[type="range"]::-moz-range-thumb {
 .disp-layout textarea::placeholder {
   color: #94a3b8 !important;
 }
+
+/* Dispenser Portal 2 Column Grid Utility */
+.disp-grid-2col {
+  display: grid !important;
+  grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  gap: 1.25rem !important;
+}
+
+@media (max-width: 768px) {
+  .disp-grid-2col {
+    grid-template-columns: 1fr !important;
+  }
+}
+
 
 
 

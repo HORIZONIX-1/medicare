@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
 import { PrescriptionItem } from "@/types/prescription";
 import DrugSearchInput from "@/components/prescription/DrugSearchInput";
+import OutsideDrugForm from "@/components/prescription/OutsideDrugForm";
+import PatientPrescriptionBanner from "@/components/prescription/PatientPrescriptionBanner";
 import { 
   LayoutDashboard, 
   Users, 
@@ -21,8 +23,7 @@ import {
   ArrowRight,
   ArrowLeft,
   Plus,
-  Trash2,
-  User
+  Trash2
 } from "lucide-react";
 
 interface Props {
@@ -39,11 +40,6 @@ export default function PrescriptionPage({ params }: Props) {
   const [items, setItems] = useState<PrescriptionItem[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [loadError, setLoadError] = useState<string | null>(null);
-  const [outsideDrug, setOutsideDrug] = useState({
-    drug_name: "",
-    instructions: "",
-    quantity: "",
-  });
   const [formattedDate, setFormattedDate] = useState("Wednesday, June 12, 2024");
   const [currentUser, setCurrentUser] = useState<any>(null);
 
@@ -189,15 +185,13 @@ export default function PrescriptionPage({ params }: Props) {
     ]);
   };
 
-  const addOutsideDrug = () => {
-    if (!outsideDrug.drug_name.trim()) return;
-
+  const addOutsideDrug = (outsideDrug: { drug_name: string; instructions: string; quantity: string }) => {
     setItems((current) => [
       ...current,
       {
-        drug_name: outsideDrug.drug_name.trim(),
+        drug_name: outsideDrug.drug_name,
         dosage: "1 Tablet",
-        instruction_1: outsideDrug.instructions.trim(),
+        instruction_1: outsideDrug.instructions,
         instruction_2: "",
         instruction_3: "",
         frequency: "1 Time / Day",
@@ -207,8 +201,6 @@ export default function PrescriptionPage({ params }: Props) {
         is_outside_drug: true,
       },
     ]);
-
-    setOutsideDrug({ drug_name: "", instructions: "", quantity: "" });
   };
 
   const savePrescription = async () => {
@@ -437,48 +429,12 @@ export default function PrescriptionPage({ params }: Props) {
             </div>
 
             {/* Patient Info Banner */}
-            <div className="bg-white border border-[#d5d9e0] rounded p-6 mb-6">
-              <div className="flex flex-wrap gap-6 justify-between items-center">
-                <div className="flex items-center gap-4">
-                  <div className="w-12 h-12 rounded bg-[#f1f5f9] border border-[#cbd5e1] grid place-items-center flex-shrink-0">
-                    <User size={20} className="text-[#475569]" />
-                  </div>
-                  <div>
-                    <h3 className="text-base font-extrabold text-[#111827]">{patient.name || "-"}</h3>
-                    <p className="text-xs font-semibold text-[#64748b] mt-0.5">
-                      Patient ID: <span className="font-mono text-[#2563eb] font-bold">{patient.patient_code || "-"}</span>
-                    </p>
-                  </div>
-                </div>
-
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-6 flex-1 max-w-[650px]">
-                  <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#475569]">Date of Birth</span>
-                    <p className="text-xs font-bold text-[#111827] mt-1">
-                      {patient.date_of_birth ? String(patient.date_of_birth).slice(0, 10) : "-"}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#475569]">Visit Date</span>
-                    <p className="text-xs font-bold text-[#111827] mt-1">
-                      {String(visitDate).slice(0, 10)}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#475569]">Diagnosis</span>
-                    <p className="text-xs font-bold text-[#111827] mt-1">
-                      {diagnoses[0] || "Viral Fever"}
-                    </p>
-                  </div>
-                  <div>
-                    <span className="text-[10px] font-extrabold uppercase tracking-wider text-[#475569]">Allergies</span>
-                    <p className="text-xs font-bold text-[#ef4444] mt-1">
-                      {allergies.length > 0 ? allergies.join(", ") : "None recorded"}
-                    </p>
-                  </div>
-                </div>
-              </div>
-            </div>
+            <PatientPrescriptionBanner
+              patient={patient}
+              visitDate={visitDate}
+              diagnoses={diagnoses}
+              allergies={allergies}
+            />
 
             {/* Medicines Table Card */}
             <div className="bg-white border border-[#d5d9e0] rounded p-6 mb-6">
@@ -653,51 +609,8 @@ export default function PrescriptionPage({ params }: Props) {
               </div>
             </div>
 
-            {/* Outside Drug Entry Card */}
-            <div className="bg-white border border-[#d5d9e0] rounded p-6 mb-8">
-              <h3 className="text-sm font-extrabold text-[#111827]">Outside Drug (Not in System)</h3>
-              <p className="text-xs font-medium text-[#64748b] mt-0.5 mb-4">Add medication that is not stocked in the clinic pharmacy.</p>
-              
-              <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
-                <div>
-                  <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#374151] mb-1.5">Drug Name</label>
-                  <input
-                    value={outsideDrug.drug_name}
-                    onChange={(e) => setOutsideDrug((current) => ({ ...current, drug_name: e.target.value }))}
-                    placeholder="Enter drug name"
-                    className="w-full h-9 rounded border border-[#cbd1da] bg-white px-3 text-xs font-semibold text-[#111827] focus:border-[#111827] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#374151] mb-1.5">Instructions</label>
-                  <input
-                    value={outsideDrug.instructions}
-                    onChange={(e) => setOutsideDrug((current) => ({ ...current, instructions: e.target.value }))}
-                    placeholder="Enter instructions"
-                    className="w-full h-9 rounded border border-[#cbd1da] bg-white px-3 text-xs font-semibold text-[#111827] focus:border-[#111827] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <label className="block text-[11px] font-extrabold uppercase tracking-wider text-[#374151] mb-1.5">Quantity</label>
-                  <input
-                    value={outsideDrug.quantity}
-                    onChange={(e) => setOutsideDrug((current) => ({ ...current, quantity: e.target.value }))}
-                    placeholder="Enter quantity"
-                    className="w-full h-9 rounded border border-[#cbd1da] bg-white px-3 text-xs font-semibold text-[#111827] focus:border-[#111827] focus:outline-none"
-                  />
-                </div>
-                <div>
-                  <button
-                    type="button"
-                    onClick={addOutsideDrug}
-                    className="w-full h-9 inline-flex items-center justify-center gap-1.5 px-4 text-xs font-extrabold text-white bg-[#111827] border border-[#111827] rounded transition-colors hover:bg-[#1f2937]"
-                  >
-                    <Plus size={14} />
-                    <span>Add Outside Drug</span>
-                  </button>
-                </div>
-              </div>
-            </div>
+            {/* Outside Drug Entry Form Component */}
+            <OutsideDrugForm onAdd={addOutsideDrug} />
 
             {/* Bottom Navigation Buttons */}
             <div className="flex justify-between items-center pb-8">

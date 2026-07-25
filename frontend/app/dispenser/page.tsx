@@ -45,11 +45,9 @@ export default function DispenserDashboard() {
   const [recentActivities, setRecentActivities] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
 
-  // Fetch dashboard data
   const loadDashboardData = async () => {
     setLoading(true);
     try {
-      // 1. Stats
       const statsRes = await api.get('/api/v1/dispenser/dashboard/stats').catch(() => api.get('/dispenser/dashboard/stats'));
       if (statsRes.data && statsRes.data.success) {
         const d = statsRes.data.data;
@@ -65,7 +63,6 @@ export default function DispenserDashboard() {
     }
 
     try {
-      // 2. Low Stock Alerts
       const lowStockRes = await api.get('/api/v1/dispenser/alerts/low-stock?limit=4').catch(() => api.get('/dispenser/alerts/low-stock?limit=4'));
       const list = lowStockRes.data?.data || lowStockRes.data || [];
       setLowStockAlerts(Array.isArray(list) ? list : []);
@@ -74,7 +71,6 @@ export default function DispenserDashboard() {
     }
 
     try {
-      // 3. Expiry Alerts (90 day window)
       const expiryRes = await api.get('/api/v1/dispenser/alerts/expiry?daysThreshold=90&limit=3').catch(() => api.get('/dispenser/alerts/expiry?daysThreshold=90&limit=3'));
       const list = expiryRes.data?.data || expiryRes.data || [];
       setExpiryAlerts(Array.isArray(list) ? list : []);
@@ -83,7 +79,6 @@ export default function DispenserDashboard() {
     }
 
     try {
-      // 4. Recent activities from audit log (Reports movement list)
       const movementRes = await api.get('/api/v1/dispenser/reports/movement?limit=3').catch(() => api.get('/dispenser/reports/movement?limit=3'));
       const logList = movementRes.data?.data || movementRes.data || [];
       setRecentActivities(Array.isArray(logList) ? logList : []);
@@ -98,7 +93,6 @@ export default function DispenserDashboard() {
     loadDashboardData();
   }, []);
 
-  // Format activity action message for display
   const formatActivityText = (log: any) => {
     const action = log.action;
     const meta = log.metadata || {};
@@ -127,25 +121,25 @@ export default function DispenserDashboard() {
   };
 
   return (
-    <div className="max-w-[1200px] mx-auto flex flex-col gap-8 animate-in fade-in duration-500">
+    <div className="max-w-[1200px] mx-auto flex flex-col gap-8 animate-in fade-in duration-500 text-[#0f172a]">
       
       {/* Page Header */}
       <div className="flex justify-between items-center">
         <div>
-          <h1 className="text-3xl font-extrabold text-slate-900 tracking-tight">Dashboard</h1>
-          <p className="text-sm text-slate-500 mt-1">Welcome back, Pharmacy Dispenser. Here's a live overview of center stock.</p>
+          <h1 className="text-3xl font-black text-[#0f172a] tracking-tight">Dashboard</h1>
+          <p className="text-sm font-semibold text-[#334155] mt-1">Welcome back, Pharmacy Dispenser. Here's a live overview of center stock.</p>
         </div>
         <button 
           onClick={loadDashboardData}
-          className="p-2 border border-slate-200 bg-white hover:bg-slate-50 text-slate-600 rounded-xl text-sm font-bold transition-all active:scale-[0.98]"
+          className="p-2 border border-[#cbd1da] bg-white hover:bg-slate-100 text-[#111827] rounded-xl text-sm font-extrabold transition-all active:scale-[0.98]"
           title="Reload Dashboard"
         >
           <Clock size={16} className={loading ? 'animate-spin' : ''} />
         </button>
       </div>
 
-      {/* Stats Cards */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* Stats Cards - 2 Columns x 2 Rows */}
+      <div className="disp-grid-2col">
         <StatCard 
           icon={<Pill size={22} className="text-blue-600" />} 
           title="TOTAL DRUG TYPES" 
@@ -154,7 +148,7 @@ export default function DispenserDashboard() {
           bgColor="#eff6ff"
         />
         <StatCard 
-          icon={<CheckCircle size={22} className="text-green-600" />} 
+          icon={<CheckCircle size={22} className="text-emerald-600" />} 
           title="IN-STOCK TYPES" 
           value={stats.inStock} 
           subtitle="Sufficient inventory margin"
@@ -176,79 +170,83 @@ export default function DispenserDashboard() {
         />
       </div>
 
-      {/* Alerts Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        
-        {/* Low Stock Alerts */}
-        <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100/50 flex flex-col">
-          <div className="flex justify-between items-center mb-5">
-            <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-              <AlertCircle size={18} className="text-amber-500" /> 
-              <span>Low Stock Alerts</span>
-            </h3>
-            <Link 
-              href="/dispenser/stock-management/table" 
-              className="px-3 py-1.5 border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-800 rounded-xl text-xs font-bold transition-all"
-            >
-              View All
-            </Link>
+      {/* Alerts Section */}
+      <div>
+        <h3 className="text-xs font-extrabold text-[#475569] uppercase tracking-widest mb-4 flex items-center gap-2">
+          <span>🔔 ALERTS</span>
+        </h3>
+        <div className="disp-grid-2col">
+          {/* Low Stock Alerts */}
+          <div className="bg-white border border-[#d5d9e0] rounded-2xl p-6 shadow-sm flex flex-col">
+            <div className="flex justify-between items-center mb-5 border-b border-[#e2e8f0] pb-3">
+              <h3 className="text-sm font-extrabold text-[#0f172a] flex items-center gap-2">
+                <AlertCircle size={18} className="text-amber-600" /> 
+                <span>Low Stock Alerts</span>
+              </h3>
+              <Link 
+                href="/dispenser/stock-management/table" 
+                className="px-3 py-1.5 border border-[#cbd1da] hover:border-[#111827] text-[#111827] hover:bg-slate-50 rounded-xl text-xs font-extrabold transition-all"
+              >
+                View All
+              </Link>
+            </div>
+            <div className="flex-1 flex flex-col gap-3">
+              {lowStockAlerts.length > 0 ? (
+                lowStockAlerts.map((item, idx) => (
+                  <AlertItem 
+                    key={idx}
+                    name={item.name} 
+                    details={`Qty: ${item.total_qty} (Reorder: ${item.reorder_level})`} 
+                  />
+                ))
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center py-8 text-center text-[#475569] text-xs font-bold">
+                  No low stock warnings. Everything looks healthy!
+                </div>
+              )}
+            </div>
           </div>
-          <div className="flex-1 flex flex-col gap-3">
-            {lowStockAlerts.length > 0 ? (
-              lowStockAlerts.map((item, idx) => (
-                <AlertItem 
-                  key={idx}
-                  name={item.name} 
-                  details={`Qty: ${item.total_qty} (Reorder: ${item.reorder_level})`} 
-                />
-              ))
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center py-8 text-center text-slate-400 text-xs">
-                No low stock warnings. Everything looks healthy!
-              </div>
-            )}
-          </div>
-        </div>
 
-        {/* Expiry Alerts */}
-        <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100/50 flex flex-col">
-          <div className="flex justify-between items-center mb-5">
-            <h3 className="text-sm font-bold text-slate-800 flex items-center gap-2">
-              <AlertCircle size={18} className="text-rose-500" /> 
-              <span>Expiry Alerts (Next 90 Days)</span>
-            </h3>
-            <Link 
-              href="/dispenser/expiry-alerts" 
-              className="px-3 py-1.5 border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-800 rounded-xl text-xs font-bold transition-all"
-            >
-              View All
-            </Link>
-          </div>
-          <div className="flex-1 flex flex-col gap-3">
-            {expiryAlerts.length > 0 ? (
-              expiryAlerts.map((item, idx) => (
-                <AlertItem 
-                  key={idx}
-                  name={item.name} 
-                  details={`Expires in ${item.days_left} days (${new Date(item.expiry_date).toLocaleDateString()})`} 
-                  isDanger={item.days_left <= 30}
-                />
-              ))
-            ) : (
-              <div className="flex-1 flex flex-col items-center justify-center py-8 text-center text-slate-400 text-xs">
-                No batches nearing expiry within the next 90 days.
-              </div>
-            )}
+          {/* Expiry Alerts */}
+          <div className="bg-white border border-[#d5d9e0] rounded-2xl p-6 shadow-sm flex flex-col">
+            <div className="flex justify-between items-center mb-5 border-b border-[#e2e8f0] pb-3">
+              <h3 className="text-sm font-extrabold text-[#0f172a] flex items-center gap-2">
+                <AlertCircle size={18} className="text-rose-600" /> 
+                <span>Expiry Alerts (Next 90 Days)</span>
+              </h3>
+              <Link 
+                href="/dispenser/expiry-alerts" 
+                className="px-3 py-1.5 border border-[#cbd1da] hover:border-[#111827] text-[#111827] hover:bg-slate-50 rounded-xl text-xs font-extrabold transition-all"
+              >
+                View All
+              </Link>
+            </div>
+            <div className="flex-1 flex flex-col gap-3">
+              {expiryAlerts.length > 0 ? (
+                expiryAlerts.map((item, idx) => (
+                  <AlertItem 
+                    key={idx}
+                    name={item.name} 
+                    details={`Expires in ${item.days_left} days (${new Date(item.expiry_date).toLocaleDateString()})`} 
+                    isDanger={item.days_left <= 30}
+                  />
+                ))
+              ) : (
+                <div className="flex-1 flex flex-col items-center justify-center py-8 text-center text-[#475569] text-xs font-bold">
+                  No batches nearing expiry within the next 90 days.
+                </div>
+              )}
+            </div>
           </div>
         </div>
       </div>
 
       {/* Quick Actions */}
       <div>
-        <h3 className="text-xs font-extrabold text-slate-400 uppercase tracking-widest mb-4 flex items-center gap-2">
+        <h3 className="text-xs font-extrabold text-[#475569] uppercase tracking-widest mb-4 flex items-center gap-2">
           <span>⚡ QUICK ACTIONS</span>
         </h3>
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        <div className="disp-grid-2col">
           <QuickActionCard 
             icon={<Plus size={18} className="text-blue-600" />} 
             title="ADD DRUG STOCK" 
@@ -277,12 +275,12 @@ export default function DispenserDashboard() {
       </div>
 
       {/* Recent Activity */}
-      <div className="bg-white border border-slate-100 rounded-2xl p-6 shadow-sm shadow-slate-100/50">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-base font-extrabold text-slate-800">Recent Activity</h3>
+      <div className="bg-white border border-[#d5d9e0] rounded-2xl p-6 shadow-sm">
+        <div className="flex justify-between items-center mb-6 border-b border-[#e2e8f0] pb-4">
+          <h3 className="text-base font-extrabold text-[#0f172a]">Recent Activity</h3>
           <Link 
             href="/dispenser/stock-management/log"
-            className="px-3.5 py-1.5 border border-slate-200 hover:border-slate-300 text-slate-600 hover:text-slate-800 rounded-xl text-xs font-bold transition-all"
+            className="px-3.5 py-1.5 border border-[#cbd1da] hover:border-[#111827] text-[#111827] hover:bg-slate-50 rounded-xl text-xs font-extrabold transition-all"
           >
             View All Audit Logs
           </Link>
@@ -298,7 +296,7 @@ export default function DispenserDashboard() {
               />
             ))
           ) : (
-            <div className="text-center py-6 text-slate-400 text-xs">
+            <div className="text-center py-6 text-[#475569] text-xs font-bold">
               No recent activity logs recorded in audit database.
             </div>
           )}
@@ -311,7 +309,7 @@ export default function DispenserDashboard() {
 
 function StatCard({ icon, title, value, subtitle, bgColor }: StatCardProps) {
   return (
-    <div className="bg-white border border-slate-100 rounded-2xl flex items-center gap-5 p-6 shadow-sm shadow-slate-100/50 hover:shadow-md transition-all duration-200">
+    <div className="bg-white border border-[#d5d9e0] rounded-2xl flex items-center gap-5 p-6 shadow-sm hover:shadow-md transition-all duration-200">
       <div 
         className="w-12 h-12 rounded-full flex items-center justify-center shrink-0"
         style={{ backgroundColor: bgColor }}
@@ -319,9 +317,9 @@ function StatCard({ icon, title, value, subtitle, bgColor }: StatCardProps) {
         {icon}
       </div>
       <div>
-        <p className="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{title}</p>
-        <p className="text-2xl font-black text-slate-800 mt-0.5 leading-none tracking-tight">{value}</p>
-        <p className="text-[11px] text-slate-400 mt-1 font-medium">{subtitle}</p>
+        <p className="text-[11px] font-extrabold text-[#475569] uppercase tracking-widest">{title}</p>
+        <p className="text-2xl font-black text-[#0f172a] mt-0.5 leading-none tracking-tight">{value}</p>
+        <p className="text-xs text-[#334155] mt-1 font-bold">{subtitle}</p>
       </div>
     </div>
   );
@@ -329,14 +327,14 @@ function StatCard({ icon, title, value, subtitle, bgColor }: StatCardProps) {
 
 function AlertItem({ name, details, isDanger }: AlertItemProps) {
   return (
-    <div className="flex items-center justify-between p-3.5 border border-slate-150 rounded-xl bg-slate-50/50 hover:bg-slate-50 transition-colors cursor-pointer group">
+    <div className="flex items-center justify-between p-3.5 border border-[#cbd1da] rounded-xl bg-slate-50 hover:bg-slate-100 transition-colors cursor-pointer group">
       <div className="flex items-center gap-3">
-        <div className={`w-2 h-2 rounded-full shrink-0 ${isDanger ? 'bg-rose-500 animate-pulse' : 'bg-amber-500'}`}></div>
-        <span className="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors">{name}</span>
+        <div className={`w-2.5 h-2.5 rounded-full shrink-0 ${isDanger ? 'bg-rose-600 animate-pulse' : 'bg-amber-600'}`}></div>
+        <span className="text-sm font-extrabold text-[#0f172a] group-hover:text-blue-600 transition-colors">{name}</span>
       </div>
       <div className="flex items-center gap-2 shrink-0">
-        <span className="text-xs text-slate-500 font-medium">{details}</span>
-        <ArrowRight size={14} className="text-slate-400 group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
+        <span className="text-xs text-[#334155] font-bold">{details}</span>
+        <ArrowRight size={14} className="text-[#475569] group-hover:text-blue-600 group-hover:translate-x-0.5 transition-all" />
       </div>
     </div>
   );
@@ -346,14 +344,14 @@ function QuickActionCard({ icon, title, desc, href }: QuickActionCardProps) {
   return (
     <Link 
       href={href} 
-      className="bg-white border border-slate-100 rounded-2xl flex items-center gap-4 p-4 shadow-sm shadow-slate-100/50 hover:shadow-md hover:border-blue-100/50 transition-all duration-200 active:scale-[0.98] group"
+      className="bg-white border border-[#d5d9e0] rounded-2xl flex items-center gap-4 p-4 shadow-sm hover:shadow-md hover:border-blue-300 transition-all duration-200 active:scale-[0.98] group"
     >
-      <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-150 flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:border-blue-100 transition-colors">
+      <div className="w-11 h-11 rounded-xl bg-slate-100 border border-[#cbd1da] flex items-center justify-center shrink-0 group-hover:bg-blue-50 group-hover:border-blue-200 transition-colors">
         {icon}
       </div>
       <div>
-        <p className="text-xs font-extrabold text-slate-800 group-hover:text-blue-600 transition-colors">{title}</p>
-        <p className="text-[11px] text-slate-400 mt-0.5 font-medium leading-tight">{desc}</p>
+        <p className="text-xs font-black text-[#0f172a] group-hover:text-blue-600 transition-colors">{title}</p>
+        <p className="text-[11px] text-[#334155] mt-0.5 font-bold leading-tight">{desc}</p>
       </div>
     </Link>
   );
@@ -361,14 +359,14 @@ function QuickActionCard({ icon, title, desc, href }: QuickActionCardProps) {
 
 function ActivityItem({ text, user, time }: ActivityItemProps) {
   return (
-    <div className="flex justify-between items-start gap-4 py-3 border-b border-slate-100/50 last:border-b-0 last:pb-0">
+    <div className="flex justify-between items-start gap-4 py-3 border-b border-[#e2e8f0] last:border-b-0 last:pb-0">
       <div className="flex gap-3">
-        <div className="mt-2 w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0"></div>
-        <p className="text-sm text-slate-700 font-semibold leading-snug">{text}</p>
+        <div className="mt-2 w-1.5 h-1.5 rounded-full bg-[#0f172a] shrink-0"></div>
+        <p className="text-sm text-[#0f172a] font-bold leading-snug">{text}</p>
       </div>
       <div className="text-right shrink-0">
-        <p className="text-xs font-bold text-slate-600">{user}</p>
-        <p className="text-[10px] text-slate-400 mt-0.5 font-medium">{time}</p>
+        <p className="text-xs font-black text-[#0f172a]">{user}</p>
+        <p className="text-[10px] text-[#475569] mt-0.5 font-bold">{time}</p>
       </div>
     </div>
   );
