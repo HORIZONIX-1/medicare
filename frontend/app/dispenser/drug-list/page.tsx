@@ -282,102 +282,103 @@ const MOCK_DRUGS: Drug[] = [
   };
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6 relative">
+    <div style={{ padding: "2rem", display: "flex", flexDirection: "column", gap: "1.5rem", maxWidth: "1400px", margin: "0 auto", minHeight: "100vh", backgroundColor: "#f8fafc", fontFamily: "'Poppins', sans-serif" }}>
       {/* Toast Notification */}
       {toastMessage && (
-        <div className="fixed top-4 right-4 z-50 bg-gray-900 text-white px-4 py-3 rounded-lg shadow-lg border border-gray-800 text-sm flex items-center gap-2 animate-bounce">
-          <span className="w-2 h-2 rounded-full bg-green-400"></span>
+        <div style={{ position: "fixed", top: "1.25rem", right: "1.25rem", zIndex: 50, backgroundColor: "#0f172a", color: "#ffffff", padding: "0.75rem 1.25rem", borderRadius: "0.5rem", boxShadow: "0 10px 15px -3px rgba(0,0,0,0.1)", fontSize: "0.875rem", fontWeight: 600 }}>
           {toastMessage}
         </div>
       )}
 
       {/* Header */}
-      <div className="flex justify-between items-end">
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Drug List</h1>
-          <p className="text-sm text-gray-500 mt-1">Manage drug catalog, descriptions, prices and levels.</p>
+          <h1 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#0f172a", margin: 0, letterSpacing: "-0.025em" }}>Drug Master Catalog</h1>
+          <p style={{ fontSize: "0.8125rem", color: "#64748b", marginTop: "0.25rem" }}>
+            Manage clinic drug types, formulations, selling prices, and inventory reorder points.
+          </p>
         </div>
-        <div className="text-xs text-gray-400">
-          Home &gt; <span className="text-gray-600 font-medium">Drug List</span>
+        <div style={{ fontSize: "0.75rem", color: "#94a3b8" }}>
+          Home &gt; <span style={{ color: "#475569", fontWeight: 600 }}>Drug List</span>
         </div>
       </div>
 
-      {/* Metrics Row */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      {/* Metrics Row - 2x2 Inline Grid View */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "1.25rem" }}>
         {/* Total Drugs */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-gray-50 border border-gray-100 flex items-center justify-center shrink-0">
-            <Pill className="text-gray-600" size={20} />
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "0.875rem", padding: "1.25rem", display: "flex", alignItems: "center", gap: "1rem", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ width: "3rem", height: "3rem", borderRadius: "0.625rem", backgroundColor: "#f8fafc", border: "1px solid #f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <Pill color="#475569" size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-gray-500 uppercase font-bold tracking-wider">TOTAL DRUG TYPES</span>
-            <p className="text-2xl font-bold text-gray-900 leading-none mt-1">{stats.totalTypes}</p>
-            <span className="text-[10px] text-gray-400 mt-1 block">Active Catalog</span>
+            <span style={{ fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.05em" }}>TOTAL DRUG TYPES</span>
+            <p style={{ fontSize: "1.625rem", fontWeight: 900, color: "#0f172a", lineHeight: 1, marginTop: "0.25rem" }}>{stats.totalTypes}</p>
+            <span style={{ fontSize: "0.6875rem", color: "#94a3b8", marginTop: "0.25rem", display: "block" }}>Active Catalog</span>
           </div>
         </div>
 
         {/* In Stock */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center shrink-0">
-            <CheckCircle className="text-emerald-500" size={20} />
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "0.875rem", padding: "1.25rem", display: "flex", alignItems: "center", gap: "1rem", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ width: "3rem", height: "3rem", borderRadius: "0.625rem", backgroundColor: "#ecfdf5", border: "1px solid #d1fae5", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <CheckCircle color="#10b981" size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-emerald-500 uppercase font-bold tracking-wider">IN STOCK TYPES</span>
-            <p className="text-2xl font-bold text-gray-900 leading-none mt-1">{stats.inStock}</p>
-            <span className="text-[10px] text-gray-400 mt-1 block">Sufficient levels</span>
+            <span style={{ fontSize: "0.6875rem", color: "#059669", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.05em" }}>IN STOCK TYPES</span>
+            <p style={{ fontSize: "1.625rem", fontWeight: 900, color: "#0f172a", lineHeight: 1, marginTop: "0.25rem" }}>{stats.inStock}</p>
+            <span style={{ fontSize: "0.6875rem", color: "#94a3b8", marginTop: "0.25rem", display: "block" }}>Sufficient levels</span>
           </div>
         </div>
 
         {/* Low Stock */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-orange-50 border border-orange-100 flex items-center justify-center shrink-0">
-            <AlertTriangle className="text-orange-500" size={20} />
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "0.875rem", padding: "1.25rem", display: "flex", alignItems: "center", gap: "1rem", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ width: "3rem", height: "3rem", borderRadius: "0.625rem", backgroundColor: "#fffbeb", border: "1px solid #fef3c7", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <AlertTriangle color="#f59e0b" size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-orange-500 uppercase font-bold tracking-wider">LOW STOCK TYPES</span>
-            <p className="text-2xl font-bold text-gray-900 leading-none mt-1">{stats.lowStock}</p>
-            <span className="text-[10px] text-gray-400 mt-1 block">Below reorder levels</span>
+            <span style={{ fontSize: "0.6875rem", color: "#d97706", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.05em" }}>LOW STOCK TYPES</span>
+            <p style={{ fontSize: "1.625rem", fontWeight: 900, color: "#0f172a", lineHeight: 1, marginTop: "0.25rem" }}>{stats.lowStock}</p>
+            <span style={{ fontSize: "0.6875rem", color: "#94a3b8", marginTop: "0.25rem", display: "block" }}>Below reorder levels</span>
           </div>
         </div>
 
         {/* Out of Stock */}
-        <div className="bg-white border border-gray-200 rounded-xl p-5 flex items-center gap-4">
-          <div className="w-12 h-12 rounded-lg bg-red-50 border border-red-100 flex items-center justify-center shrink-0">
-            <AlertTriangle className="text-red-500" size={20} />
+        <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "0.875rem", padding: "1.25rem", display: "flex", alignItems: "center", gap: "1rem", boxShadow: "0 1px 3px rgba(0,0,0,0.04)" }}>
+          <div style={{ width: "3rem", height: "3rem", borderRadius: "0.625rem", backgroundColor: "#fef2f2", border: "1px solid #fee2e2", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+            <AlertTriangle color="#ef4444" size={20} />
           </div>
           <div>
-            <span className="text-[10px] text-red-500 uppercase font-bold tracking-wider">OUT OF STOCK</span>
-            <p className="text-2xl font-bold text-gray-900 leading-none mt-1">{stats.outOfStock}</p>
-            <span className="text-[10px] text-gray-400 mt-1 block">Zero stock level</span>
+            <span style={{ fontSize: "0.6875rem", color: "#dc2626", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.05em" }}>OUT OF STOCK</span>
+            <p style={{ fontSize: "1.625rem", fontWeight: 900, color: "#0f172a", lineHeight: 1, marginTop: "0.25rem" }}>{stats.outOfStock}</p>
+            <span style={{ fontSize: "0.6875rem", color: "#94a3b8", marginTop: "0.25rem", display: "block" }}>Zero stock level</span>
           </div>
         </div>
       </div>
 
       {/* Filters and Actions */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
-        <form onSubmit={handleSearch} className="grid grid-cols-1 md:grid-cols-4 gap-6">
+      <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "0.875rem", padding: "1.5rem" }}>
+        <form onSubmit={handleSearch} style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "1.5rem", alignItems: "end" }}>
           {/* Search Term */}
           <div>
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">SEARCH</label>
-            <div className="relative">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.5rem" }}>SEARCH</label>
+            <div style={{ position: "relative" }}>
+              <Search size={16} style={{ position: "absolute", left: "0.75rem", top: "50%", transform: "translateY(-50%)", color: "#94a3b8" }} />
               <input 
                 type="text" 
                 placeholder="Search drug name" 
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-9 pr-3 py-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white"
+                style={{ width: "100%", paddingLeft: "2.25rem", paddingRight: "0.75rem", paddingTop: "0.5rem", paddingBottom: "0.5rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff", outline: "none" }}
               />
             </div>
           </div>
 
           {/* Category Filter */}
           <div>
-            <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">CATEGORY</label>
+            <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.5rem" }}>CATEGORY</label>
             <select 
               value={categoryFilter}
               onChange={(e) => setCategoryFilter(e.target.value)}
-              className="w-full py-2 px-3 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white"
+              style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff", outline: "none" }}
             >
               <option>All Categories</option>
               <option>Tablet</option>
@@ -391,18 +392,18 @@ const MOCK_DRUGS: Drug[] = [
           </div>
 
           {/* Buttons */}
-          <div className="md:col-span-2 flex items-end gap-2">
+          <div style={{ gridColumn: "span 2 / span 2", display: "flex", gap: "0.5rem" }}>
             <button 
               type="button"
               onClick={handleResetFilters}
-              className="flex-1 py-2.5 px-4 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-50 flex items-center justify-center gap-2 transition-all"
+              style={{ flex: 1, padding: "0.625rem 1rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, backgroundColor: "#ffffff", color: "#334155", cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
             >
               <Filter size={15} /> RESET FILTER
             </button>
             <button 
               type="submit"
               disabled={loading}
-              className="flex-1 py-2.5 px-4 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-950 flex items-center justify-center gap-2 transition-all"
+              style={{ flex: 1, padding: "0.625rem 1rem", backgroundColor: "#0f172a", color: "#ffffff", border: "none", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
             >
               <RefreshCw size={15} className={loading ? 'animate-spin' : ''} /> {loading ? "LOADING..." : "GENERATE"}
             </button>
@@ -411,54 +412,54 @@ const MOCK_DRUGS: Drug[] = [
       </div>
 
       {/* Main Table Section */}
-      <div className="bg-white border border-gray-200 rounded-xl p-6">
-        <div className="flex justify-between items-center mb-6">
-          <h3 className="text-base font-bold text-gray-800">Drug Catalog Entries ({totalItems})</h3>
+      <div style={{ backgroundColor: "#ffffff", border: "1px solid #e2e8f0", borderRadius: "0.875rem", padding: "1.5rem" }}>
+        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "1.5rem" }}>
+          <h3 style={{ fontSize: "1rem", fontWeight: 800, color: "#0f172a", margin: 0 }}>Drug Catalog Entries ({totalItems})</h3>
           <button 
             onClick={openAddModal}
-            className="py-2.5 px-4 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-950 flex items-center gap-2 transition-all"
+            style={{ padding: "0.625rem 1.25rem", backgroundColor: "#0f172a", color: "#ffffff", border: "none", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.5rem" }}
           >
             <Plus size={15} /> ADD NEW DRUG
           </button>
         </div>
 
         {/* Table */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm text-left">
-            <thead className="text-[10px] text-gray-500 uppercase bg-gray-50/50 border-b border-gray-200">
-              <tr>
-                <th className="px-4 py-3 font-medium">#</th>
-                <th className="px-4 py-3 font-medium">DRUG NAME</th>
-                <th className="px-4 py-3 font-medium">CATEGORY</th>
-                <th className="px-4 py-3 font-medium">UNIT TYPE</th>
-                <th className="px-4 py-3 font-medium">DOSAGE</th>
-                <th className="px-4 py-3 font-medium text-right">SELLING PRICE</th>
-                <th className="px-4 py-3 font-medium text-center">REORDER LEVEL</th>
-                <th className="px-4 py-3 font-medium text-center">ACTIONS</th>
+        <div style={{ overflowX: "auto" }}>
+          <table style={{ width: "100%", borderCollapse: "collapse", fontSize: "0.875rem", textAlign: "left" }}>
+            <thead>
+              <tr style={{ backgroundColor: "#f8fafc", borderBottom: "1px solid #e2e8f0", fontSize: "0.6875rem", color: "#64748b", textTransform: "uppercase", fontWeight: 800, letterSpacing: "0.05em" }}>
+                <th style={{ padding: "0.75rem 1rem" }}>#</th>
+                <th style={{ padding: "0.75rem 1rem" }}>DRUG NAME</th>
+                <th style={{ padding: "0.75rem 1rem" }}>CATEGORY</th>
+                <th style={{ padding: "0.75rem 1rem" }}>UNIT TYPE</th>
+                <th style={{ padding: "0.75rem 1rem" }}>DOSAGE</th>
+                <th style={{ padding: "0.75rem 1rem", textAlign: "right" }}>SELLING PRICE</th>
+                <th style={{ padding: "0.75rem 1rem", textAlign: "center" }}>REORDER LEVEL</th>
+                <th style={{ padding: "0.75rem 1rem", textAlign: "center" }}>ACTIONS</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-gray-100">
+            <tbody>
               {drugs.length > 0 ? (
                 drugs.map((drug, index) => (
-                  <tr key={drug.drug_id} className="hover:bg-gray-50/50 transition-colors">
-                    <td className="px-4 py-4 text-gray-500">{(currentPage - 1) * itemsPerPage + index + 1}</td>
-                    <td className="px-4 py-4 font-medium text-gray-900">{drug.name}</td>
-                    <td className="px-4 py-4 text-gray-600">{drug.category}</td>
-                    <td className="px-4 py-4 text-gray-600">{drug.unit_type}</td>
-                    <td className="px-4 py-4 font-mono text-gray-600">{drug.dosage_type || 'N/A'}</td>
-                    <td className="px-4 py-4 text-right font-medium text-gray-950">Rs. {drug.selling_price.toFixed(2)}</td>
-                    <td className="px-4 py-4 text-center font-bold text-gray-800">{drug.reorder_level}</td>
-                    <td className="px-4 py-4">
-                      <div className="flex items-center justify-center gap-2">
+                  <tr key={drug.drug_id} style={{ borderBottom: "1px solid #f1f5f9" }}>
+                    <td style={{ padding: "0.875rem 1rem", color: "#64748b" }}>{(currentPage - 1) * itemsPerPage + index + 1}</td>
+                    <td style={{ padding: "0.875rem 1rem", fontWeight: 700, color: "#0f172a" }}>{drug.name}</td>
+                    <td style={{ padding: "0.875rem 1rem", color: "#475569" }}>{drug.category}</td>
+                    <td style={{ padding: "0.875rem 1rem", color: "#475569" }}>{drug.unit_type}</td>
+                    <td style={{ padding: "0.875rem 1rem", fontFamily: "monospace", color: "#475569" }}>{drug.dosage_type || 'N/A'}</td>
+                    <td style={{ padding: "0.875rem 1rem", textAlign: "right", fontWeight: 700, color: "#0f172a" }}>Rs. {drug.selling_price.toFixed(2)}</td>
+                    <td style={{ padding: "0.875rem 1rem", textAlign: "center", fontWeight: 800, color: "#1e293b" }}>{drug.reorder_level}</td>
+                    <td style={{ padding: "0.875rem 1rem", textAlign: "center" }}>
+                      <div style={{ display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
                         <button 
                           onClick={() => openEditModal(drug)}
-                          className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded-lg hover:bg-gray-100 text-gray-500 hover:text-gray-900 transition-colors"
+                          style={{ width: "1.75rem", height: "1.75rem", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #cbd5e1", borderRadius: "0.375rem", backgroundColor: "#ffffff", color: "#475569", cursor: "pointer" }}
                         >
                           <Edit size={14} />
                         </button>
                         <button 
                           onClick={() => openDeleteModal(drug)}
-                          className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded-lg hover:bg-red-50 hover:text-red-500 hover:border-red-200 text-gray-500 transition-colors"
+                          style={{ width: "1.75rem", height: "1.75rem", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #fca5a5", borderRadius: "0.375rem", backgroundColor: "#fef2f2", color: "#ef4444", cursor: "pointer" }}
                         >
                           <Trash2 size={14} />
                         </button>
@@ -468,7 +469,7 @@ const MOCK_DRUGS: Drug[] = [
                 ))
               ) : (
                 <tr>
-                  <td colSpan={8} className="px-4 py-8 text-center text-gray-400">
+                  <td colSpan={8} style={{ padding: "2.5rem 1rem", textAlign: "center", color: "#94a3b8" }}>
                     {loading ? "Loading drugs catalog..." : "No drugs found in system."}
                   </td>
                 </tr>
@@ -479,15 +480,15 @@ const MOCK_DRUGS: Drug[] = [
 
         {/* Pagination */}
         {totalPages > 1 && (
-          <div className="flex items-center justify-between mt-6 text-sm text-gray-500 pt-4 border-t border-gray-100">
+          <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "1.5rem", fontSize: "0.875rem", color: "#64748b", paddingTop: "1rem", borderTop: "1px solid #f1f5f9" }}>
             <span>
               Showing {Math.min(totalItems, (currentPage - 1) * itemsPerPage + 1)} to {Math.min(currentPage * itemsPerPage, totalItems)} of {totalItems} entries
             </span>
-            <div className="flex gap-1">
+            <div style={{ display: "flex", gap: "0.25rem" }}>
               <button 
                 onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                 disabled={currentPage === 1}
-                className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                style={{ width: "2rem", height: "2rem", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #cbd5e1", borderRadius: "0.375rem", backgroundColor: "#ffffff", color: "#475569", cursor: "pointer", opacity: currentPage === 1 ? 0.5 : 1 }}
               >
                 &lt;
               </button>
@@ -495,11 +496,7 @@ const MOCK_DRUGS: Drug[] = [
                 <button 
                   key={i + 1}
                   onClick={() => setCurrentPage(i + 1)}
-                  className={`w-8 h-8 flex items-center justify-center rounded-lg font-medium transition-colors ${
-                    currentPage === i + 1 
-                      ? 'bg-gray-900 text-white' 
-                      : 'border border-gray-200 text-gray-600 hover:bg-gray-50'
-                  }`}
+                  style={{ width: "2rem", height: "2rem", display: "flex", alignItems: "center", justifyContent: "center", borderRadius: "0.375rem", fontWeight: 700, fontSize: "0.75rem", border: currentPage === i + 1 ? "none" : "1px solid #cbd5e1", backgroundColor: currentPage === i + 1 ? "#0f172a" : "#ffffff", color: currentPage === i + 1 ? "#ffffff" : "#475569", cursor: "pointer" }}
                 >
                   {i + 1}
                 </button>
@@ -507,7 +504,7 @@ const MOCK_DRUGS: Drug[] = [
               <button 
                 onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                 disabled={currentPage === totalPages}
-                className="w-8 h-8 flex items-center justify-center border border-gray-200 rounded-lg text-gray-500 hover:bg-gray-50 disabled:opacity-50"
+                style={{ width: "2rem", height: "2rem", display: "flex", alignItems: "center", justifyContent: "center", border: "1px solid #cbd5e1", borderRadius: "0.375rem", backgroundColor: "#ffffff", color: "#475569", cursor: "pointer", opacity: currentPage === totalPages ? 0.5 : 1 }}
               >
                 &gt;
               </button>
@@ -520,34 +517,34 @@ const MOCK_DRUGS: Drug[] = [
 
       {/* Modal 1: Add Drug */}
       {activeModal === 'add' && (
-        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl border border-gray-200 max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
-              <h3 className="font-bold text-gray-950">Add New Drug Type</h3>
-              <button onClick={() => setActiveModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+          <div style={{ backgroundColor: "#ffffff", borderRadius: "0.875rem", border: "1px solid #e2e8f0", width: "100%", maxWidth: "500px", overflow: "hidden", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid #f1f5f9" }}>
+              <h3 style={{ fontWeight: 800, color: "#0f172a", margin: 0, fontSize: "1rem" }}>Add New Drug Type</h3>
+              <button onClick={() => setActiveModal(null)} style={{ border: "none", background: "none", color: "#94a3b8", cursor: "pointer" }}>
                 <X size={20} />
               </button>
             </div>
             <form onSubmit={handleAddSubmit}>
-              <div className="p-6 space-y-4">
+              <div style={{ padding: "1.5rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Drug Name</label>
+                  <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Drug Name</label>
                   <input 
                     type="text" 
                     required 
                     placeholder="e.g. Paracetamol 500mg"
                     value={formData.name} 
                     onChange={e => setFormData({...formData, name: e.target.value})}
-                    className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white" 
+                    style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Category</label>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Category</label>
                     <select
                       value={formData.category}
                       onChange={e => setFormData({...formData, category: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white"
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     >
                       <option>Tablet</option>
                       <option>Capsule</option>
@@ -559,11 +556,11 @@ const MOCK_DRUGS: Drug[] = [
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Unit Type</label>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Unit Type</label>
                     <select
                       value={formData.unit_type}
                       onChange={e => setFormData({...formData, unit_type: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white"
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     >
                       <option>Tablet</option>
                       <option>Capsule</option>
@@ -574,19 +571,19 @@ const MOCK_DRUGS: Drug[] = [
                     </select>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Dosage Form</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Dosage Form</label>
                     <input 
                       type="text" 
                       placeholder="e.g. 500mg"
                       value={formData.dosage_type} 
                       onChange={e => setFormData({...formData, dosage_type: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white" 
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     />
                   </div>
-                  <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Selling Price (Rs.)</label>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Selling Price (Rs.)</label>
                     <input 
                       type="number" 
                       step="0.01"
@@ -594,24 +591,24 @@ const MOCK_DRUGS: Drug[] = [
                       placeholder="e.g. 2.50"
                       value={formData.selling_price} 
                       onChange={e => setFormData({...formData, selling_price: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white" 
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     />
                   </div>
-                  <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Reorder Level</label>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Reorder Level</label>
                     <input 
                       type="number" 
                       required 
                       value={formData.reorder_level} 
                       onChange={e => setFormData({...formData, reorder_level: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white" 
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     />
                   </div>
                 </div>
               </div>
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-2">
-                <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-950 transition-colors flex items-center gap-1.5"><Save size={14} /> Create</button>
+              <div style={{ padding: "1rem 1.5rem", backgroundColor: "#f8fafc", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+                <button type="button" onClick={() => setActiveModal(null)} style={{ padding: "0.5rem 1rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, backgroundColor: "#ffffff", cursor: "pointer" }}>Cancel</button>
+                <button type="submit" style={{ padding: "0.5rem 1rem", backgroundColor: "#0f172a", color: "#ffffff", border: "none", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.375rem" }}><Save size={14} /> Create</button>
               </div>
             </form>
           </div>
@@ -620,33 +617,33 @@ const MOCK_DRUGS: Drug[] = [
 
       {/* Modal 2: Edit Drug */}
       {activeModal === 'edit' && selectedDrug && (
-        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl border border-gray-200 max-w-md w-full overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
-              <h3 className="font-bold text-gray-950">Edit Drug Information</h3>
-              <button onClick={() => setActiveModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+          <div style={{ backgroundColor: "#ffffff", borderRadius: "0.875rem", border: "1px solid #e2e8f0", width: "100%", maxWidth: "500px", overflow: "hidden", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid #f1f5f9" }}>
+              <h3 style={{ fontWeight: 800, color: "#0f172a", margin: 0, fontSize: "1rem" }}>Edit Drug Information</h3>
+              <button onClick={() => setActiveModal(null)} style={{ border: "none", background: "none", color: "#94a3b8", cursor: "pointer" }}>
                 <X size={20} />
               </button>
             </div>
             <form onSubmit={handleEditSubmit}>
-              <div className="p-6 space-y-4">
+              <div style={{ padding: "1.5rem", display: "flex", flexDirection: "column", gap: "1rem" }}>
                 <div>
-                  <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Drug Name</label>
+                  <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Drug Name</label>
                   <input 
                     type="text" 
                     required 
                     value={formData.name} 
                     onChange={e => setFormData({...formData, name: e.target.value})}
-                    className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white" 
+                    style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                   />
                 </div>
-                <div className="grid grid-cols-2 gap-4">
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1rem" }}>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Category</label>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Category</label>
                     <select
                       value={formData.category}
                       onChange={e => setFormData({...formData, category: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white"
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     >
                       <option>Tablet</option>
                       <option>Capsule</option>
@@ -658,11 +655,11 @@ const MOCK_DRUGS: Drug[] = [
                     </select>
                   </div>
                   <div>
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Unit Type</label>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Unit Type</label>
                     <select
                       value={formData.unit_type}
                       onChange={e => setFormData({...formData, unit_type: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white"
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     >
                       <option>Tablet</option>
                       <option>Capsule</option>
@@ -673,42 +670,42 @@ const MOCK_DRUGS: Drug[] = [
                     </select>
                   </div>
                 </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Dosage Form</label>
+                <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr 1fr", gap: "1rem" }}>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Dosage Form</label>
                     <input 
                       type="text" 
                       value={formData.dosage_type} 
                       onChange={e => setFormData({...formData, dosage_type: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white" 
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     />
                   </div>
-                  <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Selling Price (Rs.)</label>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Selling Price (Rs.)</label>
                     <input 
                       type="number" 
                       step="0.01"
                       required 
                       value={formData.selling_price} 
                       onChange={e => setFormData({...formData, selling_price: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white" 
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     />
                   </div>
-                  <div className="col-span-1">
-                    <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-1">Reorder Level</label>
+                  <div>
+                    <label style={{ display: "block", fontSize: "0.6875rem", fontWeight: 800, color: "#64748b", textTransform: "uppercase", letterSpacing: "0.05em", marginBottom: "0.25rem" }}>Reorder Level</label>
                     <input 
                       type="number" 
                       required 
                       value={formData.reorder_level} 
                       onChange={e => setFormData({...formData, reorder_level: e.target.value})}
-                      className="w-full p-2 border border-gray-300 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-gray-950 bg-white" 
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", backgroundColor: "#ffffff" }}
                     />
                   </div>
                 </div>
               </div>
-              <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-2">
-                <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">Cancel</button>
-                <button type="submit" className="px-4 py-2 bg-gray-900 text-white rounded-lg text-sm font-medium hover:bg-gray-950 transition-colors flex items-center gap-1.5"><Save size={14} /> Update</button>
+              <div style={{ padding: "1rem 1.5rem", backgroundColor: "#f8fafc", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+                <button type="button" onClick={() => setActiveModal(null)} style={{ padding: "0.5rem 1rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, backgroundColor: "#ffffff", cursor: "pointer" }}>Cancel</button>
+                <button type="submit" style={{ padding: "0.5rem 1rem", backgroundColor: "#0f172a", color: "#ffffff", border: "none", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", gap: "0.375rem" }}><Save size={14} /> Update</button>
               </div>
             </form>
           </div>
@@ -717,22 +714,22 @@ const MOCK_DRUGS: Drug[] = [
 
       {/* Modal 3: Delete Confirm */}
       {activeModal === 'delete' && selectedDrug && (
-        <div className="fixed inset-0 bg-gray-900/40 backdrop-blur-sm z-50 flex items-center justify-center p-4">
-          <div className="bg-white rounded-xl shadow-xl border border-gray-200 max-w-sm w-full overflow-hidden animate-in fade-in zoom-in-95 duration-200">
-            <div className="flex justify-between items-center px-6 py-4 border-b border-gray-100">
-              <h3 className="font-bold text-gray-950">Delete Drug</h3>
-              <button onClick={() => setActiveModal(null)} className="text-gray-400 hover:text-gray-600 transition-colors">
+        <div style={{ position: "fixed", inset: 0, backgroundColor: "rgba(15, 23, 42, 0.4)", backdropFilter: "blur(4px)", zIndex: 50, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+          <div style={{ backgroundColor: "#ffffff", borderRadius: "0.875rem", border: "1px solid #e2e8f0", width: "100%", maxWidth: "420px", overflow: "hidden", boxShadow: "0 20px 25px -5px rgba(0,0,0,0.1)" }}>
+            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", padding: "1rem 1.5rem", borderBottom: "1px solid #f1f5f9" }}>
+              <h3 style={{ fontWeight: 800, color: "#0f172a", margin: 0, fontSize: "1rem" }}>Delete Drug</h3>
+              <button onClick={() => setActiveModal(null)} style={{ border: "none", background: "none", color: "#94a3b8", cursor: "pointer" }}>
                 <X size={20} />
               </button>
             </div>
-            <div className="p-6">
-              <p className="text-sm text-gray-600 leading-relaxed">
-                Are you sure you want to delete <span className="font-bold text-gray-900">{selectedDrug.name}</span>? This action soft-deletes the drug record and it will no longer show in prescription lists or inventory tables.
+            <div style={{ padding: "1.5rem" }}>
+              <p style={{ fontSize: "0.875rem", color: "#475569", lineHeight: 1.6, margin: 0 }}>
+                Are you sure you want to delete <span style={{ fontWeight: 800, color: "#0f172a" }}>{selectedDrug.name}</span>? This action soft-deletes the drug record and it will no longer show in prescription lists or inventory tables.
               </p>
             </div>
-            <div className="px-6 py-4 bg-gray-50 border-t border-gray-100 flex justify-end gap-2">
-              <button type="button" onClick={() => setActiveModal(null)} className="px-4 py-2 border border-gray-300 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors">Cancel</button>
-              <button type="button" onClick={handleDeleteConfirm} className="px-4 py-2 bg-red-600 text-white rounded-lg text-sm font-medium hover:bg-red-700 transition-colors">Delete</button>
+            <div style={{ padding: "1rem 1.5rem", backgroundColor: "#f8fafc", borderTop: "1px solid #f1f5f9", display: "flex", justifyContent: "flex-end", gap: "0.5rem" }}>
+              <button type="button" onClick={() => setActiveModal(null)} style={{ padding: "0.5rem 1rem", border: "1px solid #cbd5e1", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, backgroundColor: "#ffffff", cursor: "pointer" }}>Cancel</button>
+              <button type="button" onClick={handleDeleteConfirm} style={{ padding: "0.5rem 1rem", backgroundColor: "#dc2626", color: "#ffffff", border: "none", borderRadius: "0.5rem", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer" }}>Delete</button>
             </div>
           </div>
         </div>
