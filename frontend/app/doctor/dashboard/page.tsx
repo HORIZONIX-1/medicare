@@ -22,7 +22,9 @@ import {
   ArrowUpRight,
   UserCheck,
   ChevronRight,
-  TrendingDown
+  TrendingDown,
+  LayoutGrid,
+  List
 } from "lucide-react";
 
 export default function DoctorDashboardPage() {
@@ -31,6 +33,7 @@ export default function DoctorDashboardPage() {
   const [currentUser, setCurrentUser] = useState<any>(null);
   const [isCheckingAuth, setIsCheckingAuth] = useState(true);
   const [formattedHeaderDate, setFormattedHeaderDate] = useState("");
+  const [viewMode, setViewMode] = useState<"grid" | "list">("grid");
   
   // Dashboard state metrics
   const [stats, setStats] = useState({
@@ -113,8 +116,8 @@ export default function DoctorDashboardPage() {
           todayRevenue: todayRevenueAmount,
         });
 
-        // Slice top 5 recent consultations for logs table
-        setRecentConsultations(consultations.slice(0, 5));
+        // Slice top 4 for 2x2 grid presentation (or top 6)
+        setRecentConsultations(consultations.slice(0, 4));
       } catch (error) {
         console.error("Failed to load dashboard parameters:", error);
       } finally {
@@ -205,8 +208,9 @@ export default function DoctorDashboardPage() {
         }
         .quick-action-card:hover {
           background-color: #f8fafc;
-          border-color: #cbd5e1;
-          transform: translateX(4px);
+          border-color: #3b82f6;
+          transform: translateY(-2px);
+          box-shadow: 0 4px 12px rgba(59, 130, 246, 0.08);
         }
         .quick-action-circle {
           width: 36px;
@@ -346,15 +350,14 @@ export default function DoctorDashboardPage() {
               </div>
             ) : (
               <div className="space-y-6">
-                {/* 4-Column Metrics Row Grid */}
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                {/* 2x2 Metrics Grid - Explicit 2 Columns */}
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "1.25rem" }}>
                   {/* Card 1: Today's Consultations */}
                   <div className="metric-card">
                     <div>
                       <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">Today's Visits</span>
                       <h3 className="text-3xl font-black text-slate-800 mt-1 tracking-tight">{stats.todayConsultations}</h3>
-                      <div className="flex items-center gap-1 text-[10px] text-blue-600 font-bold mt-2">
-                        <Activity size={10} />
+                      <div className="text-[10px] text-blue-600 font-bold mt-2">
                         <span>Active Clinic Queue</span>
                       </div>
                     </div>
@@ -368,8 +371,7 @@ export default function DoctorDashboardPage() {
                     <div>
                       <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">Total Patients</span>
                       <h3 className="text-3xl font-black text-slate-800 mt-1 tracking-tight">{stats.totalPatients}</h3>
-                      <div className="flex items-center gap-1 text-[10px] text-indigo-600 font-bold mt-2">
-                        <UserCheck size={10} />
+                      <div className="text-[10px] text-indigo-600 font-bold mt-2">
                         <span>Registered Profiles</span>
                       </div>
                     </div>
@@ -383,8 +385,7 @@ export default function DoctorDashboardPage() {
                     <div>
                       <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">Prescriptions</span>
                       <h3 className="text-3xl font-black text-slate-800 mt-1 tracking-tight">{stats.totalPrescriptions}</h3>
-                      <div className="flex items-center gap-1 text-[10px] text-amber-600 font-bold mt-2">
-                        <FileText size={10} />
+                      <div className="text-[10px] text-amber-600 font-bold mt-2">
                         <span>Issued Records</span>
                       </div>
                     </div>
@@ -398,8 +399,7 @@ export default function DoctorDashboardPage() {
                     <div>
                       <span className="text-[10px] text-slate-400 font-extrabold uppercase tracking-wider">Today's Revenue</span>
                       <h3 className="text-2xl font-black text-slate-800 mt-1.5 tracking-tight">LKR {stats.todayRevenue.toFixed(2)}</h3>
-                      <div className="flex items-center gap-1 text-[10px] text-emerald-600 font-bold mt-2">
-                        <TrendingUp size={10} />
+                      <div className="text-[10px] text-emerald-600 font-bold mt-2">
                         <span>Billing Statements</span>
                       </div>
                     </div>
@@ -409,7 +409,7 @@ export default function DoctorDashboardPage() {
                   </div>
                 </div>
 
-                {/* 3-Column Content Layout Split */}
+                {/* 3-Column Content Layout Split (Original View) */}
                 <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
                   {/* Left 2 Columns: Recent Consultations Table */}
                   <div className="lg:col-span-2">

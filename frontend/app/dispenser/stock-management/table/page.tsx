@@ -233,8 +233,8 @@ export default function StockTable() {
         </Link>
       </div>
 
-      {/* Metrics Cards Grid */}
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+      {/* Metrics Cards Grid - 2x2 Grid View */}
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(2, minmax(0, 1fr))", gap: "1.25rem" }}>
         
         {/* Total Drugs */}
         <div className="bg-white border border-slate-100 rounded-2xl p-5 flex items-center gap-4 shadow-sm shadow-slate-100/50 hover:shadow-md hover:border-blue-100/50 transition-all duration-200">
