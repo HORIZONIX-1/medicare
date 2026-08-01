@@ -84,19 +84,6 @@ http://localhost:5000
 
 ---
 
-## 🎯 Future Improvements
-
-- Online Payment Integration
-- SMS & Email Notifications
-- Laboratory Management
-- Pharmacy Module
-- Inventory Management
-- Video Consultation
-- Mobile Application
-- Multi-branch Support
-
----
-
 ## 🤝 Contributing
 
 Contributions are welcome!
