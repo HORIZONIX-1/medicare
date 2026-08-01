@@ -17,10 +17,151 @@ Horizonix Medicare System is a full-stack web application built to improve the d
 - 🩺 Doctor Management
 - 📋 Medical Records Management
 - 💊 Prescription Management
-- 🏥 Department Management
-- 👨‍⚕️ Staff Management
-- 🔐 Secure Authentication & Authorization
-- 📊 Dashboard & Reports
-- 📱 Responsive User Interface
+
+---
+## 🛠️ Tech Stack
+
+### Frontend
+- Next.js
+- React.js
+- TypeScript
+- Tailwind CSS
+- Axios
+
+### Backend
+- Express.js
+- Node.js
+- REST API
+- JWT Authentication
+
+### Database
+- MongoDB (or your preferred database)
+
+### Other Tools
+- Git
+- GitHub
+- Postman
+- npm
+
+---
+
+## 🚀 Getting Started
+
+### Clone the Repository
+
+```bash
+git clone https://github.com/yourusername/horizonix-medicare-system.git
+cd horizonix-medicare-system
+```
+
+---
+
+## Frontend Setup
+
+```bash
+cd client
+npm install
+npm run dev
+```
+
+The frontend will start on:
+
+```
+http://localhost:3000
+```
+
+---
+
+## Backend Setup
+
+```bash
+cd server
+npm install
+npm run dev
+```
+
+The backend server will start on:
+
+```
+http://localhost:5000
+```
+
+---
+
+## Environment Variables
+
+Create a `.env` file inside the `server` directory.
+
+Example:
+
+```env
+PORT=5000
+MONGO_URI=your_database_connection
+JWT_SECRET=your_secret_key
+```
+
+For the frontend:
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:5000/api
+```
+
+---
+
+## 📸 Screenshots
+
+Add your application screenshots here.
+
+```
+/screenshots
+```
+
+---
+
+## 🎯 Future Improvements
+
+- Online Payment Integration
+- SMS & Email Notifications
+- Laboratory Management
+- Pharmacy Module
+- Inventory Management
+- Video Consultation
+- Mobile Application
+- Multi-branch Support
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome!
+
+1. Fork the repository
+2. Create your feature branch
+
+```bash
+git checkout -b feature/NewFeature
+```
+
+3. Commit your changes
+
+```bash
+git commit -m "Add new feature"
+```
+
+4. Push to the branch
+
+```bash
+git push origin feature/NewFeature
+```
+
+5. Open a Pull Request
+
+---
+
+## 📄 License
+
+This project is developed exclusively for **Hope Medical Center**.
+
+© 2026 Horizonix Medicare System. All Rights Reserved.
 
 ---
