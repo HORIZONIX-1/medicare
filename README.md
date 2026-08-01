@@ -34,13 +34,9 @@ Horizonix Medicare System is a full-stack web application built to improve the d
 - REST API
 - JWT Authentication
 
-### Database
-- MongoDB (or your preferred database)
-
 ### Other Tools
 - Git
 - GitHub
-- Postman
 - npm
 
 ---
@@ -99,24 +95,6 @@ PORT=5000
 MONGO_URI=your_database_connection
 JWT_SECRET=your_secret_key
 ```
-
-For the frontend:
-
-```env
-NEXT_PUBLIC_API_URL=http://localhost:5000/api
-```
-
----
-
-## 📸 Screenshots
-
-Add your application screenshots here.
-
-```
-/screenshots
-```
-
----
 
 ## 🎯 Future Improvements
 
