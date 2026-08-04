@@ -1,16 +1,50 @@
 import "./config/env-loader";
 import express from "express";
 import authRoutes from "./modules/auth/auth.routes";
+import patientRoutes from "./modules/patients/patient.routes";
+import consultationRoutes from "./modules/consultations/consultation.routes";
+import symptomRoutes from "./modules/symptoms/symptom.routes";
+import examinationRoutes from "./modules/examinations/examination.routes";
+import investigationRoutes from "./modules/investigations/investigation.routes";
+import instructionRoutes from "./modules/instructions/instruction.routes";
+import diagnoseRoutes from "./modules/diagnoses/diagnose.routes";
+import prescriptionRoutes from "./modules/prescriptions/prescription.routes";
+import drugRoutes from "./modules/drugs/drug.routes";
+import stockRoutes from "./modules/stock/stock.routes";
 import { authMiddleware } from "./middleware/auth.middleware";
 import { roleMiddleware } from "./middleware/role.middleware";
+import invoiceRoutes from "./modules/invoices/invoice.routes";
 
 const app = express();
 
 app.use(express.json());
 
+app.use((req, res, next) => {
+  res.header("Access-Control-Allow-Origin", "http://localhost:3000");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept, Authorization");
+  res.header("Access-Control-Allow-Methods", "GET, POST, PUT, DELETE, OPTIONS");
+  if (req.method === "OPTIONS") {
+    res.sendStatus(200);
+    return;
+  }
+  next();
+});
+
 app.get("/", (_req, res) => res.json({ message: "API is running" }));
 
 app.use("/auth", authRoutes);
+app.use("/patients", patientRoutes);
+app.use("/consultations", consultationRoutes);
+app.use("/symptoms", symptomRoutes);
+app.use("/examinations", examinationRoutes);
+app.use("/investigations", investigationRoutes);
+app.use("/instructions", instructionRoutes);
+app.use("/diagnoses", diagnoseRoutes);
+app.use("/prescriptions", prescriptionRoutes);
+app.use("/drugs", drugRoutes);
+app.use("/stock", stockRoutes);
+app.use("/invoices", invoiceRoutes);
+
 
 // Example protected routes for each role
 app.get(
