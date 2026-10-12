@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect, useCallback } from 'react';
 import { X } from 'lucide-react';
 import {
   DispensingQueueTable,
@@ -9,114 +9,17 @@ import {
   DispensingActions,
   DispensingStatsCards,
 } from '@/components/prescription';
-
-const MOCK_QUEUES: QueueItem[] = [
-  {
-    id: 1,
-    name: 'Kamal Perera',
-    pid: 'P000123',
-    date: '2026-06-07',
-    age: '32 Years',
-    gender: 'Male',
-    diagnosis: 'Viral Fever',
-    doctor: 'Dr. Kamal Perera',
-    drugs: [
-      { name: 'Paracetamol', strength: '500mg', type: 'Tablet', qty: 10 },
-      { name: 'Cetrizine', strength: '10mg', type: 'Tablet', qty: 20 },
-      { name: 'Cough Syrup', strength: '100ml', type: 'Syrup', qty: 1 },
-    ],
-    alerts: [
-      'Paracetamol 500mg is low in stock. Only 5 tablets available.',
-      'Cough Syrup 100ml is out of stock.'
-    ]
-  },
-  {
-    id: 2,
-    name: 'Nimal Silva',
-    pid: 'P000124',
-    date: '2026-06-07',
-    age: '41 Years',
-    gender: 'Male',
-    diagnosis: 'Chronic Gastritis',
-    doctor: 'Dr. S. Alwis',
-    drugs: [
-      { name: 'Omeprazole', strength: '20mg', type: 'Capsule', qty: 14 },
-      { name: 'Gaviscon Liquid', strength: '150ml', type: 'Liquid', qty: 2 }
-    ],
-    alerts: []
-  },
-  {
-    id: 3,
-    name: 'Dilini Fernando',
-    pid: 'P000125',
-    date: '2026-06-06',
-    age: '29 Years',
-    gender: 'Female',
-    diagnosis: 'Allergic Asthma',
-    doctor: 'Dr. R. Perera',
-    drugs: [
-      { name: 'Salbutamol Inhaler', strength: '100mcg', type: 'Inhaler', qty: 1 },
-      { name: 'Prednisolone', strength: '5mg', type: 'Tablet', qty: 10 }
-    ],
-    alerts: [
-      'Prednisolone 5mg is low in stock. Only 8 tablets available.'
-    ]
-  },
-  {
-    id: 4,
-    name: 'Saman Wijesinghe',
-    pid: 'P000126',
-    date: '2026-06-06',
-    age: '55 Years',
-    gender: 'Male',
-    diagnosis: 'Hypertension',
-    doctor: 'Dr. S. Alwis',
-    drugs: [
-      { name: 'Amlodipine', strength: '5mg', type: 'Tablet', qty: 30 },
-      { name: 'Losartan', strength: '50mg', type: 'Tablet', qty: 30 }
-    ],
-    alerts: []
-  },
-  {
-    id: 5,
-    name: 'Chathuri Desilva',
-    pid: 'P000127',
-    date: '2026-06-05',
-    age: '34 Years',
-    gender: 'Female',
-    diagnosis: 'Acute Tonsillitis',
-    doctor: 'Dr. Kamal Perera',
-    drugs: [
-      { name: 'Amoxicillin', strength: '250mg', type: 'Capsule', qty: 21 },
-      { name: 'Paracetamol', strength: '500mg', type: 'Tablet', qty: 15 }
-    ],
-    alerts: [
-      'Paracetamol 500mg is low in stock. Only 5 tablets available.'
-    ]
-  },
-  {
-    id: 6,
-    name: 'Ramesh Bandara',
-    pid: 'P000128',
-    date: '2026-06-05',
-    age: '48 Years',
-    gender: 'Male',
-    diagnosis: 'Diabetes Mellitus',
-    doctor: 'Dr. R. Perera',
-    drugs: [
-      { name: 'Metformin', strength: '500mg', type: 'Tablet', qty: 60 },
-      { name: 'Atorvastatin', strength: '10mg', type: 'Tablet', qty: 30 }
-    ],
-    alerts: []
-  }
-];
+import api from '@/lib/axios';
+import { ApiPrescription, fetchPrescriptions, isDispensed, toQueueItem } from '@/lib/dispensing';
 
 export default function DispensingQueue() {
-  const [queues] = useState<QueueItem[]>(MOCK_QUEUES);
-  const [selectedItem, setSelectedItem] = useState<QueueItem | null>(MOCK_QUEUES[0]);
+  const [prescriptions, setPrescriptions] = useState<ApiPrescription[]>([]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
   const [toastMessage, setToastMessage] = useState<string | null>(null);
   const [customNotes, setCustomNotes] = useState('');
+  const [loading, setLoading] = useState(true);
+  const [submitting, setSubmitting] = useState(false);
 
   const showToast = (message: string) => {
     setToastMessage(message);
@@ -125,33 +28,56 @@ export default function DispensingQueue() {
     }, 3000);
   };
 
-  const handleDispense = (type: 'full' | 'partial' | 'cancel') => {
-    if (!selectedItem) return;
-    if (type === 'full') {
-      showToast(`Prescription dispensed successfully for ${selectedItem.name}!`);
-    } else if (type === 'partial') {
-      showToast(`Prescription marked as partially dispensed for ${selectedItem.name}.`);
-    } else {
-      showToast(`Dispensation cancelled for ${selectedItem.name}.`);
+  const loadQueue = useCallback(async () => {
+    try {
+      const all = await fetchPrescriptions();
+      setPrescriptions(all.filter((p) => !isDispensed(p)));
+    } catch (error) {
+      console.error(error);
+      showToast('Could not load the dispensing queue.');
+    } finally {
+      setLoading(false);
     }
-  };
+  }, []);
+
+  useEffect(() => {
+    loadQueue();
+  }, [loadQueue]);
+
+  const queues = useMemo<QueueItem[]>(() => prescriptions.map(toQueueItem), [prescriptions]);
 
   const filteredQueues = useMemo(() => {
-    return queues.filter(item => 
-      item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      item.pid.toLowerCase().includes(searchQuery.toLowerCase())
+    const q = searchQuery.toLowerCase();
+    return queues.filter(item =>
+      item.name.toLowerCase().includes(q) ||
+      item.pid.toLowerCase().includes(q)
     );
   }, [queues, searchQuery]);
 
-  React.useEffect(() => {
-    if (filteredQueues.length > 0) {
-      if (!selectedItem || !filteredQueues.some(item => item.id === selectedItem.id)) {
-        setSelectedItem(filteredQueues[0]);
-      }
-    } else {
-      setSelectedItem(null);
+  // Keep a valid selection without an effect: fall back to the first visible row
+  const selectedItem =
+    filteredQueues.find(item => item.id === selectedId) ?? filteredQueues[0] ?? null;
+  const selectedPrescription = prescriptions.find(p => p.prescription_id === selectedItem?.id);
+  const invoice = selectedPrescription?.invoice;
+
+  const handleDispense = async () => {
+    if (!selectedItem || !invoice || submitting) return;
+    setSubmitting(true);
+    try {
+      await api.post(`/invoices/${invoice.invoice_id}/finalize`);
+      showToast(`Prescription dispensed for ${selectedItem.name}.`);
+      setCustomNotes('');
+      await loadQueue();
+    } catch (error) {
+      const message = (error as { response?: { data?: { message?: string } } })?.response?.data?.message;
+      showToast(message || 'Failed to dispense prescription.');
+    } finally {
+      setSubmitting(false);
     }
-  }, [filteredQueues, selectedItem]);
+  };
+
+  const awaitingBilling = queues.filter(item => !prescriptions.find(p => p.prescription_id === item.id)?.invoice).length;
+
 
   return (
     <div className="max-w-[1400px] mx-auto flex flex-col gap-6 font-sans text-[#111827]">
@@ -180,16 +106,19 @@ export default function DispensingQueue() {
             queues={filteredQueues}
             selectedItem={selectedItem}
             onSelectItem={(item) => {
-              setSelectedItem(item);
+              setSelectedId(item.id);
               setCustomNotes('');
             }}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
           />
+          {loading && (
+            <p className="text-sm font-semibold text-slate-500">Loading prescriptions...</p>
+          )}
           <DispensingStatsCards
-            total={18}
-            pendingOrFull={12}
-            dispensedOrPartial={6}
+            total={queues.length}
+            pendingOrFull={awaitingBilling}
+            dispensedOrPartial={queues.length - awaitingBilling}
             type="queue"
           />
         </div>
@@ -205,9 +134,9 @@ export default function DispensingQueue() {
           {selectedItem && (
             <DispensingActions
               type="queue"
-              onDispenseFull={() => handleDispense('full')}
-              onDispensePartial={() => handleDispense('partial')}
-              onCancel={() => handleDispense('cancel')}
+              onDispenseFull={handleDispense}
+              dispenseDisabled={!invoice || submitting}
+              dispenseLabel={!invoice ? 'AWAITING BILLING' : submitting ? 'DISPENSING...' : 'DISPENSE & FINALIZE'}
             />
           )}
         </div>

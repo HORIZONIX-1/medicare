@@ -6,6 +6,8 @@ import { Printer, Download } from "lucide-react";
 interface Props {
   type: "queue" | "history";
   onDispenseFull?: () => void;
+  dispenseDisabled?: boolean;
+  dispenseLabel?: string;
   onDispensePartial?: () => void;
   onCancel?: () => void;
   onPrint?: () => void;
@@ -15,6 +17,8 @@ interface Props {
 export default function DispensingActions({
   type,
   onDispenseFull,
+  dispenseDisabled = false,
+  dispenseLabel = "DISPENSE AVAILABLE",
   onDispensePartial,
   onCancel,
   onPrint,
@@ -37,13 +41,13 @@ export default function DispensingActions({
   if (type === "history") {
     return (
       <div style={{ display: "flex", gap: "0.875rem", marginTop: "1.25rem", borderTop: "1px solid #cbd1da", paddingTop: "1.25rem", flexShrink: 0 }}>
-        <button 
+        <button
           onClick={onPrint}
           style={{ ...btnBaseStyle, color: "#ffffff", backgroundColor: "#000000", border: "1px solid #000000" }}
         >
           <Printer size={16} style={{ color: "#ffffff" }} /> <span style={{ color: "#ffffff" }}>PRINT RECEIPT</span>
         </button>
-        <button 
+        <button
           onClick={onDownload}
           style={{ ...btnBaseStyle, color: "#000000", backgroundColor: "#ffffff", border: "1px solid #cbd1da" }}
         >
@@ -55,24 +59,29 @@ export default function DispensingActions({
 
   return (
     <div style={{ display: "flex", gap: "0.875rem", marginTop: "1.25rem", borderTop: "1px solid #cbd1da", paddingTop: "1.25rem", flexShrink: 0 }}>
-      <button 
+      <button
         onClick={onDispenseFull}
-        style={{ ...btnBaseStyle, color: "#ffffff", backgroundColor: "#000000", border: "1px solid #000000" }}
+        disabled={dispenseDisabled}
+        style={{ ...btnBaseStyle, color: "#ffffff", backgroundColor: "#000000", border: "1px solid #000000", ...(dispenseDisabled ? { opacity: 0.45, cursor: "not-allowed" } : {}) }}
       >
-        <span style={{ color: "#ffffff" }}>DISPENSE AVAILABLE</span>
+        <span style={{ color: "#ffffff" }}>{dispenseLabel}</span>
       </button>
-      <button 
+      {onDispensePartial && (
+      <button
         onClick={onDispensePartial}
         style={{ ...btnBaseStyle, color: "#000000", backgroundColor: "#ffffff", border: "1px solid #cbd1da" }}
       >
         <span>MARK AS PARTIAL</span>
       </button>
-      <button 
+      )}
+      {onCancel && (
+      <button
         onClick={onCancel}
         style={{ padding: "0.75rem 1.25rem", fontSize: "0.84375rem", fontWeight: 800, color: "#dc2626", backgroundColor: "#ffffff", border: "1px solid #fca5a5", borderRadius: "0.75rem", cursor: "pointer", fontFamily: "'Poppins', sans-serif" }}
       >
         CANCEL
       </button>
+      )}
     </div>
   );
 }
