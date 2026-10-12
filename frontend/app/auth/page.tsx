@@ -1,8 +1,6 @@
-export default function Page() {
-	return (
-		<div className="p-4">
-			<h1 className="text-lg font-semibold">Authentication</h1>
-			<p className="text-sm text-slate-400">Login or register</p>
-		</div>
-	);
+import { redirect } from "next/navigation";
+
+// Sign-in lives on the home page; keep /auth working for old links
+export default function AuthPage() {
+  redirect("/");
 }
