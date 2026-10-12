@@ -28,23 +28,24 @@ export default function SymptomsCard({
   const [editDurationValue, setEditDurationValue] = useState(1);
   const [editDurationUnit, setEditDurationUnit] = useState("days");
 
-  useEffect(() => {
-    fetchSymptoms();
-    setLocalSymptoms(symptoms || []);
-  }, []);
-
-  useEffect(() => {
-    setLocalSymptoms(symptoms || []);
-  }, [symptoms]);
-
   const fetchSymptoms = async () => {
     try {
       const response = await api.get("/symptoms");
-      setAllSymptoms(response.data);
+      setAllSymptoms(Array.isArray(response.data) ? response.data : []);
     } catch (error) {
       console.error("Failed to fetch symptoms:", error);
     }
   };
+
+  useEffect(() => {
+    fetchSymptoms();
+  }, []);
+
+  useEffect(() => {
+    // Keep the local list in sync when the parent reloads the consultation
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setLocalSymptoms(symptoms || []);
+  }, [symptoms]);
 
   const handleAddSymptom = async () => {
     if (!selectedSymptom) {
