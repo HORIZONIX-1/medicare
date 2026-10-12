@@ -37,6 +37,9 @@ export const checkIn = async (req: AuthRequest, res: Response) => {
       consultation
     });
   } catch (error: any) {
+    if (typeof error?.message === "string" && error.message.includes("not found")) {
+      return res.status(404).json({ message: error.message });
+    }
     console.error("Error in checkIn:", error);
     return res.status(500).json({
       message: error.message || "Failed to check in patient"

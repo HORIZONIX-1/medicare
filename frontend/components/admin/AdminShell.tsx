@@ -1,10 +1,12 @@
 "use client";
 
 import Link from "next/link";
+import { clearSession } from "@/lib/auth";
 import { usePathname, useRouter } from "next/navigation";
 import type { ReactNode } from "react";
 import { useEffect, useState } from "react";
 import api from "@/lib/axios";
+import { MenuButton, NavBackdrop, useMobileNav } from "@/components/layout/MobileNav";
 
 type AdminShellProps = {
   children: ReactNode;
@@ -112,6 +114,7 @@ export default function AdminShell({ children, eyebrow, title, description, acti
   const pathname = usePathname();
   const router = useRouter();
   const [adminName, setAdminName] = useState("");
+  const nav = useMobileNav();
   const [adminRole, setAdminRole] = useState("");
   const [initials, setInitials] = useState("");
   const [loading, setLoading] = useState(true);
@@ -229,9 +232,8 @@ export default function AdminShell({ children, eyebrow, title, description, acti
 
   const handleLogout = (e: React.MouseEvent) => {
     e.preventDefault();
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    router.push("/");
+    clearSession();
+    router.replace("/");
   };
 
   if (loading) {
@@ -249,7 +251,8 @@ export default function AdminShell({ children, eyebrow, title, description, acti
   return (
     <>
       <style>{adminStyles}</style>
-      <div className="admin-root">
+      <div className={`admin-root ${nav.open ? "admin-nav-open" : ""}`}>
+        <NavBackdrop onClick={nav.close} className="admin-backdrop" />
         <aside className="admin-sidebar">
           <Link href="/admin" className="admin-brand" aria-label="Medical Admin dashboard">
             <span className="admin-brand-mark">
@@ -288,15 +291,16 @@ export default function AdminShell({ children, eyebrow, title, description, acti
           </nav>
 
           <div className="admin-sidebar-footer">
-            <a href="/" onClick={handleLogout} className="admin-nav-link danger" style={{ width: "100%", display: "flex" }}>
+            <button type="button" onClick={handleLogout} className="admin-nav-link danger" style={{ width: "100%", display: "flex", background: "transparent", textAlign: "left" }}>
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7"><path d="M10 17 15 12l-5-5M15 12H3" /><path d="M13 4h6v16h-6" /></svg>
               <span>Logout</span>
-            </a>
+            </button>
           </div>
         </aside>
 
         <div className="admin-main">
           <header className="admin-topbar">
+            <MenuButton open={nav.open} onClick={nav.toggle} className="admin-menu-btn" />
             <div className="admin-search">
               <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8">
                 <circle cx="11" cy="11" r="7" />
@@ -556,7 +560,8 @@ export default function AdminShell({ children, eyebrow, title, description, acti
 
 const adminStyles = `
   .header-main,.footer{display:none!important}.main-content{max-width:none!important;margin:0!important;padding:0!important;width:100%!important}.root-body{background:#f7f8fa!important;color:#111827!important;overflow-x:hidden}
-  .admin-root{min-height:100dvh;background:#f7f8fa;color:#111827;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:flex;zoom: 1.15;}
+  .admin-root{min-height:100dvh;background:#f7f8fa;color:#111827;font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;display:flex;}
+@media (min-width:1280px){.admin-root{zoom:1.15}}
   .admin-root input, .admin-root textarea, .admin-root select{color:#111827!important}
   .admin-sidebar{width:238px;background:#fff;border-right:1px solid #d9dde4;display:flex;flex-direction:column;position:fixed;inset:0 auto 0 0;z-index:30}
   .admin-brand{height:58px;padding:14px 24px 12px;display:flex;align-items:center;gap:11px;text-decoration:none;color:#0f172a;border-bottom:1px solid #e4e7ec}
@@ -609,8 +614,8 @@ const adminStyles = `
   .admin-btn{height:38px;border:1px solid #111827;background:#111827;color:#fff;border-radius:2px;padding:0 18px;font-size:12px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;gap:8px;text-decoration:none}.admin-btn.secondary{background:#fff;color:#111827;border-color:#bfc5cf}.admin-btn.ghost{background:#fff;color:#111827;border-color:#d7dbe2}.admin-btn svg{width:14px;height:14px}
   .admin-card{background:#fff;border:1px solid #d5d9e0;border-radius:2px}.admin-card.pad{padding:20px}.admin-card-title{font-size:14px;font-weight:800;color:#111827;margin:0}.admin-card-subtitle{font-size:14px;color:#374151;font-weight:600;margin-top:4px}.admin-grid{display:grid;gap:8px}.admin-two-col{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:8px}.admin-three-col{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}.admin-table-wrap{overflow:auto}
   .admin-table{width:100%;border-collapse:collapse;font-size:12px;min-width:720px}.admin-table th{background:#f1f2f4;color:#5b6573;text-align:left;text-transform:uppercase;letter-spacing:.08em;font-size:10px;height:46px;padding:0 22px}.admin-table td{height:58px;border-top:1px solid #dce0e6;padding:0 22px;color:#222936}.admin-status{display:inline-flex;height:22px;align-items:center;padding:0 11px;background:#eef0f3;color:#536070;font-size:9px;text-transform:uppercase;font-weight:900}.admin-status.inactive{color:#a4abb7}.admin-muted-panel{border:1px dashed #d3d7df;background:rgba(248,249,251,.82);color:#737d8d}
-  @media (max-width:980px){.admin-sidebar{position:static;width:100%;height:auto;border-right:0}.admin-root{display:block}.admin-main{margin-left:0}.admin-nav{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;max-height:none}.admin-nav-group+.admin-nav-group{margin-top:0}.admin-sidebar-footer{display:none}.admin-topbar{top:0}.admin-two-col,.admin-three-col{grid-template-columns:1fr}.admin-search{width:48vw}}
-  @media (max-width:640px){.admin-brand{padding-left:14px}.admin-topbar{padding:0 12px}.admin-search{width:100%;max-width:none}.admin-profile{display:none}.admin-content{padding:14px 12px 24px}.admin-page-head{display:block}.admin-page-head>div+div{margin-top:12px}.admin-page-head h1{font-size:25px}.admin-nav{grid-template-columns:1fr}.admin-card.pad{padding:16px}}
+  .admin-menu-btn{display:none;align-items:center;justify-content:center;width:38px;height:38px;flex-shrink:0;border:1px solid #d9dde4;border-radius:8px;background:#fff;color:#111827;margin-right:10px}.admin-backdrop{display:none}@media (max-width:1023px){.admin-menu-btn{display:inline-flex}.admin-sidebar{width:min(280px,85vw);transform:translateX(-100%);transition:transform .25s ease;z-index:60;box-shadow:0 20px 40px rgba(15,23,42,.18)}.admin-nav-open .admin-sidebar{transform:none}.admin-backdrop{display:block;position:fixed;inset:0;z-index:55;background:rgba(15,23,42,.45);opacity:0;pointer-events:none;transition:opacity .2s ease}.admin-nav-open .admin-backdrop{opacity:1;pointer-events:auto}.admin-main{margin-left:0}.admin-topbar{justify-content:flex-start;gap:8px}.admin-top-actions{margin-left:auto}.admin-two-col,.admin-three-col{grid-template-columns:1fr}.admin-search{width:auto;flex:1;max-width:420px}}
+  @media (max-width:640px){.admin-brand{padding-left:14px}.admin-topbar{padding:0 12px}.admin-search{display:none}.admin-profile{display:none}.admin-content{padding:14px 12px 24px}.admin-page-head{display:block}.admin-page-head>div+div{margin-top:12px}.admin-page-head h1{font-size:25px}.admin-card.pad{padding:16px}}
 
   /* Premium interactive systems styles */
   .notification-badge {

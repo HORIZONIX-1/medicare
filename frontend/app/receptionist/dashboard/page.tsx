@@ -144,7 +144,7 @@ export default function ReceptionistDashboard() {
     <div style={{ maxWidth: "1200px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "2.5rem", color: "#000000", fontFamily: "'Poppins', sans-serif" }}>
       
       {/* Welcome Header */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
         <div>
           <h1 style={{ fontSize: "2.25rem", fontWeight: 800, color: "#000000", letterSpacing: "-0.025em", margin: 0 }}>
             {stats?.organization?.name || "Clinic Dashboard"}
@@ -211,7 +211,7 @@ export default function ReceptionistDashboard() {
         
         {/* Left Column: Doctors Availability */}
         <div style={{ backgroundColor: "#ffffff", border: "1px solid #d5d9e0", borderRadius: "1rem", padding: "2rem", display: "flex", flexDirection: "column", gap: "1.75rem" }}>
-          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+          <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem" }}>
             <div>
               <h3 style={{ fontSize: "1.1875rem", fontWeight: 800, color: "#000000", margin: 0 }}>Doctors & Daily Loads</h3>
               <p style={{ fontSize: "0.84375rem", color: "#64748b", margin: "0.25rem 0 0 0" }}>Assigned patient consultation count for today.</p>
@@ -228,7 +228,7 @@ export default function ReceptionistDashboard() {
               </div>
             ) : (
               stats?.doctorStats?.map((doc: any, index: number) => (
-                <div key={doc.doctor_id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingBottom: "1.25rem", borderBottom: index < stats.doctorStats.length - 1 ? "1px solid #e2e8f0" : "none" }}>
+                <div key={doc.doctor_id} style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "0.75rem", paddingBottom: "1.25rem", borderBottom: index < stats.doctorStats.length - 1 ? "1px solid #e2e8f0" : "none" }}>
                   <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
                     <div style={{ width: "2.5rem", height: "2.5rem", borderRadius: "9999px", backgroundColor: "#f1f5f9", display: "flex", alignItems: "center", justifyContent: "center", fontWeight: 700, color: "#475569" }}>
                       {doc.name.charAt(0)}
