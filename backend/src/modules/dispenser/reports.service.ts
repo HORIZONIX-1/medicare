@@ -40,7 +40,7 @@ export const getStockMovementReport = async (dateFrom?: string, dateTo?: string,
   if (dateTo) where.created_at.lte = new Date(dateTo);
 
   const [logs, total] = await prisma.$transaction([
-    prisma.auditLog.findMany({ where, orderBy: { created_at: "desc" }, take: limit, skip: offset }),
+    prisma.auditLog.findMany({ where, orderBy: { created_at: "desc" }, take: limit, skip: offset, include: { actor: { select: { name: true, role: true } } } }),
     prisma.auditLog.count({ where }),
   ]);
 

@@ -48,7 +48,7 @@ export default function DispenserDashboard() {
   const loadDashboardData = async () => {
     setLoading(true);
     try {
-      const statsRes = await api.get('/api/v1/dispenser/dashboard/stats').catch(() => api.get('/dispenser/dashboard/stats'));
+      const statsRes = await api.get('/api/v1/dispenser/dashboard/stats');
       if (statsRes.data && statsRes.data.success) {
         const d = statsRes.data.data;
         setStats({
@@ -63,7 +63,7 @@ export default function DispenserDashboard() {
     }
 
     try {
-      const lowStockRes = await api.get('/api/v1/dispenser/alerts/low-stock?limit=4').catch(() => api.get('/dispenser/alerts/low-stock?limit=4'));
+      const lowStockRes = await api.get('/api/v1/dispenser/alerts/low-stock?limit=4');
       const list = lowStockRes.data?.data || lowStockRes.data || [];
       setLowStockAlerts(Array.isArray(list) ? list : []);
     } catch (err) {
@@ -71,7 +71,7 @@ export default function DispenserDashboard() {
     }
 
     try {
-      const expiryRes = await api.get('/api/v1/dispenser/alerts/expiry?daysThreshold=90&limit=3').catch(() => api.get('/dispenser/alerts/expiry?daysThreshold=90&limit=3'));
+      const expiryRes = await api.get('/api/v1/dispenser/alerts/expiry?daysThreshold=90&limit=3');
       const list = expiryRes.data?.data || expiryRes.data || [];
       setExpiryAlerts(Array.isArray(list) ? list : []);
     } catch (err) {
@@ -79,8 +79,9 @@ export default function DispenserDashboard() {
     }
 
     try {
-      const movementRes = await api.get('/api/v1/dispenser/reports/movement?limit=3').catch(() => api.get('/dispenser/reports/movement?limit=3'));
-      const logList = movementRes.data?.data || movementRes.data || [];
+      const movementRes = await api.get('/api/v1/dispenser/reports/movement?limit=3');
+      // Response shape: { success, data: { data: AuditLog[], meta } }
+      const logList = movementRes.data?.data?.data ?? [];
       setRecentActivities(Array.isArray(logList) ? logList : []);
     } catch (err) {
       console.error("Failed to load activities:", err);

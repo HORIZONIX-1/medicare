@@ -78,7 +78,7 @@ export default function ExpiryAlertsPage() {
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    let rows: AlertRow[] = rawBatches.map((b, index) => {
+    const rows: AlertRow[] = rawBatches.map((b, index) => {
       const expiry = b.expiry_date ? new Date(b.expiry_date) : null;
       let daysLeft = 999;
       if (expiry) {
@@ -284,7 +284,7 @@ export default function ExpiryAlertsPage() {
 
       {/* Filters Form */}
       <div className="bg-white border border-gray-200 rounded-xl p-6">
-        <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6">
           {/* Search */}
           <div>
             <label className="block text-[10px] font-bold text-gray-500 uppercase tracking-wider mb-2">SEARCH</label>
