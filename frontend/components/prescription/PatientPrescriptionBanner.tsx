@@ -36,7 +36,7 @@ export default function PatientPrescriptionBanner({
           </div>
         </div>
 
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "1.5rem", flex: 1, maxWidth: "700px" }}>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(4, minmax(0, 1fr))", gap: "1.5rem", flex: "1 1 320px", maxWidth: "700px" }}>
           <div>
             <span style={{ fontSize: "0.78125rem", fontWeight: 900, textTransform: "uppercase", letterSpacing: "0.05em", color: "#000000" }}>Date of Birth</span>
             <p style={{ fontSize: "0.9375rem", fontWeight: 900, color: "#000000", marginTop: "0.375rem" }}>

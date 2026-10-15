@@ -52,6 +52,11 @@ const authenticate = async (req, _res, next) => {
   try {
     const token = getBearerToken(req);
     const payload = verifyToken(token);
+
+    if (payload.type === "refresh") {
+      throw new AuthError("Refresh tokens cannot be used for API access");
+    }
+
     const userId = payload.userId || payload.sub;
 
     if (!userId) {

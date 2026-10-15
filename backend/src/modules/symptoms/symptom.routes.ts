@@ -2,6 +2,8 @@ import express from "express";
 
 import { Request, Response, NextFunction } from "express";
 import * as symptomService from "./symptom.service";
+import { authMiddleware } from "../../middleware/auth.middleware";
+import { roleMiddleware } from "../../middleware/role.middleware";
 
 const getAllSymptoms = async (req: Request, res: Response, next: NextFunction) => {
   try {
@@ -87,17 +89,21 @@ const updateConsultationSymptom = async (req: Request, res: Response, next: Next
 
 const router = express.Router();
 
+router.use(authMiddleware as any);
+
 router.get("/", getAllSymptoms);
 
-router.post("/", createSymptom);
+router.post("/", roleMiddleware("DOCTOR") as any, createSymptom);
 
 router.post(
   "/consultation",
+  roleMiddleware("DOCTOR") as any,
   addConsultationSymptom
 );
 
 router.put(
   "/consultation/:consultationSymptomId",
+  roleMiddleware("DOCTOR") as any,
   updateConsultationSymptom
 );
 

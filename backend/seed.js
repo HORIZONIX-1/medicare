@@ -46,12 +46,19 @@ async function main() {
     { name: 'Dispenser', email: 'dispenser@example.com', password: 'password', role: 'DISPENSER' },
   ];
 
+  // Staff only see records from their own organization, so the demo
+  // accounts must share one for the doctor → dispenser flow to work.
+  const organization =
+    (await prisma.organization.findFirst({ orderBy: { organization_id: 'asc' } })) ||
+    (await prisma.organization.create({ data: { name: 'Default Medical Center' } }));
+
   for (const u of users) {
     const hashed = await bcrypt.hash(u.password, 10);
+    const organization_id = u.role === 'ADMIN' ? null : organization.organization_id;
     await prisma.user.upsert({
       where: { email: u.email },
-      update: { password: hashed, name: u.name, role: u.role },
-      create: { email: u.email, password: hashed, name: u.name, role: u.role },
+      update: { password: hashed, name: u.name, role: u.role, organization_id },
+      create: { email: u.email, password: hashed, name: u.name, role: u.role, organization_id },
     });
     console.log('Upserted', u.email);
   }

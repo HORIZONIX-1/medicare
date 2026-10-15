@@ -18,6 +18,9 @@ import {
   Calendar as CalendarIcon,
   Plus
 } from 'lucide-react';
+import { useRequireRole } from '@/hooks/useAuth';
+import { clearSession } from '@/lib/auth';
+import { MenuButton, NavBackdrop, useMobileNav } from "@/components/layout/MobileNav";
 
 export default function DispenserLayout({
   children,
@@ -32,19 +35,9 @@ export default function DispenserLayout({
 
   const [prescriptionsOpen, setPrescriptionsOpen] = useState(true);
   const [stockManagementOpen, setStockManagementOpen] = useState(true);
-  const [formattedDate, setFormattedDate] = useState("Wednesday, June 12, 2024");
-  const [currentUser, setCurrentUser] = useState<any>(null);
-
-  useEffect(() => {
-    try {
-      const userString = localStorage.getItem("user");
-      if (userString) {
-        setCurrentUser(JSON.parse(userString));
-      }
-    } catch (e) {
-      console.error(e);
-    }
-  }, []);
+  const [formattedDate, setFormattedDate] = useState("");
+  const { user: currentUser, ready } = useRequireRole(["DISPENSER"]);
+  const nav = useMobileNav();
 
   useEffect(() => {
     try {
@@ -68,10 +61,18 @@ export default function DispenserLayout({
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    router.push("/");
+    clearSession();
+    router.replace("/");
   };
+
+  if (!ready) {
+    return (
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-600 border-t-transparent" />
+        <p className="text-slate-500 text-sm mt-4">Verifying session...</p>
+      </div>
+    );
+  }
 
   return (
     <>
@@ -88,7 +89,8 @@ export default function DispenserLayout({
         }
       `}</style>
 
-      <div className="disp-layout">
+      <div className={`disp-layout ${nav.open ? "shell-open" : ""}`}>
+        <NavBackdrop onClick={nav.close} />
         {/* Sidebar */}
         <aside className="disp-sidebar">
           {/* Logo Area */}
@@ -244,27 +246,28 @@ export default function DispenserLayout({
         <div className="disp-main-content">
           {/* Top Header */}
           <header className="disp-header">
-            <div className="disp-header-date">
-              <CalendarIcon size={16} className="text-blue-600" />
-              <span>{formattedDate}</span>
-              <ChevronDown size={14} className="text-gray-400" />
+            <div className="shell-header-left">
+              <MenuButton open={nav.open} onClick={nav.toggle} />
+              <span className="shell-header-brand">MediCore</span>
+              <div className="disp-header-date">
+                <CalendarIcon size={16} className="text-blue-600" />
+                <span>{formattedDate}</span>
+              </div>
             </div>
             
             <div className="disp-header-right">
-              <button className="disp-bell-btn">
+              <Link href="/dispenser/expiry-alerts" className="disp-bell-btn" aria-label="Stock alerts">
                 <Bell size={18} />
-                <span className="disp-bell-badge">3</span>
-              </button>
+              </Link>
               
               <div className="disp-profile-badge">
-                <div style={{ display: "flex", width: "2.25rem", height: "2.25rem", borderRadius: "9999px", backgroundColor: "#dbeafe", color: "#1e40af", fontWeight: 800, fontSize: "0.95rem", alignItems: "center", justifyContent: "center" }}>D</div>
+                <div style={{ display: "flex", width: "2.25rem", height: "2.25rem", borderRadius: "9999px", backgroundColor: "#dbeafe", color: "#1e40af", fontWeight: 800, fontSize: "0.95rem", alignItems: "center", justifyContent: "center" }}>{(currentUser?.name || "D").charAt(0).toUpperCase()}</div>
                 <div className="disp-profile-info">
                   <span className="disp-profile-name">
                     {currentUser?.name || "Dispenser Account"}
                   </span>
                   <span className="disp-profile-role">Pharmacist</span>
                 </div>
-                <ChevronDown size={14} className="text-gray-400" />
               </div>
             </div>
           </header>

@@ -1,6 +1,18 @@
 import * as invoiceService
   from "./invoice.service";
 import { Request, Response } from 'express';
+import { InsufficientStockError } from "../stock/stock.allocation";
+
+const sendKnownError = (error: unknown, res: Response) => {
+  if (
+    error instanceof invoiceService.InvoiceError ||
+    error instanceof InsufficientStockError
+  ) {
+    res.status(error.statusCode).json({ message: error.message });
+    return true;
+  }
+  return false;
+};
 
 export const createInvoice =
   async (req: Request, res: Response) => {
@@ -14,6 +26,8 @@ export const createInvoice =
     res.status(201).json(invoice);
 
   } catch (error) {
+
+    if (sendKnownError(error, res)) return;
 
     console.error(error);
 
@@ -32,12 +46,15 @@ export const finalizeInvoice =
     const invoice =
       await invoiceService
         .finalizeInvoice(
-          Number(req.params.id)
+          Number(req.params.id),
+          (req as any).user?.userId
         );
 
     res.json(invoice);
 
   } catch (error) {
+
+    if (sendKnownError(error, res)) return;
 
     console.error(error);
 
@@ -58,6 +75,10 @@ export const getInvoice =
         .getInvoice(
           Number(req.params.id)
         );
+
+    if (!invoice) {
+      return res.status(404).json({ message: "Invoice not found" });
+    }
 
     res.json(invoice);
 

@@ -54,7 +54,7 @@ export default function AddDrugStock() {
     const fetchData = async () => {
       setLoading(true);
       try {
-        const drugsRes = await api.get('/drugs?limit=100').catch(() => api.get('/api/v1/drugs?limit=100'));
+        const drugsRes = await api.get('/drugs?limit=100');
         const drugsList = drugsRes.data?.data || drugsRes.data || [];
         setPredefinedDrugs(Array.isArray(drugsList) ? drugsList : []);
       } catch (err) {
@@ -62,7 +62,7 @@ export default function AddDrugStock() {
       }
 
       try {
-        const suppliersRes = await api.get('/api/v1/dispenser/suppliers').catch(() => api.get('/dispenser/suppliers'));
+        const suppliersRes = await api.get('/api/v1/dispenser/suppliers');
         const suppliersList = suppliersRes.data?.data?.data || suppliersRes.data?.data || suppliersRes.data || [];
         setDealers(Array.isArray(suppliersList) ? suppliersList : []);
       } catch (err) {
@@ -182,7 +182,7 @@ export default function AddDrugStock() {
           reorder_level: parseInt(reorderLevel, 10) || 10
         };
 
-        const newDrugRes = await api.post('/drugs', drugPayload).catch(() => api.post('/api/v1/drugs', drugPayload));
+        const newDrugRes = await api.post('/drugs', drugPayload);
         const newDrug = newDrugRes.data?.data || newDrugRes.data;
         if (newDrug && newDrug.drug_id) {
           drugId = newDrug.drug_id.toString();
@@ -205,7 +205,7 @@ export default function AddDrugStock() {
           address
         };
 
-        const newSupplierRes = await api.post('/api/v1/dispenser/suppliers', supplierPayload).catch(() => api.post('/dispenser/suppliers', supplierPayload));
+        const newSupplierRes = await api.post('/api/v1/dispenser/suppliers', supplierPayload);
         const newSupplier = newSupplierRes.data?.data || newSupplierRes.data;
         if (newSupplier && newSupplier.supplier_id) {
           finalSupplierId = newSupplier.supplier_id;
@@ -223,7 +223,7 @@ export default function AddDrugStock() {
         status: 'ACTIVE'
       };
 
-      await api.post('/stock', stockPayload).catch(() => api.post('/api/v1/stock', stockPayload));
+      await api.post('/stock', stockPayload);
 
       alert("Drug stock batch saved successfully!");
       router.push('/dispenser/stock-management/table');

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { X } from 'lucide-react';
 import {
   DispensingHistoryTable,
@@ -9,131 +9,14 @@ import {
   DispensingActions,
   DispensingStatsCards,
 } from '@/components/prescription';
-
-const INITIAL_HISTORY: HistoryItem[] = [
-  {
-    id: 1,
-    date: '2026-06-07',
-    time: '04:15 PM',
-    prescriptionId: 'RX000123',
-    patientName: 'Kamal Perera',
-    patientId: 'P000123',
-    age: '32 Years',
-    gender: 'Male',
-    diagnosis: 'Viral Fever',
-    doctor: 'Dr. Kamal Perera',
-    status: 'Fully Dispensed',
-    dispenser: 'Dispenser',
-    drugs: [
-      { name: 'Paracetamol 500mg', type: 'Tablet', prescribedQty: 10, dispensedQty: 10 },
-      { name: 'Cetrizine 10mg', type: 'Tablet', prescribedQty: 20, dispensedQty: 20 },
-      { name: 'Cough Syrup 100ml', type: 'Syrup', prescribedQty: 1, dispensedQty: 1 },
-    ],
-    notes: 'Patient advised to take Paracetamol after meals.'
-  },
-  {
-    id: 2,
-    date: '2026-06-07',
-    time: '02:30 PM',
-    prescriptionId: 'RX000124',
-    patientName: 'Nisha Gunawardena',
-    patientId: 'P000185',
-    age: '45 Years',
-    gender: 'Female',
-    diagnosis: 'Hypertension',
-    doctor: 'Dr. S. Alwis',
-    status: 'Partially Dispensed',
-    dispenser: 'Dispenser',
-    drugs: [
-      { name: 'Amlodipine 5mg', type: 'Tablet', prescribedQty: 30, dispensedQty: 30 },
-      { name: 'Metformin 500mg', type: 'Tablet', prescribedQty: 60, dispensedQty: 30 },
-    ],
-    notes: 'Metformin partially dispensed. Remaining 30 tablets to be collected next week when new stock arrives.'
-  },
-  {
-    id: 3,
-    date: '2026-06-06',
-    time: '11:15 AM',
-    prescriptionId: 'RX000122',
-    patientName: 'Saman Kumara',
-    patientId: 'P000210',
-    age: '58 Years',
-    gender: 'Male',
-    diagnosis: 'Type 2 Diabetes',
-    doctor: 'Dr. R. Perera',
-    status: 'Fully Dispensed',
-    dispenser: 'Dispenser',
-    drugs: [
-      { name: 'Metformin 500mg', type: 'Tablet', prescribedQty: 90, dispensedQty: 90 },
-      { name: 'Atorvastatin 10mg', type: 'Tablet', prescribedQty: 30, dispensedQty: 30 },
-    ],
-    notes: ''
-  },
-  {
-    id: 4,
-    date: '2026-06-06',
-    time: '09:45 AM',
-    prescriptionId: 'RX000121',
-    patientName: 'Fathima Rizan',
-    patientId: 'P000305',
-    age: '24 Years',
-    gender: 'Female',
-    diagnosis: 'Allergic Rhinitis',
-    doctor: 'Dr. Kamal Perera',
-    status: 'Fully Dispensed',
-    dispenser: 'Dispenser',
-    drugs: [
-      { name: 'Cetrizine 10mg', type: 'Tablet', prescribedQty: 10, dispensedQty: 10 },
-      { name: 'Fluticasone Nasal Spray', type: 'Spray', prescribedQty: 1, dispensedQty: 1 },
-    ],
-    notes: ''
-  },
-  {
-    id: 5,
-    date: '2026-06-05',
-    time: '08:20 AM',
-    prescriptionId: 'RX000120',
-    patientName: 'John Doe',
-    patientId: 'P000400',
-    age: '38 Years',
-    gender: 'Male',
-    diagnosis: 'Acute Gastritis',
-    doctor: 'Dr. S. Alwis',
-    status: 'Partially Dispensed',
-    dispenser: 'Dispenser',
-    drugs: [
-      { name: 'Omeprazole 20mg', type: 'Capsule', prescribedQty: 14, dispensedQty: 14 },
-      { name: 'Gaviscon Liquid 150ml', type: 'Liquid', prescribedQty: 2, dispensedQty: 0 },
-    ],
-    notes: 'Gaviscon liquid out of stock. Partially dispensed omeprazole only.'
-  },
-  {
-    id: 6,
-    date: '2026-06-05',
-    time: '03:10 PM',
-    prescriptionId: 'RX000119',
-    patientName: 'Priyantha Silva',
-    patientId: 'P000142',
-    age: '50 Years',
-    gender: 'Male',
-    diagnosis: 'Mild Bronchitis',
-    doctor: 'Dr. R. Perera',
-    status: 'Fully Dispensed',
-    dispenser: 'Dispenser',
-    drugs: [
-      { name: 'Amoxicillin 250mg', type: 'Capsule', prescribedQty: 21, dispensedQty: 21 },
-      { name: 'Salbutamol Inhaler', type: 'Inhaler', prescribedQty: 1, dispensedQty: 1 },
-    ],
-    notes: ''
-  }
-];
+import { fetchPrescriptions, isDispensed, toHistoryItem, toLocalDateKey } from '@/lib/dispensing';
 
 export default function DispensingHistory() {
-  const [history] = useState<HistoryItem[]>(INITIAL_HISTORY);
+  const [history, setHistory] = useState<HistoryItem[]>([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [statusFilter, setStatusFilter] = useState('All');
   const [dateFilter, setDateFilter] = useState('All');
-  const [selectedItem, setSelectedItem] = useState<HistoryItem | null>(INITIAL_HISTORY[0]);
+  const [selectedId, setSelectedId] = useState<number | null>(null);
   const [toastMessage, setToastMessage] = useState<string | null>(null);
 
   const showToast = (message: string) => {
@@ -143,52 +26,81 @@ export default function DispensingHistory() {
     }, 3000);
   };
 
-  const handlePrint = (item: HistoryItem) => {
-    showToast(`Connecting to pharmacy printer... Printing receipt for ${item.patientName} (${item.prescriptionId})`);
+  useEffect(() => {
+    fetchPrescriptions()
+      .then((all) => setHistory(all.filter(isDispensed).map(toHistoryItem)))
+      .catch((error) => {
+        console.error(error);
+        showToast('Could not load dispensing history.');
+      });
+  }, []);
+
+  const handlePrint = () => {
+    window.print();
   };
 
   const handleDownload = (item: HistoryItem) => {
-    showToast(`Exporting PDF record for ${item.patientName} (${item.prescriptionId})`);
+    const rows = [
+      ['Prescription', item.prescriptionId],
+      ['Date', `${item.date} ${item.time}`],
+      ['Patient', `${item.patientName} (${item.patientId})`],
+      ['Doctor', item.doctor],
+      ['Diagnosis', item.diagnosis],
+      ['Status', item.status],
+      [],
+      ['Drug', 'Dosage', 'Prescribed', 'Dispensed'],
+      ...item.drugs.map((d) => [d.name, d.type, String(d.prescribedQty), String(d.dispensedQty)]),
+    ];
+    const csv = rows
+      .map((row) => row.map((cell) => `"${String(cell).replace(/"/g, '""')}"`).join(','))
+      .join('\n');
+    const url = URL.createObjectURL(new Blob([csv], { type: 'text/csv' }));
+    const link = document.createElement('a');
+    link.href = url;
+    link.download = `${item.prescriptionId}.csv`;
+    link.click();
+    URL.revokeObjectURL(url);
+    showToast(`Exported ${item.prescriptionId}`);
   };
 
   const filteredHistory = useMemo(() => {
+    const today = new Date();
+    const yesterday = new Date(today);
+    yesterday.setDate(today.getDate() - 1);
+    const todayKey = toLocalDateKey(today);
+    const yesterdayKey = toLocalDateKey(yesterday);
+    const q = searchQuery.toLowerCase();
+
     return history.filter((item) => {
-      const matchesSearch = 
-        item.patientName.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.patientId.toLowerCase().includes(searchQuery.toLowerCase()) ||
-        item.prescriptionId.toLowerCase().includes(searchQuery.toLowerCase());
-      
-      const matchesStatus = 
-        statusFilter === 'All' || 
+      const matchesSearch =
+        item.patientName.toLowerCase().includes(q) ||
+        item.patientId.toLowerCase().includes(q) ||
+        item.prescriptionId.toLowerCase().includes(q);
+
+      const matchesStatus =
+        statusFilter === 'All' ||
         item.status === statusFilter;
 
-      const matchesDate = (() => {
-        if (dateFilter === 'All') return true;
-        if (dateFilter === 'Today') return item.date === '2026-06-07';
-        if (dateFilter === 'Yesterday') return item.date === '2026-06-06';
-        return true;
-      })();
+      const matchesDate =
+        dateFilter === 'All' ||
+        (dateFilter === 'Today' && item.date === todayKey) ||
+        (dateFilter === 'Yesterday' && item.date === yesterdayKey) ||
+        (dateFilter !== 'Today' && dateFilter !== 'Yesterday');
 
       return matchesSearch && matchesStatus && matchesDate;
     });
   }, [history, searchQuery, statusFilter, dateFilter]);
 
-  React.useEffect(() => {
-    if (filteredHistory.length > 0) {
-      if (!selectedItem || !filteredHistory.some(item => item.id === selectedItem.id)) {
-        setSelectedItem(filteredHistory[0]);
-      }
-    } else {
-      setSelectedItem(null);
-    }
-  }, [filteredHistory, selectedItem]);
+  const selectedItem =
+    filteredHistory.find(item => item.id === selectedId) ?? filteredHistory[0] ?? null;
 
   const stats = useMemo(() => {
     const total = history.length;
     const fully = history.filter(item => item.status === 'Fully Dispensed').length;
-    const partially = history.filter(item => item.status === 'Partially Dispensed').length;
-    return { total, fully, partially };
+    const declined = history.filter(item => item.status === 'Declined').length;
+    return { total, fully, declined };
   }, [history]);
+
 
   return (
     <div className="max-w-[1400px] mx-auto flex flex-col gap-6 font-sans text-[#111827]">
@@ -216,7 +128,7 @@ export default function DispensingHistory() {
           <DispensingHistoryTable
             history={filteredHistory}
             selectedItem={selectedItem}
-            onSelectItem={setSelectedItem}
+            onSelectItem={(item) => setSelectedId(item.id)}
             searchQuery={searchQuery}
             onSearchChange={setSearchQuery}
             statusFilter={statusFilter}
@@ -227,7 +139,7 @@ export default function DispensingHistory() {
           <DispensingStatsCards
             total={stats.total}
             pendingOrFull={stats.fully}
-            dispensedOrPartial={stats.partially}
+            dispensedOrPartial={stats.declined}
             type="history"
           />
         </div>
@@ -241,7 +153,7 @@ export default function DispensingHistory() {
           {selectedItem && (
             <DispensingActions
               type="history"
-              onPrint={() => handlePrint(selectedItem)}
+              onPrint={handlePrint}
               onDownload={() => handleDownload(selectedItem)}
             />
           )}

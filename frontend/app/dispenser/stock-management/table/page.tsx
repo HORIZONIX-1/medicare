@@ -70,7 +70,7 @@ export default function StockTable() {
     setLoading(true);
     try {
       // Fetch stats
-      const statsRes = await api.get('/api/v1/dispenser/dashboard/stats').catch(() => api.get('/dispenser/dashboard/stats'));
+      const statsRes = await api.get('/api/v1/dispenser/dashboard/stats');
       if (statsRes.data && statsRes.data.success) {
         setStats(statsRes.data.data);
       }
@@ -80,7 +80,7 @@ export default function StockTable() {
 
     try {
       // Fetch stock batches
-      const stockRes = await api.get('/stock?limit=100').catch(() => api.get('/api/v1/stock?limit=100'));
+      const stockRes = await api.get('/stock?limit=100');
       const list = stockRes.data?.data || stockRes.data || [];
       setBatches(Array.isArray(list) ? list : []);
     } catch (err) {
@@ -174,8 +174,7 @@ export default function StockTable() {
   const handleDeleteConfirm = async () => {
     if (!deleteTarget) return;
     try {
-      await api.delete(`/stock/batch/${deleteTarget.stock_batch_id}`)
-        .catch(() => api.delete(`/api/v1/stock/batch/${deleteTarget.stock_batch_id}`));
+      await api.delete(`/stock/batch/${deleteTarget.stock_batch_id}`);
       alert("Stock batch deleted successfully!");
       setDeleteTarget(null);
       fetchData();

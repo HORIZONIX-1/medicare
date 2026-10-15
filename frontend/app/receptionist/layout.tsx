@@ -12,6 +12,9 @@ import {
   Calendar as CalendarIcon,
   Plus
 } from "lucide-react";
+import { useRequireRole } from "@/hooks/useAuth";
+import { clearSession } from "@/lib/auth";
+import { MenuButton, NavBackdrop, useMobileNav } from "@/components/layout/MobileNav";
 
 export default function ReceptionistLayout({
   children,
@@ -20,21 +23,9 @@ export default function ReceptionistLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
-  const [formattedDate, setFormattedDate] = useState("Wednesday, June 12, 2024");
-  const [currentUser, setCurrentUser] = useState<any>(null);
-  const [isCheckingAuth, setIsCheckingAuth] = useState(true);
-
-  useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userString = localStorage.getItem("user");
-
-    if (!token || !userString) {
-      router.push("/");
-    } else {
-      setCurrentUser(JSON.parse(userString));
-      setIsCheckingAuth(false);
-    }
-  }, [router]);
+  const [formattedDate, setFormattedDate] = useState("");
+  const { user: currentUser, ready } = useRequireRole(["RECEPTIONIST"]);
+  const nav = useMobileNav();
 
   useEffect(() => {
     try {
@@ -51,20 +42,19 @@ export default function ReceptionistLayout({
   }, []);
 
   const isActive = (href: string) => {
-    return pathname === href;
+    return pathname === href || pathname?.startsWith(`${href}/`);
   };
 
   const handleLogout = () => {
-    localStorage.removeItem("token");
-    localStorage.removeItem("user");
-    router.push("/");
+    clearSession();
+    router.replace("/");
   };
 
-  if (isCheckingAuth) {
+  if (!ready) {
     return (
-      <div className="min-h-screen bg-slate-950 flex flex-col items-center justify-center font-sans">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-indigo-500"></div>
-        <p className="text-slate-400 text-sm mt-4">Verifying session...</p>
+      <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center">
+        <div className="animate-spin rounded-full h-10 w-10 border-2 border-blue-600 border-t-transparent" />
+        <p className="text-slate-500 text-sm mt-4">Verifying session...</p>
       </div>
     );
   }
@@ -84,7 +74,8 @@ export default function ReceptionistLayout({
         }
       `}</style>
 
-      <div className="dr-layout">
+      <div className={`dr-layout ${nav.open ? "shell-open" : ""}`}>
+        <NavBackdrop onClick={nav.close} />
         {/* Sidebar */}
         <aside className="dr-sidebar">
           {/* Logo Area */}
@@ -134,16 +125,18 @@ export default function ReceptionistLayout({
         <div className="dr-main-content">
           {/* Top Header */}
           <header className="dr-header">
-            <div className="dr-header-date">
-              <CalendarIcon size={16} className="text-blue-600" />
-              <span>{formattedDate}</span>
-              <ChevronDown size={14} className="text-gray-400" />
+            <div className="shell-header-left">
+              <MenuButton open={nav.open} onClick={nav.toggle} />
+              <span className="shell-header-brand">MediCore</span>
+              <div className="dr-header-date">
+                <CalendarIcon size={16} className="text-blue-600" />
+                <span>{formattedDate}</span>
+              </div>
             </div>
 
             <div className="dr-header-right">
-              <button className="dr-bell-btn">
+              <button className="dr-bell-btn" aria-label="Notifications">
                 <Bell size={18} />
-                <span className="dr-bell-badge">2</span>
               </button>
 
               <div className="dr-profile-badge">
@@ -159,7 +152,7 @@ export default function ReceptionistLayout({
                   alignItems: "center",
                   justifyContent: "center"
                 }}>
-                  R
+                  {(currentUser?.name || "R").charAt(0).toUpperCase()}
                 </div>
                 <div className="dr-profile-info">
                   <span className="dr-profile-name">
@@ -167,7 +160,6 @@ export default function ReceptionistLayout({
                   </span>
                   <span className="dr-profile-role">Receptionist</span>
                 </div>
-                <ChevronDown size={14} className="text-gray-400" />
               </div>
             </div>
           </header>

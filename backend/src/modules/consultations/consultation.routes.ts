@@ -5,6 +5,7 @@ import {
   updateConsultation,
   getConsultation,
   listConsultations,
+  getDashboardSummary,
 } from "./consultation.controller";
 
 import { authMiddleware }
@@ -27,6 +28,14 @@ router.get(
   authMiddleware,
   roleMiddleware("DOCTOR"),
   listConsultations as any
+);
+
+// Must be registered before "/:id"
+router.get(
+  "/summary",
+  authMiddleware,
+  roleMiddleware("DOCTOR"),
+  getDashboardSummary as any
 );
 
 router.put(

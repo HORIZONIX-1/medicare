@@ -64,7 +64,7 @@ export const getStockBatch = async (req: Request, res: Response) => {
 
 export const updateStock = async (req: Request, res: Response) => {
   try {
-    const actor = (req as any).user?.user_id;
+    const actor = (req as any).user?.userId;
     const updated = await stockService.updateStockBatch(Number(req.params.batchId), req.body, actor, req);
     res.json(updated);
   } catch (error: any) {
@@ -75,7 +75,7 @@ export const updateStock = async (req: Request, res: Response) => {
 
 export const removeStock = async (req: Request, res: Response) => {
   try {
-    const actor = (req as any).user?.user_id;
+    const actor = (req as any).user?.userId;
     const deleted = await stockService.deleteStockBatch(Number(req.params.batchId), actor, req);
     res.json(deleted);
   } catch (error: any) {
@@ -87,7 +87,7 @@ export const removeStock = async (req: Request, res: Response) => {
 export const adjustStock = async (req: Request, res: Response) => {
   try {
     const { adjustmentType, quantity, reason } = req.body;
-    const actor = (req as any).user?.user_id;
+    const actor = (req as any).user?.userId;
     const updated = await stockService.adjustStockBatch(Number(req.params.batchId), adjustmentType, Number(quantity), reason, actor, req);
     res.json(updated);
   } catch (error: any) {
@@ -99,7 +99,7 @@ export const adjustStock = async (req: Request, res: Response) => {
 export const transferStock = async (req: Request, res: Response) => {
   try {
     const { toBatchId, quantity } = req.body;
-    const actor = (req as any).user?.user_id;
+    const actor = (req as any).user?.userId;
     const result = await stockService.transferStock(Number(req.params.batchId), Number(toBatchId), Number(quantity), actor, req);
     res.json(result);
   } catch (error: any) {
@@ -110,7 +110,7 @@ export const transferStock = async (req: Request, res: Response) => {
 
 export const bulkUpdatePrices = async (req: Request, res: Response) => {
   try {
-    const actor = (req as any).user?.user_id;
+    const actor = (req as any).user?.userId;
     const result = await stockService.bulkUpdatePrices(req.body.updates || [], actor, req);
     res.json({ data: result });
   } catch (error: any) {

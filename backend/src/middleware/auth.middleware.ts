@@ -20,12 +20,24 @@ export const authMiddleware = (
       });
     }
 
-    const token = authHeader.split(" ")[1];
+    const [scheme, token] = authHeader.split(" ");
 
-    const decoded = jwt.verify(
+    if (scheme !== "Bearer" || !token) {
+      return res.status(401).json({
+        message: "Bearer token is required",
+      });
+    }
+
+    const decoded: any = jwt.verify(
       token,
       process.env.JWT_SECRET!
     );
+
+    if (decoded?.type === "refresh") {
+      return res.status(401).json({
+        message: "Invalid token",
+      });
+    }
 
     req.user = decoded;
 

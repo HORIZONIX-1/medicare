@@ -59,14 +59,6 @@ export default function DealsPage() {
     setTimeout(() => setToastMessage(null), 3000);
   };
 
-const MOCK_SUPPLIERS: Supplier[] = [
-  { supplier_id: 1, name: 'Hemas Pharmaceuticals', contact_person: 'Mr. Anura Perera', email: 'info@hemas.com', phone: '+94112345678', address: '75, Braybrooke Place, Colombo 2' },
-  { supplier_id: 2, name: 'CIC Holdings', contact_person: 'Mrs. Sanduni Silva', email: 'sales@cic.lk', phone: '+94114567890', address: '199, Kew Road, Colombo 2' },
-  { supplier_id: 3, name: 'Sunshine Healthcare', contact_person: 'Mr. Roshan Fernando', email: 'sunshine@healthcare.lk', phone: '+94117890123', address: '45, Dharmapala Mawatha, Colombo 7' },
-  { supplier_id: 4, name: 'Morison PLC', contact_person: 'Mr. Dinesh Gunawardena', email: 'info@morison.lk', phone: '+94111234567', address: '620, Biyagama Road, Piliyandala' },
-  { supplier_id: 5, name: 'State Pharmaceuticals Corporation', contact_person: 'Mrs. Priyanthi Alwis', email: 'spchq@spc.lk', phone: '+94112439533', address: '75, Sir Baron Jayatilaka Mawatha, Colombo 1' }
-];
-
   const fetchSuppliers = async () => {
     setLoading(true);
     try {

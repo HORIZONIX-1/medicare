@@ -12,6 +12,7 @@ interface AuditLog {
   entity: string;
   entity_id: string | null;
   metadata: any;
+  actor?: { name: string; role: string } | null;
   ip_address: string | null;
   user_agent: string | null;
   created_at: string;
@@ -53,7 +54,7 @@ export default function StockUpdateLog() {
     setLoading(true);
     try {
       // 1. Fetch batches
-      const stockRes = await api.get('/stock?limit=100').catch(() => api.get('/api/v1/stock?limit=100'));
+      const stockRes = await api.get('/stock?limit=100');
       const list = stockRes.data?.data || stockRes.data || [];
       setBatches(Array.isArray(list) ? list : []);
     } catch (err) {
@@ -62,9 +63,9 @@ export default function StockUpdateLog() {
 
     try {
       // 2. Fetch audit logs (reports/movement)
-      const movementRes = await api.get('/api/v1/dispenser/reports/movement?limit=100')
-        .catch(() => api.get('/dispenser/reports/movement?limit=100'));
-      const logList = movementRes.data?.data || movementRes.data || [];
+      const movementRes = await api.get('/api/v1/dispenser/reports/movement?limit=100');
+      // Response shape: { success, data: { data: AuditLog[], meta } }
+      const logList = movementRes.data?.data?.data ?? [];
       setLogs(Array.isArray(logList) ? logList : []);
     } catch (err) {
       console.error("Failed to load audit logs:", err);
@@ -86,8 +87,8 @@ export default function StockUpdateLog() {
 
   // Get User Display Name
   const getUserName = (log: AuditLog) => {
-    if (log.actor_user_id === 1 || log.actor_user_id === null) return 'Dispenser';
-    return `User #${log.actor_user_id}`;
+    if (log.actor?.name) return log.actor.name;
+    return log.actor_user_id === null ? 'System' : `User #${log.actor_user_id}`;
   };
 
   // Resolve Change Display Details
@@ -105,6 +106,12 @@ export default function StockUpdateLog() {
       typeText = meta.adjustmentType === 'ADD' ? 'Stock Added' : 'Auto Deduct';
       changeText = `${meta.adjustmentType === 'ADD' ? '+' : '-'}${meta.quantity || 0}`;
       reasonText = meta.reason || (meta.adjustmentType === 'ADD' ? 'Stock Refill' : 'Prescription Dispensed');
+      prevText = meta.before !== undefined ? meta.before.toString() : '—';
+      newText = meta.after !== undefined ? meta.after.toString() : '—';
+    } else if (action === 'DISPENSE') {
+      typeText = 'Auto Deduct';
+      changeText = `-${meta.quantity || 0}`;
+      reasonText = 'Prescription Dispensed';
       prevText = meta.before !== undefined ? meta.before.toString() : '—';
       newText = meta.after !== undefined ? meta.after.toString() : '—';
     } else if (action === 'TRANSFER_STOCK') {

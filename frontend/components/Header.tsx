@@ -1,26 +1,16 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import Link from "next/link";
+import { getSessionUser, homeForRole, type SessionUser } from "@/lib/auth";
 
 export default function Header() {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<SessionUser | null>(null);
 
   useEffect(() => {
-    try {
-      const raw = localStorage.getItem("user");
-      if (raw) setUser(JSON.parse(raw));
-    } catch (e) {
-      setUser(null);
-    }
+    // eslint-disable-next-line react-hooks/set-state-in-effect
+    setUser(getSessionUser());
   }, []);
-
-  const handleRoleChange = (role: string) => {
-    if (!user) return;
-    const updated = { ...user, role };
-    localStorage.setItem("user", JSON.stringify(updated));
-    // reload to let app route and pages react to role change
-    window.location.reload();
-  };
 
   return (
     <div className="header-container">
@@ -33,22 +23,12 @@ export default function Header() {
       </div>
 
       <nav className="header-nav">
-        <a href="/" className="nav-link">Home</a>
+        <Link href="/" className="nav-link">Home</Link>
 
-        {user && Array.isArray(user.roles) && user.roles.length > 1 ? (
-          <select
-            value={user.role}
-            onChange={(e) => handleRoleChange(e.target.value)}
-            className="btn-ghost select-role"
-          >
-            {user.roles.map((r: string) => (
-              <option key={r} value={r}>{r}</option>
-            ))}
-          </select>
-        ) : null}
-
-        {user ? null : (
-          <a href="/auth/login" className="btn btn-ghost">Sign in</a>
+        {user ? (
+          <Link href={homeForRole(user.role)} className="btn btn-ghost">My portal</Link>
+        ) : (
+          <Link href="/" className="btn btn-ghost">Sign in</Link>
         )}
       </nav>
     </div>

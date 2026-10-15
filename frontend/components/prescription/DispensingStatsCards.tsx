@@ -39,7 +39,7 @@ export default function DispensingStatsCards({
         <div>
           <p style={{ fontSize: "1.5rem", fontWeight: 800, color: "#000000", lineHeight: 1, margin: 0 }}>{pendingOrFull}</p>
           <p style={{ fontSize: "0.75rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em", color: "#000000", marginTop: "0.375rem", margin: 0 }}>
-            {isQueue ? "Pending" : "Fully Dispensed"}
+            {isQueue ? "Awaiting Billing" : "Fully Dispensed"}
           </p>
         </div>
       </div>
@@ -51,7 +51,7 @@ export default function DispensingStatsCards({
         <div>
           <p style={{ fontSize: "1.5rem", fontWeight: 800, color: "#000000", lineHeight: 1, margin: 0 }}>{dispensedOrPartial}</p>
           <p style={{ fontSize: "0.75rem", fontWeight: 800, textTransform: "uppercase", letterSpacing: "0.05em", color: "#000000", marginTop: "0.375rem", margin: 0 }}>
-            {isQueue ? "Dispensed" : "Partially Dispensed"}
+            {isQueue ? "Ready to Dispense" : "Declined"}
           </p>
         </div>
       </div>

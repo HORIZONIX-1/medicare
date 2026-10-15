@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import api from "@/lib/axios";
+import { homeForRole, saveSession } from "@/lib/auth";
 
 export default function LoginPage() {
   const router = useRouter();
@@ -20,20 +21,15 @@ export default function LoginPage() {
     try {
       const response = await api.post("/auth/login", { email, password });
       const { token, user } = response.data;
-      localStorage.setItem("token", token);
-      localStorage.setItem("user", JSON.stringify(user));
+      const home = homeForRole(user?.role);
 
-      if (user.role === "ADMIN") {
-        router.push("/admin");
-      } else if (user.role === "DOCTOR") {
-        router.push("/doctor/dashboard");
-      } else if (user.role === "RECEPTIONIST") {
-        router.push("/receptionist/dashboard");
-      } else if (user.role === "DISPENSER" || user.role === "PHARMACIST") {
-        router.push("/dispenser");
-      } else {
-        router.push("/admin/dashboard");
+      if (home === "/") {
+        setErrorMessage("Your account does not have access to any portal.");
+        return;
       }
+
+      saveSession(token, user);
+      router.push(home);
     } catch (error: unknown) {
       console.error(error);
       const apiError = error as { response?: { data?: { message?: string } } };
@@ -49,7 +45,6 @@ export default function LoginPage() {
   return (
     <>
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800;900&display=swap');
 
         html, body {
           margin: 0;
@@ -258,6 +253,23 @@ export default function LoginPage() {
         }
         .security-footer svg {
           color: #0ea5e9;
+        }
+
+        @media (max-width: 640px) {
+          .login-page-root {
+            padding: 1rem;
+            align-items: flex-start;
+          }
+          .portal-card {
+            padding: 1.25rem;
+          }
+          .split-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+          }
+          .header-title {
+            font-size: 1.35rem;
+          }
         }
       `}</style>
 

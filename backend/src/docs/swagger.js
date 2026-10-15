@@ -42,7 +42,12 @@ const openapiDefinition = {
 
 const specs = swaggerJsdoc({
   definition: openapiDefinition,
-  apis: [],
+  apis: [
+    "./src/modules/**/*.ts",
+    "./src/modules/**/*.js",
+    "./dist/src/modules/**/*.js",
+    "./app.js",
+  ],
 });
 
 const setupSwagger = (app) => {

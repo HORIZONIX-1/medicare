@@ -49,7 +49,7 @@ export const getConsultation =
         },
       },
 
-      doctor: true,
+      doctor: { select: { user_id: true, name: true, email: true } },
 
       consultationSymptoms: {
         include: {
@@ -70,6 +70,8 @@ export const getConsultation =
 
 export const listConsultations = async (currentUser?: { userId: number; role: string }) => {
   let organizationId: number | null = null;
+  // Staff only see their own organization (users without one only see unaffiliated records)
+  let scoped = false;
 
   if (currentUser && (currentUser.role === "DOCTOR" || currentUser.role === "RECEPTIONIST" || currentUser.role === "DISPENSER")) {
     const user = await prisma.user.findUnique({
@@ -77,10 +79,11 @@ export const listConsultations = async (currentUser?: { userId: number; role: st
       select: { organization_id: true }
     });
     organizationId = user?.organization_id ?? null;
+    scoped = true;
   }
 
   const where: any = {};
-  if (organizationId !== null) {
+  if (scoped) {
     where.doctor = {
       organization_id: organizationId
     };
@@ -90,11 +93,55 @@ export const listConsultations = async (currentUser?: { userId: number; role: st
     where,
     include: {
       patient: true,
-      doctor: true,
+      doctor: { select: { user_id: true, name: true, email: true } },
       diagnoses: true
     },
     orderBy: {
       visit_date: "desc"
     }
   });
+};
+
+// Dashboard numbers computed in the database instead of shipping every record to the browser
+export const getDashboardSummary = async (currentUser: { userId: number; role: string }) => {
+  const user = await prisma.user.findUnique({
+    where: { user_id: currentUser.userId },
+    select: { organization_id: true },
+  });
+  const organizationId = user?.organization_id ?? null;
+  const doctorScope = { doctor: { organization_id: organizationId } };
+
+  const startOfToday = new Date();
+  startOfToday.setHours(0, 0, 0, 0);
+  const startOfTomorrow = new Date(startOfToday);
+  startOfTomorrow.setDate(startOfTomorrow.getDate() + 1);
+  const today = { gte: startOfToday, lt: startOfTomorrow };
+
+  const [todayConsultations, totalPatients, totalPrescriptions, revenue, recentConsultations] =
+    await Promise.all([
+      prisma.consultation.count({ where: { ...doctorScope, visit_date: today } }),
+      prisma.patient.count({ where: { organization_id: organizationId } }),
+      prisma.prescription.count({ where: { consultation: doctorScope } }),
+      prisma.invoice.aggregate({
+        _sum: { total_amount: true },
+        where: { is_finalized: true, created_at: today, consultation: doctorScope },
+      }),
+      prisma.consultation.findMany({
+        where: doctorScope,
+        orderBy: { visit_date: "desc" },
+        take: 4,
+        include: {
+          patient: { select: { patient_id: true, patient_code: true, name: true } },
+          diagnoses: true,
+        },
+      }),
+    ]);
+
+  return {
+    todayConsultations,
+    totalPatients,
+    totalPrescriptions,
+    todayRevenue: revenue._sum.total_amount ?? 0,
+    recentConsultations,
+  };
 };

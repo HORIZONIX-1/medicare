@@ -14,7 +14,7 @@ export interface HistoryItem {
   gender: string;
   diagnosis: string;
   doctor: string;
-  status: 'Fully Dispensed' | 'Partially Dispensed';
+  status: 'Fully Dispensed' | 'Partially Dispensed' | 'Declined';
   dispenser: string;
   drugs: { name: string; type: string; prescribedQty: number; dispensedQty: number }[];
   notes: string;
@@ -70,7 +70,7 @@ export default function DispensingHistoryTable({
           >
             <option value="All">All Statuses</option>
             <option value="Fully Dispensed">Fully Dispensed</option>
-            <option value="Partially Dispensed">Partially Dispensed</option>
+            <option value="Declined">Declined by Patient</option>
           </select>
         </div>
 

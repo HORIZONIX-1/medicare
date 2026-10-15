@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import * as prescriptionService
   from "./prescription.service";
+import { InsufficientStockError } from "../stock/stock.allocation";
 
 export const createPrescription =
   async (req: Request, res: Response) => {
@@ -16,6 +17,15 @@ export const createPrescription =
     );
 
   } catch (error) {
+
+    if (
+      error instanceof prescriptionService.PrescriptionError ||
+      error instanceof InsufficientStockError
+    ) {
+      return res.status(error.statusCode).json({
+        message: error.message,
+      });
+    }
 
     console.error(error);
 
@@ -36,6 +46,12 @@ export const getPrescription =
         .getPrescription(
           Number(req.params.id)
         );
+
+    if (!prescription) {
+      return res.status(404).json({
+        message: "Prescription not found",
+      });
+    }
 
     res.json(prescription);
 

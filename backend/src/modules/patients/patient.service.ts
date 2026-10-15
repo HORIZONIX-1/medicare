@@ -1,11 +1,49 @@
 import prisma from "../../config/prisma";
 
+export class PatientError extends Error {
+  constructor(message: string, public statusCode = 400) {
+    super(message);
+  }
+}
+
+const getUserOrganizationId = async (userId: number) => {
+  const user = await prisma.user.findUnique({
+    where: { user_id: userId },
+    select: { organization_id: true },
+  });
+  return user?.organization_id ?? null;
+};
+
+// Non-admin staff may only access patients that belong to their own organization
+const assertPatientAccess = async (
+  patientOrganizationId: number | null,
+  currentUser?: { userId: number; role: string }
+) => {
+  if (!currentUser || currentUser.role === "ADMIN") return;
+
+  const organizationId = await getUserOrganizationId(currentUser.userId);
+
+  if (patientOrganizationId !== organizationId) {
+    throw new PatientError("You do not have access to this patient", 403);
+  }
+};
+
+const generatePatientCode = async () => {
+  // Based on the highest existing code (not the row count) so deletions never cause collisions
+  const latest = await prisma.patient.findFirst({
+    orderBy: { patient_id: "desc" },
+    select: { patient_id: true, patient_code: true },
+  });
+  const fromCode = Number(latest?.patient_code?.replace(/\D/g, "")) || 0;
+  const next = Math.max(fromCode, latest?.patient_id ?? 0) + 1;
+  return `P${String(next).padStart(5, "0")}`;
+};
+
 export const searchPatients = async (
   type: string,
   value: string,
   currentUser?: { userId: number; role: string }
 ) => {
-  console.log("searchPatients called with:", { type, value, currentUser });
   let organizationId: number | null = null;
 
   if (currentUser && (currentUser.role === "DOCTOR" || currentUser.role === "RECEPTIONIST")) {
@@ -14,7 +52,6 @@ export const searchPatients = async (
       select: { organization_id: true }
     });
     organizationId = user?.organization_id ?? null;
-    console.log(`Found organizationId for ${currentUser.role}:`, organizationId);
   }
 
   const where: any = {};
@@ -22,6 +59,9 @@ export const searchPatients = async (
   if (currentUser && (currentUser.role === "DOCTOR" || currentUser.role === "RECEPTIONIST")) {
     where.organization_id = organizationId;
   }
+
+  // An empty value intentionally lists every patient in scope (used by list views)
+  value = String(value ?? "").trim();
 
   if (type === "patient_id") {
     where.patient_code = {
@@ -39,7 +79,6 @@ export const searchPatients = async (
     return [];
   }
 
-  console.log("Final patients query where clause:", where);
   return prisma.patient.findMany({
     where,
   });
@@ -49,38 +88,59 @@ export const createPatient = async (
   data: { name: any; gender: any; date_of_birth: string | number | Date; nic: any; phone: any; address: any; },
   createdBy: any
 ) => {
-  const patientCount = await prisma.patient.count();
-  const patientCode = `P${String(patientCount + 1).padStart(5, "0")}`;
+  if (!data?.name || !String(data.name).trim()) {
+    throw new PatientError("Patient name is required");
+  }
+  if (!data.gender) {
+    throw new PatientError("Gender is required");
+  }
+  const dateOfBirth = new Date(data.date_of_birth);
+  if (!data.date_of_birth || Number.isNaN(dateOfBirth.getTime())) {
+    throw new PatientError("A valid date of birth is required");
+  }
+  if (dateOfBirth.getTime() > Date.now()) {
+    throw new PatientError("Date of birth cannot be in the future");
+  }
 
   const creator = await prisma.user.findUnique({
     where: { user_id: createdBy },
     select: { organization_id: true }
   });
 
-  return prisma.patient.create({
-    data: {
-      patient_code: patientCode,
+  // Retry if another registration grabbed the same code concurrently
+  for (let attempt = 0; ; attempt++) {
+    try {
+      return await prisma.patient.create({
+        data: {
+          patient_code: await generatePatientCode(),
 
-      name: data.name,
-      gender: data.gender,
+          name: String(data.name).trim(),
+          gender: data.gender,
 
-      date_of_birth: new Date(data.date_of_birth),
+          date_of_birth: dateOfBirth,
 
-      nic: data.nic,
-      phone: data.phone,
-      address: data.address,
+          nic: data.nic || null,
+          phone: data.phone || null,
+          address: data.address || null,
 
-      created_by: createdBy,
-      organization_id: creator?.organization_id ?? null,
-    },
-  });
+          created_by: createdBy,
+          organization_id: creator?.organization_id ?? null,
+        },
+      });
+    } catch (error) {
+      if ((error as { code?: string })?.code !== "P2002" || attempt >= 4) {
+        throw error;
+      }
+    }
+  }
 };
 
 export const getPatientProfile = async (
-  patientId: number
+  patientId: number,
+  currentUser?: { userId: number; role: string }
 ) => {
 
-  return prisma.patient.findUnique({
+  const profile = await prisma.patient.findUnique({
     where: {
       patient_id: patientId,
     },
@@ -99,6 +159,12 @@ export const getPatientProfile = async (
       },
     },
   });
+
+  if (profile) {
+    await assertPatientAccess(profile.organization_id, currentUser);
+  }
+
+  return profile;
 };
 
 export const addPatientAllergy = async (
@@ -133,28 +199,27 @@ export const updatePatient = async (
   data: { name?: string; gender?: string; date_of_birth?: string | Date; nic?: string; phone?: string; address?: string },
   currentUser: { userId: number; role: string }
 ) => {
-  const user = await prisma.user.findUnique({
-    where: { user_id: currentUser.userId },
-    select: { organization_id: true }
-  });
-
   const patient = await prisma.patient.findUnique({
     where: { patient_id: patientId },
     select: { organization_id: true }
   });
 
   if (!patient) {
-    throw new Error("Patient not found");
+    throw new PatientError("Patient not found", 404);
   }
 
-  if (currentUser.role !== "ADMIN" && patient.organization_id !== user?.organization_id) {
-    throw new Error("Unauthorized to update this patient");
-  }
+  await assertPatientAccess(patient.organization_id, currentUser);
 
   const updateData: any = {};
   if (data.name !== undefined) updateData.name = data.name;
   if (data.gender !== undefined) updateData.gender = data.gender;
-  if (data.date_of_birth !== undefined) updateData.date_of_birth = new Date(data.date_of_birth);
+  if (data.date_of_birth !== undefined) {
+    const dateOfBirth = new Date(data.date_of_birth);
+    if (Number.isNaN(dateOfBirth.getTime())) {
+      throw new PatientError("A valid date of birth is required");
+    }
+    updateData.date_of_birth = dateOfBirth;
+  }
   if (data.nic !== undefined) updateData.nic = data.nic;
   if (data.phone !== undefined) updateData.phone = data.phone;
   if (data.address !== undefined) updateData.address = data.address;
@@ -169,11 +234,6 @@ export const deletePatient = async (
   patientId: number,
   currentUser: { userId: number; role: string }
 ) => {
-  const user = await prisma.user.findUnique({
-    where: { user_id: currentUser.userId },
-    select: { organization_id: true }
-  });
-
   const patient = await prisma.patient.findUnique({
     where: { patient_id: patientId },
     select: { 
@@ -183,12 +243,10 @@ export const deletePatient = async (
   });
 
   if (!patient) {
-    throw new Error("Patient not found");
+    throw new PatientError("Patient not found", 404);
   }
 
-  if (currentUser.role !== "ADMIN" && patient.organization_id !== user?.organization_id) {
-    throw new Error("Unauthorized to delete this patient");
-  }
+  await assertPatientAccess(patient.organization_id, currentUser);
 
   const consultationIds = patient.consultations.map(c => c.consultation_id);
 

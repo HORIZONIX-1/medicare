@@ -1,7 +1,18 @@
 import prisma from "../../config/prisma";
+import { assertStockAvailable } from "../stock/stock.allocation";
+
+export class PrescriptionError extends Error {
+  statusCode = 400;
+}
 
 export const createPrescription =
   async (data: any) => {
+
+    if (!data?.consultation_id || !Array.isArray(data.items) || data.items.length === 0) {
+      throw new PrescriptionError(
+        "consultation_id and at least one item are required"
+      );
+    }
 
     return prisma.$transaction(
       async (tx) => {
@@ -79,61 +90,22 @@ export const createPrescription =
             });
           }
 
-          const totalAvailable =
-            await tx.stockBatch.aggregate({
-              where: {
-                drug_id: item.drug_id,
-              },
+          // Outside drugs are bought elsewhere, so they never touch clinic stock
+          if (item.is_outside_drug || !item.drug_id) {
+            continue;
+          }
 
-              _sum: {
-                quantity: true,
-              },
-            });
+          const requested = Number(item.quantity) || 0;
 
-          const available =
-            totalAvailable._sum.quantity || 0;
-
-          if (available < item.quantity) {
-
-            throw new Error(
-              `${item.drug_name} stock not enough`
+          if (requested <= 0) {
+            throw new PrescriptionError(
+              `Invalid quantity for ${item.drug_name}`
             );
           }
-          
-          // Reduce stock
-          if (
-            !item.is_outside_drug &&
-            item.drug_id
-          ) {
 
-            const batch =
-              await tx.stockBatch.findFirst({
-                where: {
-                  drug_id: item.drug_id,
-                },
-
-                orderBy: {
-                  expiry_date: "asc",
-                },
-              });
-
-            if (batch) {
-
-              await tx.stockBatch.update({
-                where: {
-                  stock_batch_id:
-                    batch.stock_batch_id,
-                },
-
-                data: {
-                  quantity: {
-                    decrement:
-                      item.quantity,
-                  },
-                },
-              });
-            }
-          }
+          // Stock is only checked here; it is deducted when the invoice is finalized
+          // (the patient may still decline to buy the medicines).
+          await assertStockAvailable(tx, item.drug_id, requested, item.drug_name);
         }
 
         return prescription;
@@ -165,6 +137,8 @@ export const getPrescription =
 
 export const listPrescriptions = async (currentUser?: { userId: number; role: string }) => {
   let organizationId: number | null = null;
+  // Staff only see their own organization (users without one only see unaffiliated records)
+  let scoped = false;
 
   if (currentUser && (currentUser.role === "DOCTOR" || currentUser.role === "RECEPTIONIST" || currentUser.role === "DISPENSER")) {
     const user = await prisma.user.findUnique({
@@ -172,10 +146,11 @@ export const listPrescriptions = async (currentUser?: { userId: number; role: st
       select: { organization_id: true }
     });
     organizationId = user?.organization_id ?? null;
+    scoped = true;
   }
 
   const where: any = {};
-  if (organizationId !== null) {
+  if (scoped) {
     where.consultation = {
       doctor: {
         organization_id: organizationId
@@ -189,10 +164,12 @@ export const listPrescriptions = async (currentUser?: { userId: number; role: st
       consultation: {
         include: {
           patient: true,
-          doctor: true
+          doctor: { select: { user_id: true, name: true } },
+          diagnoses: true
         }
       },
-      items: true
+      items: true,
+      invoice: true
     },
     orderBy: {
       created_at: "desc"
