@@ -23,6 +23,10 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ message: "Invalid credentials" });
     }
 
+    if (!user.is_active) {
+      return res.status(403).json({ message: "Your account has been deactivated. Please contact an administrator." });
+    }
+
     const token = generateToken(user);
 
     const safeUser = {
@@ -36,8 +40,6 @@ export const login = async (req: Request, res: Response) => {
   } catch (error) {
     console.error("Login error:", error);
 
-    const message = error instanceof Error ? error.message : "Server error";
-
-    return res.status(500).json({ message });
+    return res.status(500).json({ message: "Server error" });
   }
 };

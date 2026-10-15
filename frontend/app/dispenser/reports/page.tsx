@@ -85,9 +85,9 @@ export default function ReportsPage() {
             date: new Date().toISOString().split('T')[0],
             drugName: item.name,
             category: 'Medicine',
-            openingStock: item.reorder_level * 2,
+            openingStock: Number(item.total_qty),
             added: 0,
-            dispensed: item.reorder_level,
+            dispensed: 0,
             adjusted: 0,
             closingStock: Number(item.total_qty),
             unit: 'Units'
@@ -103,9 +103,9 @@ export default function ReportsPage() {
             date: item.expiry_date ? item.expiry_date.split('T')[0] : 'N/A',
             drugName: item.name,
             category: 'Medicine',
-            openingStock: Number(item.quantity) * 2,
+            openingStock: Number(item.quantity),
             added: 0,
-            dispensed: Number(item.quantity),
+            dispensed: 0,
             adjusted: 0,
             closingStock: Number(item.quantity),
             unit: 'Units'
@@ -120,10 +120,10 @@ export default function ReportsPage() {
         
         if (res.data && res.data.success && res.data.data.data.length > 0) {
           const logs = res.data.data.data;
-          results = logs.map((log: { action?: string; metadata?: { quantity?: number; qty?: number; drugName?: string; adjustmentType?: string }; created_at?: string }, idx: number) => {
+          results = logs.map((log: { action?: string; metadata?: { quantity?: number; qty?: number; drugName?: string; adjustmentType?: string; before?: number; after?: number }; created_at?: string }, idx: number) => {
             const meta = log.metadata || {};
             const action = log.action || '';
-            const qty = Number(meta.quantity || meta.qty || 10);
+            const qty = Number(meta.quantity || meta.qty || 0);
             
             let added = 0;
             let dispensed = 0;
@@ -135,65 +135,30 @@ export default function ReportsPage() {
             } else if (action === 'DISPENSE' || action === 'DISPENSE_DRUG' || action === 'REMOVE') {
               dispensed = qty;
               totalDispensed += qty;
+            } else if (action === 'ADJUST_STOCK' && meta.adjustmentType === 'REMOVE') {
+              adjusted = -qty;
             } else {
               adjusted = qty;
             }
 
+            const opening = Number(meta.before ?? 0);
+
             return {
               id: idx + 1,
               date: log.created_at ? log.created_at.split('T')[0] : new Date().toISOString().split('T')[0],
-              drugName: meta.drugName || 'Paracetamol 500mg',
-              category: 'Tablet',
-              openingStock: qty * 3,
+              drugName: meta.drugName || 'Unknown drug',
+              category: 'Medicine',
+              openingStock: opening,
               added,
               dispensed,
               adjusted,
-              closingStock: (qty * 3) + added - dispensed - adjusted,
-              unit: 'Tablet'
+              closingStock: Number(meta.after ?? opening + added - dispensed + adjusted),
+              unit: 'Units'
             };
           });
         }
       }
 
-      // If no server results (or mock required to make it match the beautiful presentation)
-      if (results.length === 0) {
-        // Fallback mock reports that match standard drug names and category types
-        const mockReports: Record<string, ReportItem[]> = {
-          daily: [
-            { id: 1, date: '2024-05-20', drugName: 'Paracetamol 500mg', category: 'Tablet', openingStock: 150, added: 0, dispensed: 40, adjusted: 0, closingStock: 110, unit: 'Tablet' },
-            { id: 2, date: '2024-05-20', drugName: 'Amoxicillin 250mg', category: 'Capsule', openingStock: 80, added: 50, dispensed: 20, adjusted: 0, closingStock: 110, unit: 'Capsule' },
-            { id: 3, date: '2024-05-20', drugName: 'Cetrizine 10mg', category: 'Tablet', openingStock: 60, added: 0, dispensed: 15, adjusted: -5, closingStock: 40, unit: 'Tablet' },
-            { id: 4, date: '2024-05-19', drugName: 'Cough Syrup 100ml', category: 'Syrup', openingStock: 25, added: 20, dispensed: 10, adjusted: 0, closingStock: 35, unit: 'Bottle' },
-            { id: 5, date: '2024-05-19', drugName: 'Ibuprofen 400mg', category: 'Tablet', openingStock: 100, added: 0, dispensed: 30, adjusted: 0, closingStock: 70, unit: 'Tablet' },
-            { id: 6, date: '2024-05-18', drugName: 'Salbutamol Inhaler', category: 'Inhaler', openingStock: 15, added: 10, dispensed: 4, adjusted: 0, closingStock: 21, unit: 'Device' },
-            { id: 7, date: '2024-05-18', drugName: 'Omeprazole 20mg', category: 'Capsule', openingStock: 120, added: 0, dispensed: 50, adjusted: 0, closingStock: 70, unit: 'Capsule' },
-          ],
-          monthly: [
-            { id: 1, date: '2024-05', drugName: 'Paracetamol 500mg', category: 'Tablet', openingStock: 300, added: 500, dispensed: 450, adjusted: -10, closingStock: 340, unit: 'Tablet' },
-            { id: 2, date: '2024-05', drugName: 'Amoxicillin 250mg', category: 'Capsule', openingStock: 120, added: 200, dispensed: 180, adjusted: 0, closingStock: 140, unit: 'Capsule' },
-            { id: 3, date: '2024-05', drugName: 'Cetrizine 10mg', category: 'Tablet', openingStock: 90, added: 150, dispensed: 110, adjusted: 0, closingStock: 130, unit: 'Tablet' },
-            { id: 4, date: '2024-05', drugName: 'Cough Syrup 100ml', category: 'Syrup', openingStock: 40, added: 80, dispensed: 95, adjusted: -5, closingStock: 20, unit: 'Bottle' },
-            { id: 5, date: '2024-05', drugName: 'Ibuprofen 400mg', category: 'Tablet', openingStock: 180, added: 300, dispensed: 260, adjusted: 0, closingStock: 220, unit: 'Tablet' },
-            { id: 6, date: '2024-04', drugName: 'Paracetamol 500mg', category: 'Tablet', openingStock: 450, added: 200, dispensed: 350, adjusted: 0, closingStock: 300, unit: 'Tablet' },
-            { id: 7, date: '2024-04', drugName: 'Amoxicillin 250mg', category: 'Capsule', openingStock: 100, added: 100, dispensed: 80, adjusted: 0, closingStock: 120, unit: 'Capsule' },
-          ],
-          low_stock: [
-            { id: 1, date: '2024-05-20', drugName: 'Cough Syrup 100ml', category: 'Syrup', openingStock: 15, added: 0, dispensed: 10, adjusted: -5, closingStock: 0, unit: 'Bottle' },
-            { id: 2, date: '2024-05-20', drugName: 'Amoxicillin 250mg', category: 'Capsule', openingStock: 35, added: 0, dispensed: 25, adjusted: 0, closingStock: 10, unit: 'Capsule' },
-            { id: 3, date: '2024-05-20', drugName: 'Ibuprofen 400mg', category: 'Tablet', openingStock: 50, added: 0, dispensed: 32, adjusted: 0, closingStock: 18, unit: 'Tablet' },
-          ],
-          expiry: [
-            { id: 1, date: '2024-05-22', drugName: 'Amoxicillin 250mg', category: 'Capsule', openingStock: 50, added: 0, dispensed: 40, adjusted: 0, closingStock: 10, unit: 'Capsule' },
-            { id: 2, date: '2024-05-28', drugName: 'Cough Syrup 100ml', category: 'Syrup', openingStock: 20, added: 0, dispensed: 15, adjusted: 0, closingStock: 5, unit: 'Bottle' },
-            { id: 3, date: '2024-06-01', drugName: 'Cetrizine 10mg', category: 'Tablet', openingStock: 80, added: 0, dispensed: 50, adjusted: 0, closingStock: 30, unit: 'Tablet' },
-            { id: 4, date: '2024-06-05', drugName: 'Paracetamol 500mg', category: 'Tablet', openingStock: 100, added: 0, dispensed: 60, adjusted: 0, closingStock: 40, unit: 'Tablet' },
-          ]
-        };
-
-        results = mockReports[reportType] || [];
-        totalDispensed = results.reduce((acc, curr) => acc + curr.dispensed, 0);
-        totalAdded = results.reduce((acc, curr) => acc + curr.added, 0);
-      }
 
       // Filter local results based on form elements
       let filtered = [...results];
@@ -209,8 +174,8 @@ export default function ReportsPage() {
       // Update Dispensed & Added counts in selected period
       setSummaryData(prev => ({
         ...prev,
-        totalDispensed: totalDispensed || 350,
-        totalAddedStock: totalAdded || 210
+        totalDispensed,
+        totalAddedStock: totalAdded
       }));
 
       if (!initial) {
@@ -218,6 +183,7 @@ export default function ReportsPage() {
       }
     } catch (e) {
       console.error(e);
+      setReportResults([]);
       showToast("Error generating report data.");
     } finally {
       setLoading(false);
@@ -238,11 +204,6 @@ export default function ReportsPage() {
       }
     } catch (error) {
       console.error("Failed to load initial report summary metrics:", error);
-      setSummaryData(prev => ({
-        ...prev,
-        totalDrugs: 120,
-        totalStockValue: 245000.00
-      }));
     }
 
     try {
@@ -255,7 +216,7 @@ export default function ReportsPage() {
       console.error("Failed to fetch suppliers:", error);
     }
     
-    // Load initial report results (using mock fallback if necessary)
+    // Load initial report results
     generateReport(true);
   };
 

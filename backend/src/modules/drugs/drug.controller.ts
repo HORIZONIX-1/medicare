@@ -3,8 +3,39 @@ import type { Request, Response } from "express";
 import * as drugService
   from "./drug.service";
 
+const isUniqueViolation = (error: unknown) =>
+  (error as { code?: string })?.code === "P2002";
+
+const isNotFound = (error: unknown) =>
+  (error as { code?: string })?.code === "P2025";
+
+const validateDrugPayload = (body: any): string | null => {
+  if (!body?.name || typeof body.name !== "string" || !body.name.trim()) {
+    return "Drug name is required";
+  }
+  if (!body.category || !body.unit_type) {
+    return "Category and unit type are required";
+  }
+  const price = Number(body.selling_price);
+  if (body.selling_price === "" || !Number.isFinite(price) || price < 0) {
+    return "Selling price must be a non-negative number";
+  }
+  if (body.reorder_level !== undefined && body.reorder_level !== "") {
+    const reorder = Number(body.reorder_level);
+    if (!Number.isInteger(reorder) || reorder < 0) {
+      return "Reorder level must be a non-negative whole number";
+    }
+  }
+  return null;
+};
+
 export const createDrug =
   async (req: Request, res: Response) => {
+
+  const validationError = validateDrugPayload(req.body);
+  if (validationError) {
+    return res.status(400).json({ success: false, message: validationError });
+  }
 
   try {
 
@@ -13,13 +44,21 @@ export const createDrug =
         req.body
       );
 
-    res.status(201).json(drug);
+    res.status(201).json({ success: true, data: drug });
 
   } catch (error) {
+
+    if (isUniqueViolation(error)) {
+      return res.status(409).json({
+        success: false,
+        message: "A drug with this name already exists",
+      });
+    }
 
     console.error(error);
 
     res.status(500).json({
+      success: false,
       message: "Failed to create drug",
     });
   }
@@ -31,7 +70,11 @@ export const searchDrugs =
   try {
 
     const query =
-      req.query.query as string;
+      String(req.query.query ?? "").trim();
+
+    if (!query) {
+      return res.json([]);
+    }
 
     const drugs =
       await drugService.searchDrugs(
@@ -60,6 +103,10 @@ export const getDrugById =
         Number(req.params.id)
       );
 
+    if (!drug) {
+      return res.status(404).json({ message: "Drug not found" });
+    }
+
     res.json(drug);
 
   } catch (error) {
@@ -73,7 +120,7 @@ export const getDrugById =
 };
 
 export const getDrugAvailability =
-  async (req: { params: { id: any; }; }, res: { json: (arg0: { available_quantity: number; reorder_level: number; status: string; }) => void; status: (arg0: number) => { (): any; new(): any; json: { (arg0: { message: string; }): void; new(): any; }; }; }) => {
+  async (req: Request, res: Response) => {
 
   try {
 
@@ -86,6 +133,10 @@ export const getDrugAvailability =
     res.json(result);
 
   } catch (error) {
+
+    if (error instanceof Error && error.message === "Drug not found") {
+      return res.status(404).json({ message: error.message });
+    }
 
     console.error(error);
 
@@ -107,12 +158,23 @@ export const listDrugs = async (req: Request, res: Response) => {
 };
 
 export const updateDrug = async (req: Request, res: Response) => {
+  const validationError = validateDrugPayload(req.body);
+  if (validationError) {
+    return res.status(400).json({ success: false, message: validationError });
+  }
+
   try {
     const drug = await drugService.updateDrug(Number(req.params.id), req.body);
     res.json({ success: true, data: drug });
   } catch (error) {
+    if (isNotFound(error)) {
+      return res.status(404).json({ success: false, message: "Drug not found" });
+    }
+    if (isUniqueViolation(error)) {
+      return res.status(409).json({ success: false, message: "A drug with this name already exists" });
+    }
     console.error(error);
-    res.status(400).json({ success: false, message: "Failed to update drug" });
+    res.status(500).json({ success: false, message: "Failed to update drug" });
   }
 };
 
@@ -121,7 +183,10 @@ export const deleteDrug = async (req: Request, res: Response) => {
     const result = await drugService.deleteDrug(Number(req.params.id));
     res.json({ success: true, data: result });
   } catch (error) {
+    if (isNotFound(error)) {
+      return res.status(404).json({ success: false, message: "Drug not found" });
+    }
     console.error(error);
-    res.status(400).json({ success: false, message: "Failed to delete drug" });
+    res.status(500).json({ success: false, message: "Failed to delete drug" });
   }
 };

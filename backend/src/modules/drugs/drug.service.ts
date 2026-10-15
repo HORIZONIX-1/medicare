@@ -6,17 +6,20 @@ export const createDrug =
   return prisma.drug.create({
     data: {
 
-      name: data.name,
+      name: String(data.name).trim(),
 
       category: data.category,
 
       unit_type: data.unit_type,
 
-      dosage_type: data.dosage_type,
+      dosage_type: data.dosage_type || null,
 
-      selling_price: data.selling_price,
+      selling_price: Number(data.selling_price),
 
-      reorder_level: data.reorder_level,
+      reorder_level:
+        data.reorder_level === undefined || data.reorder_level === ""
+          ? 10
+          : Number(data.reorder_level),
     },
   });
 };
@@ -54,6 +57,12 @@ export const getDrugAvailability =
     await prisma.stockBatch.findMany({
       where: {
         drug_id: drugId,
+        status: "ACTIVE",
+        quantity: { gt: 0 },
+        OR: [
+          { expiry_date: null },
+          { expiry_date: { gt: new Date() } },
+        ],
       },
     });
 
@@ -100,8 +109,8 @@ export const getDrugAvailability =
 };
 
 export const listDrugs = async (opts: any = {}) => {
-  const page = Math.max(1, Number(opts.page || 1));
-  const limit = Math.min(100, Number(opts.limit || 25));
+  const page = Math.max(1, Number(opts.page) || 1);
+  const limit = Math.min(100, Math.max(1, Number(opts.limit) || 25));
   const skip = (page - 1) * limit;
 
   const where: any = { is_active: true };
@@ -134,12 +143,15 @@ export const updateDrug = async (id: number, data: any) => {
   return prisma.drug.update({
     where: { drug_id: id },
     data: {
-      name: data.name,
+      name: String(data.name).trim(),
       category: data.category,
       unit_type: data.unit_type,
-      dosage_type: data.dosage_type,
+      dosage_type: data.dosage_type || null,
       selling_price: Number(data.selling_price),
-      reorder_level: Number(data.reorder_level)
+      reorder_level:
+        data.reorder_level === undefined || data.reorder_level === ""
+          ? undefined
+          : Number(data.reorder_level)
     }
   });
 };

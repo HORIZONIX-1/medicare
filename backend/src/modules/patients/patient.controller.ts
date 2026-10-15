@@ -1,5 +1,13 @@
 import * as patientService from "./patient.service";
 
+const sendPatientError = (error: unknown, res: any) => {
+  if (error instanceof patientService.PatientError) {
+    res.status(error.statusCode).json({ message: error.message });
+    return true;
+  }
+  return false;
+};
+
 export const searchPatients = async (req: any, res: any) => {
   try {
     const { type, value } = req.query;
@@ -27,6 +35,8 @@ export const createPatient = async (req: any, res: any) => {
 
     res.status(201).json(patient);
   } catch (error) {
+    if (sendPatientError(error, res)) return;
+    console.error("Error in createPatient controller:", error);
     res.status(500).json({
       message: "Patient creation failed",
     });
@@ -43,7 +53,7 @@ export const getPatientProfile = async (req: any, res: any) => {
       return res.status(400).json({ message: "Invalid patient id" });
     }
 
-    const profile = await patientService.getPatientProfile(patientId);
+    const profile = await patientService.getPatientProfile(patientId, req.user);
 
     if (!profile) {
       return res.status(404).json({ message: "Patient not found" });
@@ -51,6 +61,7 @@ export const getPatientProfile = async (req: any, res: any) => {
 
     res.json(profile);
   } catch (error) {
+    if (sendPatientError(error, res)) return;
     res.status(500).json({ message: "Failed to fetch patient profile" });
   }
 };
@@ -99,9 +110,10 @@ export const updatePatient = async (req: any, res: any) => {
       patient
     });
   } catch (error: any) {
+    if (sendPatientError(error, res)) return;
     console.error("Error in updatePatient controller:", error);
     res.status(500).json({
-      message: error.message || "Failed to update patient"
+      message: "Failed to update patient"
     });
   }
 };
@@ -120,9 +132,10 @@ export const deletePatient = async (req: any, res: any) => {
       message: "Patient deleted successfully"
     });
   } catch (error: any) {
+    if (sendPatientError(error, res)) return;
     console.error("Error in deletePatient controller:", error);
     res.status(500).json({
-      message: error.message || "Failed to delete patient"
+      message: "Failed to delete patient"
     });
   }
 };
